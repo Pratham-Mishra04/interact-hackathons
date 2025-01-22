@@ -7,7 +7,6 @@ import TimeProgressGraph from '@/components/common/time_graph';
 import moment from 'moment';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
-import Slider from 'react-slick';
 import ComparisonScoreBar from './comparison_score_bar';
 import AnnouncementCard from '@/components/announcement_card';
 
@@ -44,8 +43,8 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
           trackPrize: data.trackPrize || 0,
         });
       } else {
-        if (res.data.message) Toaster.error(res.data.message);
-        else Toaster.error(SERVER_ERROR);
+        console.log(res);
+        Toaster.error(res.data.message || SERVER_ERROR);
       }
     };
 
@@ -53,7 +52,6 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
       const res = await getHandler(`/hackathons/${hackathon.id}/participants/announcements/`);
       if (res.statusCode == 200) {
         setAnnouncements(res.data.announcements);
-        console.log(res.data.announcements);
       } else {
         if (res.data.message) Toaster.error(res.data.message);
         else Toaster.error(SERVER_ERROR);
@@ -79,7 +77,7 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
   const showTimeTillJudging = moment(currentRound?.judgingStartTime).isAfter(moment());
 
   return (
-    <Slider {...settings} className="relative">
+    <div {...settings} className="relative">
       {!hackathon.isEnded && (
         <div className="w-full">
           <div className="w-full flex gap-6 mb-6">
@@ -140,7 +138,7 @@ export default function ParticipantLiveRoundAnalytics({ teamID, currentRound }: 
           ))}
         </div>
       )}
-    </Slider>
+    </div>
   );
 }
 
