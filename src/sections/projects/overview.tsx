@@ -22,10 +22,10 @@ const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam 
   const [clickedOnEditProjectImages, setClickedOnEditProjectImages] = useState(false);
 
   return (
-    <div className="w-full bg-white rounded-xl p-6 space-y-6">
+    <div className="w-2/3 max-md:w-full bg-white rounded-xl p-6 space-y-6">
       <ProjectBlockHeader title="Overview" icon={<ReadCvLogo size={32} />} separator />
-      <div className="w-full flex items-start gap-10">
-        <div className="w-1/3 relative group">
+      <div className="w-full flex max-md:flex-col items-start gap-10">
+        <div className="w-1/3 max-md:w-full relative group">
           <EditProjectImages
             project={project}
             setTeam={setTeam}
@@ -81,7 +81,7 @@ const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam 
             />
           )}
         </div>
-        <div className="w-2/3 space-y-4">
+        <div className="w-2/3 max-md:w-full space-y-4">
           <div className="w-full flex justify-between">
             <div className="w-[calc(100%-48px)] font-bold text-5xl">{project.title}</div>
             <EditProject project={project} setTeam={setTeam} />

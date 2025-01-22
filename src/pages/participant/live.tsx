@@ -96,7 +96,7 @@ const Live = () => {
                   {team.title}
                 </div>
                 <div className="w-fit text-4xl md:text-6xl lg:text-10xl flex flex-col font-bold">
-                  <div className="w-full h-full">
+                  <div className="w-full h-full max-md:text-center">
                     <div className="text-xl">Now Ongoing</div>
                     <div
                       style={{
@@ -104,7 +104,7 @@ const Live = () => {
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                       }}
-                      className="text-3xl md:text-4xl lg:text-9xl font-bold"
+                      className="text-7xl lg:text-9xl font-bold"
                     >
                       {currentRound ? `Round ${currentRound.index + 1}` : 'Break'}
                     </div>
@@ -136,7 +136,7 @@ const Live = () => {
                 </div>
               </div>
               {team.id && (
-                <div className="w-full md:w-3/5">
+                <div className="w-full md:w-3/5 max-md:hidden">
                   <ParticipantLiveRoundAnalytics teamID={team.id} currentRound={currentRound} nextRound={nextRound} />
                 </div>
               )}

@@ -15,10 +15,10 @@ interface ProjectViewProps {
 
 const ProjectView: React.FC<ProjectViewProps> = ({ project, team, setTeam }) => {
   return (
-    <div className="w-full flex space-x-4">
+    <div className="w-full flex max-md:flex-col gap-4">
       <OverviewComponent project={project} setTeam={setTeam} />
 
-      <div className="w-1/3 space-y-4">
+      <div className="w-1/3 max-md:w-full space-y-4">
         <div className="w-full bg-white p-4 rounded-xl space-y-4">
           <ProjectBlockHeader title="Connected Github Repositories" icon={<GitBranch />} />
           <RepositoriesComponent team={team} />
