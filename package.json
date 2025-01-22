@@ -90,6 +90,7 @@
     "redux-persist": "^6.0.0",
     "slick-carousel": "^1.8.1",
     "sonner": "^1.7.1",
+    "swiper": "^11.2.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "validator": "^13.12.0",

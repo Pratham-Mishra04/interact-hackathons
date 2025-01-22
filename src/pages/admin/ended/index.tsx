@@ -13,15 +13,14 @@ import { Button } from '@/components/ui/button';
 import NewAnnouncement from '@/sections/admin/new_announcement';
 import ViewAnnouncements from '@/sections/admin/view_announcements';
 import configuredAxios from '@/config/axios';
-import { Loader } from 'lucide-react';
+import { HistoryIcon, Loader } from 'lucide-react';
 import TeamProjectsTable from '@/components/tables/teams_projects';
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Index = () => {
   const hackathon = useSelector(currentHackathonSelector);
-  const [clickedOnNewAnnouncement, setClickedOnNewAnnouncement] = useState(false);
-  const [clickedOnViewAnnouncement, setClickedOnViewAnnouncement] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [announcementReloadTrigger, setAnnouncementReloadTrigger] = useState(false);
 
   useEffect(() => {
     const role = getHackathonRole();
@@ -92,64 +91,40 @@ const Index = () => {
         <div className=" w-full h-fit flex flex-col gap-4">
           <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
             <div className="--heading w-full h-full flex flex-col gap-8">
-              <section className="w-full h-full text-center text-3xl md:text-4xl lg:text-7xl font-bold lg:leading-[4.5rem]">
-                <h1
-                  style={{
-                    background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  The Hackathon has ended
+              <section className="w-full h-full text-center text-2xl md:text-3xl lg:text-5xl font-bold lg:leading-[4.5rem]">
+                <h1>
+                  The Hackathon has <span className={"text-4xl md:text-5xl gradient-text-3 lg:text-8xl block"}>Ended</span>
                 </h1>
               </section>
-              <div className="w-full flex gap-4 max-md:flex-col">
-                <Button onClick={() => setClickedOnNewAnnouncement(true)} className="w-1/2 bg-primary_text">
-                  <div className="">Create New Announcement</div>
-                </Button>
-                <Button onClick={() => setClickedOnViewAnnouncement(true)} className="w-1/2 bg-primary_text">
-                  <div className="">View All Announcements</div>
-                </Button>
+              <div className="w-full flex gap-4 justify-center">
+                <NewAnnouncement setTriggerReload={setAnnouncementReloadTrigger} triggerClass={"w-1/4"} />
+                <ViewAnnouncements triggerReload={announcementReloadTrigger} triggerClass={"w-fit"} trigger={
+                  <button className={"button-gradient rounded-lg h-full p-1 px-2 text-white"}><HistoryIcon className={"size-5"} /></button>
+                } />
               </div>
               <div className="w-full flex flex-col gap-2">
-                <div className="text-xl font-semibold">Event Reports (in CSV)</div>
-                <div className="w-full flex gap-4 max-md:flex-col relative">
+                <div className="text-xl font-bold max-md:text-center">Event Reports (in CSV)</div>
+                <div className="w-full flex gap-4 max-md:flex-col max-md:items-center relative">
                   {loading && (
                     <div className="w-full h-full bg-white flex-center absolute top-0 right-0 bg-opacity-50 rounded-lg">
                       <Loader />
                     </div>
                   )}
-                  <Button onClick={() => handleDownload('team')} className="w-1/2 bg-priority_low" variant={'link'}>
+                  <Button onClick={() => handleDownload('team')} className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white" variant={'default'}>
                     <div className="font-semibold">Team Details</div>
                   </Button>
-                  <Button onClick={() => handleDownload('overall')} className="w-1/2 bg-priority_low" variant={'link'}>
+                  <Button onClick={() => handleDownload('overall')} className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white" variant={'default'}>
                     <div className="font-semibold">Overall Team Scores</div>
                   </Button>
-                  <Button className="w-1/2 bg-priority_low text-primary_black" variant={'default'} disabled={true}>
+                  <Button className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white" variant={'default'} disabled={true}>
                     <div className="font-semibold">Round Wise Team Scores</div>
                   </Button>
-                  {/* <Button onClick={() => handleDownload('round')} className="w-1/2 bg-priority_low" variant={'link'}>
-                      <Select value={''} onValueChange={()=>}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select Your Role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {sampleRoleData.map((role, index) => (
-                            <SelectItem value={role} key={index}>
-                              {role}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-
-                      <div className="">Round Wise Team Scores</div>
-                    </Button> */}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <TeamProjectsTable />
+        <div className={"max-md:mt-4"}><TeamProjectsTable /></div>
       </div>
     </BaseWrapper>
   );

@@ -64,6 +64,7 @@ const config: Config = {
   			priority_high: '#fbbebe',
   			priority_mid: '#fbf9be',
   			priority_low: '#bffbbe',
+				'blue-prime': '#00BDF2',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -276,11 +277,11 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
-  	},
-  	screens: {
-  		md: '768px',
-  		lg: '1080px'
+  		},
+			screens: {
+				md: '768px',
+				lg: '1080px'
+			}
   	}
   },
   plugins: [require('tailwindcss-animate')],
