@@ -72,7 +72,7 @@ const AnnouncementCard = ({ announcement, setAnnouncements, isAdmin = false }: P
   return (
     <>
       {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
-      <div className="w-full h-fit relative overflow-clip bg-white font-primary flex gap-1 rounded-lg border-gray-300 border-[1px] dark:border-b-[1px] p-4 shadow-sm hover:shadow-md transition-ease-300 animate-fade_third">
+      <div className="w-full h-fit relative overflow-clip bg-white font-primary flex gap-1 rounded-lg border-gray-300 border-[1px] dark:border-b-[1px] p-2 shadow-sm hover:shadow-md transition-ease-300 animate-fade_third">
         <div className="w-full space-y-2">
           <div className="w-full flex items-center justify-between gap-2 text-xs text-gray-400">
             <div>{moment(announcement.createdAt).fromNow()}</div>

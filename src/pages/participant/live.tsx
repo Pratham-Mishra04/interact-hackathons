@@ -84,7 +84,7 @@ const Live = () => {
         ) : (
           <div className="w-full min-h-base bg-[#E1F1FF] p-12 flex flex-col gap-10">
             <div className="w-full flex flex-col md:flex-row gap-8">
-              <div className="w-full md:w-1/2 flex flex-col items-center justify-between gap-8">
+              <div className="w-full md:w-2/5 flex flex-col items-center justify-between gap-8">
                 <div
                   style={{
                     background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
@@ -136,8 +136,8 @@ const Live = () => {
                 </div>
               </div>
               {team.id && (
-                <div className="w-full md:w-1/2">
-                  <ParticipantLiveRoundAnalytics teamID={team.id} currentRound={currentRound} />
+                <div className="w-full md:w-3/5">
+                  <ParticipantLiveRoundAnalytics teamID={team.id} currentRound={currentRound} nextRound={nextRound} />
                 </div>
               )}
             </div>
