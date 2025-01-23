@@ -147,22 +147,22 @@ const Index = () => {
             <div className={"w-full h-[30rem] overflow-y-auto overflow-x-hidden pr-5 flex justify-start rounded-xl"}>
               <div className={"grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-6"}>
                 {hackathonFilter == HackathonType.REGISTERED && registeredHackathons.length > 0 && (
-                  registeredHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={"max-w-80"}>
+                  registeredHackathons.map((hackathon, index) => (
+                    <FadeIn key={hackathon.id} className={"max-w-80"} delay={index*0.02}>
                       <HackathonCard hackathon={hackathon} />
                     </FadeIn>
                   ))
                 )}
                 {hackathonFilter == HackathonType.ADMIN && adminHackathons.length > 0 && (
-                  adminHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={"max-w-80"}>
+                  adminHackathons.map((hackathon, index) => (
+                    <FadeIn key={hackathon.id} className={"max-w-80"} delay={index*0.02}>
                       <HackathonCard hackathon={hackathon} isAdmin />
                     </FadeIn>
                   ))
                 )}
                 {hackathonFilter == HackathonType.ORG && orgHackathons.length > 0 && (
-                  orgHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={"max-w-80"}>
+                  orgHackathons.map((hackathon, index) => (
+                    <FadeIn key={hackathon.id} className={"max-w-80"} delay={index*0.02}>
                       <HackathonCard hackathon={hackathon} isAdmin />
                     </FadeIn>
                   ))
@@ -312,12 +312,15 @@ const UserInfo = ({
             height={152}
             className={"w-40 h-40 rounded-xl"}
           />
-          <div className={"w-full"}>
-            <div className={"text-2xl font-bold"}>{user.name}</div>
-            <div className={"text-lg"}>{user.tagline}</div>
+          <div className={"w-full flex flex-col justify-around"}>
+            <div>
+              <div className={"text-2xl font-bold"}>{user.name}</div>
+              <div className={"text-lg"}>{user.tagline}</div>
+            </div>
+            <Link href={"https://interactnow.in/"} className={"max-w-52"}><Button className={"w-full"}>Edit Details</Button></Link>
           </div>
         </div>
-        <div className={"border border-neutral-600 border-dotted p-2 rounded-xl w-full min-h-32 lg:w-1/2 text-wrap shrink"}>
+        <div className={"border border-neutral-600 border-dotted p-2 rounded-xl min-h-20 lg:w-1/2 text-wrap shrink"}>
           {user.bio}
           {!user.bio && <span className={"text-neutral-500"}>Your bio</span>}
         </div>
