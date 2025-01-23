@@ -18,6 +18,7 @@ import AddTeamMember from '@/sections/admin/add_team_member';
 import NewTeam from '@/sections/admin/new_team';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import Status from '../common/status';
+import { isAccessDeniedError } from '@/utils/funcs/misc';
 
 const TeamProjectsTable = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -55,7 +56,10 @@ const TeamProjectsTable = () => {
       setPage(prev => prev + 1);
       setLoading(false);
     } else if (res.status != -1) {
-      Toaster.error(res.data.message || SERVER_ERROR);
+      const message = res.data?.message;
+      Toaster.error(message || SERVER_ERROR);
+
+      if (isAccessDeniedError(message)) window.location.assign('/');
     }
   };
 

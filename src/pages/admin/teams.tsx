@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
 import BaseWrapper from '@/wrappers/base';
 import TeamsTable from '@/components/tables/teams';
 

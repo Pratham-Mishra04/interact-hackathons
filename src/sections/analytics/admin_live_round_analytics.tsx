@@ -9,6 +9,7 @@ import TimeProgressGraph from '@/components/common/time_graph';
 import moment from 'moment';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
+import { isAccessDeniedError } from '@/utils/funcs/misc';
 
 export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRound | null }) {
   const [totalTeams, setTotalTeams] = useState(0);
@@ -27,13 +28,16 @@ export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRou
         setTotalTeamsLeft(res.data.totalTeamsLeft);
         setTotalUsersLeft(res.data.totalUsersLeft);
       } else {
-        if (res.data.message) Toaster.error(res.data.message);
-        else Toaster.error(SERVER_ERROR);
+        const message = res.data?.message;
+        Toaster.error(message || SERVER_ERROR);
+
+        if (isAccessDeniedError(message)) window.location.assign('/');
       }
     };
 
     fetchAnalyticsData();
   }, []);
+
   return (
     <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
       <AnalyticBox className="flex flex-col justify-between">

@@ -15,6 +15,7 @@ import { HackathonPrize, HackathonTeam, HackathonTrack } from '@/types';
 import { initialHackathonPrize } from '@/types/initials';
 import postHandler from '@/handlers/post_handler';
 import moment from 'moment';
+import { isAccessDeniedError } from '@/utils/funcs/misc';
 
 export default function PrizeDistributionPage() {
   const dispatch = useDispatch();
@@ -52,7 +53,10 @@ export default function PrizeDistributionPage() {
       });
       setPrizes(prizes || []);
     } else {
-      Toaster.error(res.data?.message || SERVER_ERROR);
+      const message = res.data?.message;
+      Toaster.error(message || SERVER_ERROR);
+
+      if (isAccessDeniedError(message)) window.location.assign('/');
     }
   };
 
@@ -70,7 +74,10 @@ export default function PrizeDistributionPage() {
         };
       });
     } else {
-      Toaster.error(res.data?.message || SERVER_ERROR);
+      const message = res.data?.message;
+      Toaster.error(message || SERVER_ERROR);
+
+      if (isAccessDeniedError(message)) window.location.assign('/');
     }
   };
 
@@ -83,7 +90,10 @@ export default function PrizeDistributionPage() {
       setTeams(teams || []);
       setDisplayTeams(teams || []);
     } else {
-      Toaster.error(res.data?.message || SERVER_ERROR);
+      const message = res.data?.message;
+      Toaster.error(message || SERVER_ERROR);
+
+      if (isAccessDeniedError(message)) window.location.assign('/');
     }
   };
 
