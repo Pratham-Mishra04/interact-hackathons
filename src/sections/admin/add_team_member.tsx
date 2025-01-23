@@ -24,6 +24,14 @@ const AddTeamMember = ({ show, setShow, team }: Props) => {
   const hackathon = useSelector(currentHackathonSelector);
 
   const submitHandler = async () => {
+    if (username == '') {
+      Toaster.error('Enter Username');
+      return;
+    } else if (role == '') {
+      Toaster.error('Select Role');
+      return;
+    }
+
     const formData = { username, role };
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}/add`;
     const res = await postHandler(URL, formData);

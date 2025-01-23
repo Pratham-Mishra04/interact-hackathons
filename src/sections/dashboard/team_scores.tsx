@@ -21,6 +21,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
   const [scores, setScores] = useState<HackathonRoundTeamScoreCard[]>([]);
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
   const [nextRound, setNextRound] = useState<HackathonRound | null>(null);
+
   const hackathon = useSelector(currentHackathonSelector);
 
   const getRounds = async () => {
@@ -63,26 +64,36 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
     }
   };
 
-  const handleSubmit = async (hackathonRoundID: string, score: string | number | boolean, hackathonRoundScoreMetricID?: string) => {
+  const handleSubmit = async (
+    hackathonRoundID: string,
+    changedMetrics: { id: string; score: string }[],
+    isOverallScoreChanged: boolean,
+    newOverallScore: string
+  ) => {
     const formData = {
       hackathonRoundID,
       hackathonTeamID: teamID,
-      hackathonRoundScoreMetricID,
-      score: String(score),
+      scores: changedMetrics.map(metric => ({
+        hackathonRoundScoreMetricID: metric.id,
+        score: metric.score,
+      })),
+      overallScore: isOverallScoreChanged ? newOverallScore : '',
     };
+
+    const toaster = Toaster.startLoad('Updating Scores...');
 
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/score`;
     const res = await postHandler(URL, formData);
     if (res.statusCode === 200) {
-      Toaster.success('Score Updated');
+      Toaster.stopLoad(toaster, 'Scores Updated', 1);
     } else {
-      Toaster.error(res.data?.message || SERVER_ERROR);
+      Toaster.stopLoad(toaster, res.data?.message || SERVER_ERROR, 0);
     }
   };
 
   const isJudgingAllowed = useMemo(
     () => role == 'admin' && moment().isBetween(moment(currentRound?.judgingStartTime), moment(currentRound?.endTime)),
-    [role]
+    [role, currentRound]
   );
 
   return (
@@ -117,7 +128,12 @@ const RoundScorecard = ({
   round: HackathonRound;
   scoreCard?: HackathonRoundTeamScoreCard;
   isJudgingAllowed: boolean;
-  handleSubmit: (hackathonRoundID: string, score: string | number | boolean, hackathonRoundScoreMetricID?: string) => void;
+  handleSubmit: (
+    hackathonRoundID: string,
+    changedMetrics: { id: string; score: string }[],
+    isOverallScoreChanged: boolean,
+    newOverallScore: string
+  ) => void;
 }) => {
   const [inputScores, setInputScores] = useState<{ [key: string]: any }>({});
 
@@ -142,6 +158,39 @@ const RoundScorecard = ({
       });
     }
   }, [scoreCard]);
+
+  const preSubmit = () => {
+    const previousScores =
+      scoreCard?.scores?.reduce((acc, metric) => {
+        acc[metric.hackathonRoundScoreMetricID] = metric.score;
+        return acc;
+      }, {} as { [key: string]: any }) || {};
+
+    const changedMetrics = round.metrics.map(metric => {
+      const newValue = String(inputScores[metric.id]);
+      const previousValue =
+        metric.type == 'text'
+          ? String(previousScores[metric.id]) == 'undefined'
+            ? ''
+            : String(previousScores[metric.id])
+          : String(previousScores[metric.id]);
+      const isChanged = previousValue !== newValue;
+
+      return {
+        id: metric.id,
+        score: newValue,
+        changed: isChanged,
+      };
+    });
+
+    // Call handleSubmit for actual submission
+    handleSubmit(
+      round.id,
+      changedMetrics.filter(metric => metric.changed),
+      previousScores['overallScore'] !== inputScores['overallScore'],
+      inputScores['overallScore']
+    );
+  };
 
   return (
     <div className="w-full space-y-8">
@@ -170,7 +219,7 @@ const RoundScorecard = ({
             )}
 
             {metric.type === 'select' && metric.options && metric.options.length > 0 && (
-              <Select disabled={!isJudgingAllowed} onValueChange={value => handleInputChange(metric.id, value)}>
+              <Select disabled={!isJudgingAllowed} value={inputScores[metric.id] || ''} onValueChange={value => handleInputChange(metric.id, value)}>
                 <SelectTrigger className="w-full h-10">
                   <SelectValue placeholder="Select Option" />
                 </SelectTrigger>
@@ -188,36 +237,27 @@ const RoundScorecard = ({
               <div className="w-full flex-center space-x-6">
                 <button
                   disabled={!isJudgingAllowed}
-                  onClick={() => handleInputChange(metric.id, true)}
+                  onClick={() => handleInputChange(metric.id, 'true')}
                   className={`w-1/2 h-10 ${
-                    inputScores[metric.id]
-                      ? 'bg-green-500 border-primary_black border-[1px]'
-                      : 'bg-green-600 hover:bg-green-800 disabled:hover:bg-green-600'
+                    inputScores[metric.id] != undefined && inputScores[metric.id] == 'true'
+                      ? 'bg-green-400 border-primary_black border-[1px]'
+                      : 'bg-green-700 hover:bg-green-800 disabled:hover:bg-green-600'
                   } flex-center disabled:opacity-50 text-white rounded-lg text-lg font-medium transition-ease-300 cursor-pointer disabled:cursor-not-allowed`}
                 >
                   Yes
                 </button>
                 <button
                   disabled={!isJudgingAllowed}
-                  onClick={() => handleInputChange(metric.id, false)}
+                  onClick={() => handleInputChange(metric.id, 'false')}
                   className={`w-1/2 h-10 ${
-                    inputScores[metric.id] != undefined && !inputScores[metric.id]
-                      ? 'bg-red-500 border-primary_black border-[1px]'
-                      : 'bg-red-600 hover:bg-red-800 disabled:hover:bg-red-600'
+                    inputScores[metric.id] != undefined && inputScores[metric.id] == 'false'
+                      ? 'bg-red-400 border-primary_black border-[1px]'
+                      : 'bg-red-700 hover:bg-red-800 disabled:hover:bg-red-600'
                   } flex-center disabled:opacity-50 text-white rounded-lg text-lg font-medium transition-ease-300 cursor-pointer disabled:cursor-not-allowed`}
                 >
                   No
                 </button>
               </div>
-            )}
-
-            {isJudgingAllowed && (
-              <Button
-                onClick={() => handleSubmit(metric.hackathonRoundID, inputScores[metric.id], metric.id)}
-                className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
-              >
-                Submit
-              </Button>
             )}
           </div>
         ))}
@@ -227,8 +267,8 @@ const RoundScorecard = ({
           <Trophy size={32} />
           <h1 className="text-xl md:text-2xl font-semibold text-nowrap">Overall Round Score</h1>
           {isJudgingAllowed ? (
-            <>
-              <div className="flex-center gap-4">
+            <div className="grow flex items-center justify-between gap-4">
+              <div className="flex-center gap-2">
                 <Input
                   type="number"
                   className="bg-white text-black w-full md:w-60"
@@ -236,15 +276,12 @@ const RoundScorecard = ({
                   value={inputScores['overallScore'] || ''}
                   onChange={e => handleInputChange('overallScore', e.target.value)}
                 />
-                <span className="font-medium">Suggested: {averageScore} (Avg of all numeric metrics)</span>
+                <span className="text-sm font-medium">Suggested: {averageScore} (Avg of all numeric metrics)</span>
               </div>
-              <Button
-                onClick={() => handleSubmit(round.id, inputScores['overallScore'])}
-                className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
-              >
-                Submit
+              <Button onClick={() => preSubmit()} className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12">
+                Submit All Scores
               </Button>
-            </>
+            </div>
           ) : (
             <h1 className="flex-center gap-2 text-3xl font-semibold">
               <span className="hidden md:block">:</span> {inputScores['overallScore'] || '-'}

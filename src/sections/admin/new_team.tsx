@@ -25,10 +25,15 @@ const NewTeam = ({ tracks }: Props) => {
   const hackathon = useSelector(currentHackathonSelector);
 
   const submitHandler = async () => {
-    const formData = { username, role };
+    if (title == '' || track == '' || username == '' || role == '') {
+      Toaster.error('Enter all the details');
+      return;
+    }
+
+    const formData = { title, trackID: track, username, role, hackathonID: hackathon.id };
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/`;
     const res = await postHandler(URL, formData);
-    if (res.statusCode == 200) {
+    if (res.statusCode == 201) {
       Toaster.success('Team Created');
       setIsDialogOpen(false);
     } else {

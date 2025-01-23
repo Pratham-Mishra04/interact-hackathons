@@ -19,6 +19,7 @@ import AddTeamMember from '@/sections/admin/add_team_member';
 import NewTeam from '@/sections/admin/new_team';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { isAccessDeniedError } from '@/utils/funcs/misc';
+import { userSelector } from '@/slices/userSlice';
 
 const TeamsTable = ({ showAllFilters = true }) => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -35,6 +36,7 @@ const TeamsTable = ({ showAllFilters = true }) => {
   const [clickedTeam, setClickedTeam] = useState(initialHackathonTeam);
 
   const hackathon = useSelector(currentHackathonSelector);
+  const user = useSelector(userSelector);
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
     setLoading(true);
@@ -102,7 +104,7 @@ const TeamsTable = ({ showAllFilters = true }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {role == 'admin' && (
+      {hackathon.coordinators?.includes(user.id) && (
         <>
           <div className="w-full flex justify-end">
             <NewTeam tracks={tracks} />
