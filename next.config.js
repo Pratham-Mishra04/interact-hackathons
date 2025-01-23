@@ -11,9 +11,6 @@ const nextConfig = {
         hostname: 'storage.googleapis.com',
         port: '',
         pathname: `/${process.env.NEXT_PUBLIC_GCP_BUCKET}/**`,
-      },
-      {
-        hostname: "avatars.githubusercontent.com",
       }
     ],
   },
