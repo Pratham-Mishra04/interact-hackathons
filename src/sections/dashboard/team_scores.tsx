@@ -80,6 +80,8 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
       overallScore: isOverallScoreChanged ? newOverallScore : '',
     };
 
+    console.log(formData);
+
     const toaster = Toaster.startLoad('Updating Scores...');
 
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/score`;
@@ -183,11 +185,12 @@ const RoundScorecard = ({
       };
     });
 
-    // Call handleSubmit for actual submission
+    previousScores['overallScore'] = scoreCard?.overallScore || '';
+
     handleSubmit(
       round.id,
       changedMetrics.filter(metric => metric.changed),
-      previousScores['overallScore'] !== inputScores['overallScore'],
+      String(previousScores['overallScore']) !== String(inputScores['overallScore']),
       inputScores['overallScore']
     );
   };
@@ -278,8 +281,8 @@ const RoundScorecard = ({
                 />
                 <span className="text-sm font-medium">Suggested: {averageScore} (Avg of all numeric metrics)</span>
               </div>
-              <Button onClick={() => preSubmit()} className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12">
-                Submit All Scores
+              <Button onClick={preSubmit} className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12">
+                Update Scores
               </Button>
             </div>
           ) : (
