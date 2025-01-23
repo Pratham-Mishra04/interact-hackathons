@@ -1,8 +1,20 @@
 import React from 'react';
-import type { Event, Hackathon } from '@/types';
+import { Event, Hackathon, HackathonRound } from '@/types';
 import Image from 'next/image';
 import { EVENT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import UserHoverCard from './user_hover_card';
+import { useRouter } from 'next/router';
+import getHandler from '@/handlers/get_handler';
+import Toaster from '@/utils/toaster';
+import { SERVER_ERROR } from '@/config/errors';
+import {
+  getHackathonStage, HACKATHON_COMPLETED, HACKATHON_LIVE,
+  HACKATHON_NOT_STARTED,
+  HACKATHON_TEAM_ENDED,
+  HACKATHON_TEAM_REGISTRATION
+} from '@/utils/funcs/hackathons';
+import { useDispatch } from 'react-redux';
+import { setCurrentHackathon } from '@/slices/hackathonSlice';
 
 interface Props {
   event: Event;
@@ -97,10 +109,59 @@ const LowerCardItem = ({ title, content }: { title: string; content: string }) =
 };
 
 export const HackathonCard = ({
- hackathon
+ hackathon,
+  isAdmin,
 }: {
   hackathon: Hackathon
+  isAdmin?: boolean
 }) => {
+
+  const router = useRouter();
+
+  const getCurrentRound = async () => {
+    const URL = `/hackathons/${hackathon.id}/participants/round`;
+    const res = await getHandler(URL, undefined, true);
+    if (res.statusCode == 200) {
+      return [res.data.round, res.data.nextRound];
+    } else {
+      Toaster.error(res.data.message || SERVER_ERROR);
+    }
+  };
+
+  const buildURL = (currentRound: HackathonRound, nextRound: HackathonRound) => {
+    let URL = '';
+    if (isAdmin) URL += 'admin';
+    else URL += 'participant';
+    switch (getHackathonStage(hackathon, true, currentRound, nextRound)) {
+      case HACKATHON_NOT_STARTED:
+        URL = '#';
+        break;
+      case HACKATHON_TEAM_REGISTRATION:
+        if (isAdmin) URL += '/teams';
+        else URL += '/team';
+        break;
+      case HACKATHON_TEAM_ENDED:
+        URL += `/stage`;
+        break;
+      case HACKATHON_LIVE:
+        URL += `/live`;
+        break;
+      case HACKATHON_COMPLETED:
+        URL += `/ended`;
+        break;
+    }
+    return URL;
+  };
+
+  const dispatch = useDispatch();
+
+  const handleClick = async () => {
+    dispatch(setCurrentHackathon(hackathon));
+    const [currentRound, nextRound] = (await getCurrentRound()) || [undefined, undefined];
+    router.push(buildURL(currentRound, nextRound));
+  };
+
+
   const startDate = hackathon.startTime ? new Date(hackathon.startTime) : null;
   const formattedMonth = startDate ? new Intl.DateTimeFormat('en-US', { month: 'short' }).format(startDate) : 'N/A';
   const formattedDay = startDate ? startDate.getDate() : 'N/A';
@@ -117,7 +178,7 @@ export const HackathonCard = ({
   };
 
   return (
-    <div className="relative w-full max-w-md bg-white dark:bg-dark_primary_comp_hover rounded-3xl p-4 hover:shadow-xl transition-ease-300 m-2">
+    <div className="relative w-full max-w-md bg-white dark:bg-dark_primary_comp_hover rounded-3xl p-4 hover:shadow-xl transition-ease-300 m-2" onClick={handleClick}>
       <div className="relative">
         <Image
           width={400}
