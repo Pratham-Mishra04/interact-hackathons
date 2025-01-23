@@ -2,7 +2,6 @@ import getDomainName from '@/utils/funcs/get_domain_name';
 import Link from 'next/link';
 import React from 'react';
 import getIcon from '@/utils/funcs/get_icon';
-import ToolTip from '../utils/tooltip';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface Props {

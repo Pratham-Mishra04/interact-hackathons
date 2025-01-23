@@ -14,19 +14,21 @@ import { SERVER_ERROR } from '@/config/errors';
 import postHandler from '@/handlers/post_handler';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
 import moment from 'moment';
+import NumberInput from '@/components/form/number';
 
 const TeamScores = ({ teamID }: { teamID: string }) => {
-  const [activeRound, setActiveRound] = useState(0);
   const [rounds, setRounds] = useState<HackathonRound[]>([]);
   const [scores, setScores] = useState<HackathonRoundTeamScoreCard[]>([]);
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
+  const [nextRound, setNextRound] = useState<HackathonRound | null>(null);
   const hackathon = useSelector(currentHackathonSelector);
 
   const getRounds = async () => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/rounds`;
     const res = await getHandler(URL, undefined, true);
     if (res.statusCode === 200) {
-      setRounds(res.data.rounds);
+      const rounds: HackathonRound[] = res.data.rounds || [];
+      setRounds(rounds.sort((a, b) => b.index - a.index));
     } else {
       Toaster.error(res.data?.message || SERVER_ERROR);
     }
@@ -37,6 +39,7 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
     const res = await getHandler(URL);
     if (res.statusCode === 200) {
       setCurrentRound(res.data.round);
+      setNextRound(res.data.nextRound);
     } else {
       Toaster.error(res.data?.message || SERVER_ERROR);
     }
@@ -50,15 +53,6 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
 
   const role = getHackathonRole();
 
-  const [inputScores, setInputScores] = useState<{ [key: string]: any }>({});
-
-  const handleInputChange = (id: string, value: any) => {
-    setInputScores(prevScores => ({
-      ...prevScores,
-      [id]: value,
-    }));
-  };
-
   const getScores = async () => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/score/${teamID}`;
     const res = await getHandler(URL);
@@ -68,16 +62,6 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
       Toaster.error(res.data?.message || SERVER_ERROR);
     }
   };
-
-  useEffect(() => {
-    const currentRound = scores[activeRound];
-    if (currentRound) {
-      if (currentRound.overallScore) handleInputChange('overallScore', currentRound.overallScore);
-      currentRound.scores?.map(metric => {
-        handleInputChange(metric.hackathonRoundScoreMetricID, metric.score);
-      });
-    }
-  }, [scores, activeRound]);
 
   const handleSubmit = async (hackathonRoundID: string, score: string | number | boolean, hackathonRoundScoreMetricID?: string) => {
     const formData = {
@@ -96,123 +80,138 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
     }
   };
 
-  const averageScore = useMemo(() => {
-    const numericScores = rounds[activeRound]?.metrics.filter(metric => metric.type === 'number').map(metric => Number(inputScores[metric.id]) || 0);
-    const totalScore = numericScores?.reduce((acc, curr) => acc + curr, 0);
-    return numericScores?.length > 0 ? (totalScore / numericScores.length).toFixed(2) : '0';
-  }, [inputScores, rounds, activeRound]);
-
-  const isJudgingLive = useMemo(() => moment().isBetween(moment(currentRound?.judgingStartTime), moment(currentRound?.endTime)), [currentRound]);
+  const isJudgingAllowed = useMemo(
+    () => role == 'admin' && moment().isBetween(moment(currentRound?.judgingStartTime), moment(currentRound?.endTime)),
+    [role]
+  );
 
   return (
-    <div className="w-full p-4 flex flex-col gap-8">
-      <div className="w-fit bg-white p-1 rounded-md mx-auto flex flex-wrap justify-center">
-        {Array.from({ length: rounds.length }, (_, index) => (
-          <button
-            key={index}
-            className={`px-6 py-1 text-sm font-semibold rounded-sm ${activeRound === index ? 'bg-blue-500 text-white' : 'bg-white'}`}
-            onClick={() => setActiveRound(index)}
-          >
-            Round {index + 1}
-          </button>
-        ))}
-      </div>
+    <div className="w-full p-4 space-y-20">
+      {rounds
+        .filter(round => {
+          if (currentRound) return round.index <= currentRound.index;
+          if (nextRound) return round.index <= nextRound.index;
+          return true;
+        })
+        .map((round, index) => {
+          return (
+            <RoundScorecard
+              key={index}
+              round={round}
+              handleSubmit={handleSubmit}
+              isJudgingAllowed={isJudgingAllowed && round.id === currentRound?.id}
+              scoreCard={scores.find(score => score.hackathonRoundID === round.id)}
+            />
+          );
+        })}
+    </div>
+  );
+};
 
+const RoundScorecard = ({
+  round,
+  isJudgingAllowed,
+  handleSubmit,
+  scoreCard,
+}: {
+  round: HackathonRound;
+  scoreCard?: HackathonRoundTeamScoreCard;
+  isJudgingAllowed: boolean;
+  handleSubmit: (hackathonRoundID: string, score: string | number | boolean, hackathonRoundScoreMetricID?: string) => void;
+}) => {
+  const [inputScores, setInputScores] = useState<{ [key: string]: any }>({});
+
+  const handleInputChange = (id: string, value: any) => {
+    setInputScores(prevScores => ({
+      ...prevScores,
+      [id]: value,
+    }));
+  };
+
+  const averageScore = useMemo(() => {
+    const numericScores = round.metrics.filter(metric => metric.type === 'number').map(metric => Number(inputScores[metric.id]) || 0);
+    const totalScore = numericScores?.reduce((acc, curr) => acc + curr, 0);
+    return numericScores?.length > 0 ? (totalScore / numericScores.length).toFixed(2) : '0';
+  }, [inputScores, round]);
+
+  useEffect(() => {
+    if (scoreCard) {
+      if (scoreCard.overallScore) handleInputChange('overallScore', scoreCard.overallScore);
+      scoreCard.scores?.map(metric => {
+        handleInputChange(metric.hackathonRoundScoreMetricID, metric.score);
+      });
+    }
+  }, [scoreCard]);
+
+  return (
+    <div className="w-full space-y-8">
+      <div className="w-1/2 mx-auto h-12 bg-blue-400 flex-center text-white font-semibold rounded-lg">Round {round.index + 1}</div>
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-        {rounds[activeRound]?.metrics.map((metric, index) => (
-          <div key={index} className="w-full p-3 bg-white rounded-md flex flex-col gap-2">
-            <span>
-              <h1 className="text-lg md:text-xl lg:text-2xl font-semibold">{metric.title}</h1>
-              <p className="text-xs mb-4">{metric.description}</p>
-            </span>
+        {round.metrics?.map((metric, index) => (
+          <div key={index} className="w-full p-4 bg-white rounded-md flex flex-col justify-around gap-4">
+            <div className="space-y-1">
+              <h1 className="text-lg md:text-xl lg:text-2xl font-medium">{metric.title}</h1>
+              <p className="mb-4">Description: {metric.description}</p>
+            </div>
 
             {metric.type === 'number' && (
-              <>
-                {role == 'admin' && isJudgingLive ? (
-                  <Input
-                    type="number"
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                    placeholder="Enter score"
-                    value={Number(inputScores[metric.id]) || ''}
-                    onChange={e => handleInputChange(metric.id, e.target.value)}
-                  />
-                ) : (
-                  <div>Score: {Number(inputScores[metric.id]) || '-'}</div>
-                )}
-              </>
+              <NumberInput val={Number(inputScores[metric.id])} setVal={val => handleInputChange(metric.id, val)} disabled={!isJudgingAllowed} />
             )}
 
             {metric.type === 'text' && (
-              <>
-                {role == 'admin' && isJudgingLive ? (
-                  <TextArea
-                    className="w-full p-2 border border-gray-300 rounded-md resize-none"
-                    placeholder="Enter judgement"
-                    maxLength={300}
-                    val={inputScores[metric.id] || ''}
-                    setVal={val => handleInputChange(metric.id, val)}
-                  />
-                ) : (
-                  <div>Score: {inputScores[metric.id] || ''}</div>
-                )}
-              </>
+              <TextArea
+                className="w-full p-2 border border-gray-300 rounded-md resize-none"
+                placeholder="Enter Remarks"
+                disabled={!isJudgingAllowed}
+                maxLength={300}
+                val={inputScores[metric.id] || ''}
+                setVal={val => handleInputChange(metric.id, val)}
+              />
             )}
 
             {metric.type === 'select' && metric.options && metric.options.length > 0 && (
-              <>
-                {role == 'admin' && isJudgingLive ? (
-                  <Select onValueChange={value => handleInputChange(metric.id, value)}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select Option" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {metric.options.map((option, index) => (
-                        <SelectItem key={index} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <div>Score: {inputScores[metric.id] || ''}</div>
-                )}
-              </>
+              <Select disabled={!isJudgingAllowed} onValueChange={value => handleInputChange(metric.id, value)}>
+                <SelectTrigger className="w-full h-10">
+                  <SelectValue placeholder="Select Option" />
+                </SelectTrigger>
+                <SelectContent>
+                  {metric.options.map((option, index) => (
+                    <SelectItem key={index} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
 
             {metric.type === 'boolean' && (
-              <>
-                {role === 'admin' && isJudgingLive ? (
-                  <div className="flex items-center space-x-4">
-                    <label className="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        name={`boolean-${metric.id}`}
-                        value="true"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
-                        checked={inputScores[metric.id] === true}
-                        onChange={() => handleInputChange(metric.id, true)}
-                      />
-                      <span className="text-gray-900">True</span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        name={`boolean-${metric.id}`}
-                        value="false"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
-                        checked={inputScores[metric.id] === false}
-                        onChange={() => handleInputChange(metric.id, false)}
-                      />
-                      <span className="text-gray-900">False</span>
-                    </label>
-                  </div>
-                ) : (
-                  <div>Value: {inputScores[metric.id] ? 'True' : 'False'}</div>
-                )}
-              </>
+              <div className="w-full flex-center space-x-6">
+                <button
+                  disabled={!isJudgingAllowed}
+                  onClick={() => handleInputChange(metric.id, true)}
+                  className={`w-1/2 h-10 ${
+                    inputScores[metric.id]
+                      ? 'bg-green-500 border-primary_black border-[1px]'
+                      : 'bg-green-600 hover:bg-green-800 disabled:hover:bg-green-600'
+                  } flex-center disabled:opacity-50 text-white rounded-lg text-lg font-medium transition-ease-300 cursor-pointer disabled:cursor-not-allowed`}
+                >
+                  Yes
+                </button>
+                <button
+                  disabled={!isJudgingAllowed}
+                  onClick={() => handleInputChange(metric.id, false)}
+                  className={`w-1/2 h-10 ${
+                    inputScores[metric.id] != undefined && !inputScores[metric.id]
+                      ? 'bg-red-500 border-primary_black border-[1px]'
+                      : 'bg-red-600 hover:bg-red-800 disabled:hover:bg-red-600'
+                  } flex-center disabled:opacity-50 text-white rounded-lg text-lg font-medium transition-ease-300 cursor-pointer disabled:cursor-not-allowed`}
+                >
+                  No
+                </button>
+              </div>
             )}
 
-            {role == 'admin' && isJudgingLive && (
+            {isJudgingAllowed && (
               <Button
                 onClick={() => handleSubmit(metric.hackathonRoundID, inputScores[metric.id], metric.id)}
                 className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
@@ -227,31 +226,31 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
         <span className="w-full flex flex-col md:flex-row items-center gap-2">
           <Trophy size={32} />
           <h1 className="text-xl md:text-3xl font-semibold text-nowrap">Overall Score</h1>
-          {role == 'admin' && isJudgingLive ? (
-            <div className="flex-center gap-4">
-              <Input
-                type="number"
-                className="bg-white text-black w-full md:w-60"
-                placeholder="Enter Score"
-                value={inputScores['overallScore'] || ''}
-                onChange={e => handleInputChange('overallScore', e.target.value)}
-              />
-              <span className="font-medium">Suggested: {averageScore} (Avg of all numeric metrics)</span>
-            </div>
+          {isJudgingAllowed ? (
+            <>
+              <div className="flex-center gap-4">
+                <Input
+                  type="number"
+                  className="bg-white text-black w-full md:w-60"
+                  placeholder="Enter Score"
+                  value={inputScores['overallScore'] || ''}
+                  onChange={e => handleInputChange('overallScore', e.target.value)}
+                />
+                <span className="font-medium">Suggested: {averageScore} (Avg of all numeric metrics)</span>
+              </div>
+              <Button
+                onClick={() => handleSubmit(round.id, inputScores['overallScore'])}
+                className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
+              >
+                Submit
+              </Button>
+            </>
           ) : (
             <h1 className="flex-center gap-2 text-3xl font-semibold">
               <span className="hidden md:block">:</span> {inputScores['overallScore'] || '-'}
             </h1>
           )}
         </span>
-        {role == 'admin' && isJudgingLive && (
-          <Button
-            onClick={() => handleSubmit(rounds[activeRound].id, inputScores['overallScore'])}
-            className="bg-primary_text/90 hover:bg-primary_text w-full md:w-fit px-12"
-          >
-            Submit
-          </Button>
-        )}
       </div>
     </div>
   );
