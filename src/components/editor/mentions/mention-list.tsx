@@ -265,7 +265,7 @@ const MentionList = forwardRef<MentionListHandle, MentionListProps>((props, ref)
   const hasItems = totalLength > 0;
 
   return (
-    <div className="max-w-[300px] max-h-[500px] overflow-y-auto flex flex-col gap-1 p-2 bg-neutral-50 dark:bg-neutral-800 shadow-md rounded-lg thin_scrollbar">
+    <div className="max-w-[300px] max-h-[500px] overflow-y-auto flex flex-col gap-1 p-2 bg-neutral-50 dark:bg-neutral-800 shadow-md rounded-lg thin_scrollbar z-50">
       {hasItems ? (
         sections.map(({ title, items, renderItem }, index) => renderSectionSafe(title, items, renderItem))
       ) : (

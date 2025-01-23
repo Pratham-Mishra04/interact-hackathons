@@ -9,9 +9,10 @@ interface Props {
   required?: boolean;
   styles?: React.CSSProperties;
   className?: string;
+  disabled?: boolean;
 }
 
-const TextArea = ({ label, val, setVal, maxLength, placeholder, required = false, styles, className }: Props) => {
+const TextArea = ({ label, val, setVal, maxLength, placeholder, required = false, styles, className, disabled = false }: Props) => {
   return (
     <div className="w-full">
       {label && (
@@ -22,9 +23,10 @@ const TextArea = ({ label, val, setVal, maxLength, placeholder, required = false
       )}
       <textarea
         value={val}
+        disabled={disabled}
         onChange={el => setVal(el.target.value)}
         maxLength={maxLength}
-        className={`w-full min-h-[80px] max-h-80 bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2 ${className}`}
+        className={`w-full min-h-[80px] max-h-80 bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2 ${className} disabled:opacity-50 disabled:cursor-not-allowed`}
         placeholder={placeholder}
         style={styles}
       />

@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
 import BaseWrapper from '@/wrappers/base';
 import TeamsTable from '@/components/tables/teams';
 
@@ -11,8 +10,7 @@ const Teams = () => {
   const hackathon = useSelector(currentHackathonSelector);
 
   useEffect(() => {
-    const role = getHackathonRole();
-    if (role != 'admin' && role != 'org') window.location.replace('/?action=sync');
+    if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
     else if (moment().isAfter(hackathon.teamFormationEndTime)) window.location.replace('/admin/live');
   }, []);

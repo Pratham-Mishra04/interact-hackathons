@@ -18,6 +18,8 @@ import { initialHackathonTeam } from '@/types/initials';
 import AddTeamMember from '@/sections/admin/add_team_member';
 import NewTeam from '@/sections/admin/new_team';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
+import { isAccessDeniedError } from '@/utils/funcs/misc';
+import { userSelector } from '@/slices/userSlice';
 
 const TeamsTable = ({ showAllFilters = true }) => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -34,6 +36,7 @@ const TeamsTable = ({ showAllFilters = true }) => {
   const [clickedTeam, setClickedTeam] = useState(initialHackathonTeam);
 
   const hackathon = useSelector(currentHackathonSelector);
+  const user = useSelector(userSelector);
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
     setLoading(true);
@@ -55,7 +58,10 @@ const TeamsTable = ({ showAllFilters = true }) => {
       setPage(prev => prev + 1);
       setLoading(false);
     } else if (res.status != -1) {
-      Toaster.error(res.data.message || SERVER_ERROR);
+      const message = res.data?.message;
+      Toaster.error(message || SERVER_ERROR);
+
+      if (isAccessDeniedError(message)) window.location.assign('/');
     }
   };
 
@@ -98,9 +104,11 @@ const TeamsTable = ({ showAllFilters = true }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {role == 'admin' && (
+      {hackathon.coordinators?.includes(user.id) && (
         <>
-          <NewTeam tracks={tracks} />
+          <div className="w-full flex justify-end">
+            <NewTeam tracks={tracks} />
+          </div>
           <AddTeamMember show={clickedOnAddMember} setShow={setClickedOnAddMember} team={clickedTeam} />
         </>
       )}

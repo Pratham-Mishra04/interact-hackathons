@@ -27,9 +27,9 @@ const Live = () => {
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
-      if (!res.data.round) {
+      if (!res.data.round && res.data.nextRound && res.data.nextRound.index == 0) {
         window.location.replace('/participant/stage');
       }
       setCurrentRound(res.data.round);
@@ -41,7 +41,7 @@ const Live = () => {
 
   const getTeam = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       const team = res.data.team;
       if (!team) Toaster.error('Team Not Found');
@@ -57,16 +57,12 @@ const Live = () => {
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
-      const role = getHackathonRole();
-      if (role != 'participant') window.location.replace('/?action=sync');
+      if (hackathon.isEnded) window.location.replace('/participant/ended');
+      else if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
+        window.location.replace('/participant/team');
       else {
-        if (hackathon.isEnded) window.location.replace('/participant/ended');
-        else if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-          window.location.replace('/participant/team');
-        else {
-          getTeam();
-          getCurrentRound();
-        }
+        getTeam();
+        getCurrentRound();
       }
     }
   }, []);
@@ -84,7 +80,7 @@ const Live = () => {
         ) : (
           <div className="w-full min-h-base bg-[#E1F1FF] p-12 flex flex-col gap-10">
             <div className="w-full flex flex-col md:flex-row gap-8">
-              <div className="w-full md:w-1/2 flex flex-col items-center justify-between gap-8">
+              <div className="w-full md:w-2/5 flex flex-col items-center justify-between gap-8">
                 <div
                   style={{
                     background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
@@ -96,7 +92,7 @@ const Live = () => {
                   {team.title}
                 </div>
                 <div className="w-fit text-4xl md:text-6xl lg:text-10xl flex flex-col font-bold">
-                  <div className="w-full h-full">
+                  <div className="w-full h-full max-md:text-center">
                     <div className="text-xl">Now Ongoing</div>
                     <div
                       style={{
@@ -104,7 +100,7 @@ const Live = () => {
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                       }}
-                      className="text-3xl md:text-4xl lg:text-9xl font-bold"
+                      className="text-7xl lg:text-9xl font-bold"
                     >
                       {currentRound ? `Round ${currentRound.index + 1}` : 'Break'}
                     </div>
@@ -136,8 +132,8 @@ const Live = () => {
                 </div>
               </div>
               {team.id && (
-                <div className="w-full md:w-1/2">
-                  <ParticipantLiveRoundAnalytics teamID={team.id} currentRound={currentRound} />
+                <div className="w-full md:w-3/5 max-md:hidden">
+                  <ParticipantLiveRoundAnalytics teamID={team.id} currentRound={currentRound} nextRound={nextRound} />
                 </div>
               )}
             </div>

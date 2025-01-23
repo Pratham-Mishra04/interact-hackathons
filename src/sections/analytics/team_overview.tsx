@@ -7,6 +7,8 @@ import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import TimeProgressGraph from '@/components/common/time_graph';
 import moment from 'moment';
 import { HackathonRound } from '@/types';
+import Toaster from '@/utils/toaster';
+import { SERVER_ERROR } from '@/config/errors';
 
 const initialChartData = [
   { time: '5 Days Ago', noOfTeams: 0, noOfParticipants: 0 },
@@ -46,6 +48,8 @@ const TeamOverviewAnalytics = ({ nextRound }: { nextRound?: HackathonRound | nul
         setTotalParticipants(res.data.totalParticipants);
         setTotalTracks(res.data.totalTracks);
         setTotalPrize(res.data.totalPrize);
+      } else {
+        Toaster.error(res.data?.message || SERVER_ERROR);
       }
     };
 

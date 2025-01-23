@@ -5,7 +5,7 @@ import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
-import Slider from 'react-slick';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
@@ -233,63 +233,72 @@ const ContributionsGraph = ({
   return (
     <div className="w-full h-fit bg-white rounded-xl p-4 pb-0">
       <div className="text-xl font-medium">Team Contributions</div>
-      <Slider {...settings} className="">
-        <div>
-          <div className="w-full text-center text-gray-600 font-medium">Overall Contribution Score</div>
-          <ChartContainer config={overallDataConfig} className="w-full">
-            <BarChart accessibilityLayer data={overallData}>
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="codeContribution" fill="var(--color-codeContribution)" radius={4} />
-              <Bar dataKey="designContribution" fill="var(--color-designContribution)" radius={4} />
-              <Bar dataKey="tasksContribution" fill="var(--color-tasksContribution)" radius={4} />
-            </BarChart>
-          </ChartContainer>
-        </div>
+      <Carousel
+        className="w-full"
+        opts={{
+          align: 'center',
+        }}
+      >
+        <CarouselContent>
+          <CarouselItem key={0}>
+            <div className="w-full text-center text-gray-600 font-medium">Overall Contribution Score</div>
+            <ChartContainer config={overallDataConfig} className="w-full">
+              <BarChart accessibilityLayer data={overallData}>
+                <CartesianGrid vertical={false} />
+                <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="codeContribution" fill="var(--color-codeContribution)" radius={4} />
+                <Bar dataKey="designContribution" fill="var(--color-designContribution)" radius={4} />
+                <Bar dataKey="tasksContribution" fill="var(--color-tasksContribution)" radius={4} />
+              </BarChart>
+            </ChartContainer>
+          </CarouselItem>
 
-        <div>
-          <div className="w-full text-center text-gray-600 font-medium">Github Contribution Score</div>
-          <ChartContainer config={codeDataConfig} className="w-full">
-            <BarChart accessibilityLayer data={codeData}>
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="totalCommits" fill="var(--color-totalCommits)" radius={4} />
-              <Bar dataKey="totalLinesChanged" fill="var(--color-totalLinesChanged)" radius={4} />
-              <Bar dataKey="totalFilesAffected" fill="var(--color-totalFilesAffected)" radius={4} />
-              <Bar dataKey="score" fill="var(--color-score)" radius={4} />
-            </BarChart>
-          </ChartContainer>
-        </div>
+          <CarouselItem key={1}>
+            <div className="w-full text-center text-gray-600 font-medium">Github Contribution Score</div>
+            <ChartContainer config={codeDataConfig} className="w-full">
+              <BarChart accessibilityLayer data={codeData}>
+                <CartesianGrid vertical={false} />
+                <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="totalCommits" fill="var(--color-totalCommits)" radius={4} />
+                <Bar dataKey="totalLinesChanged" fill="var(--color-totalLinesChanged)" radius={4} />
+                <Bar dataKey="totalFilesAffected" fill="var(--color-totalFilesAffected)" radius={4} />
+                <Bar dataKey="score" fill="var(--color-score)" radius={4} />
+              </BarChart>
+            </ChartContainer>
+          </CarouselItem>
 
-        <div>
-          <div className="w-full text-center text-gray-600 font-medium">Figma Contribution Score</div>
-          <ChartContainer config={figmaDataConfig} className="w-full">
-            <BarChart accessibilityLayer data={figmaData}>
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="totalVersions" fill="var(--color-totalVersions)" radius={4} />
-              <Bar dataKey="score" fill="var(--color-score)" radius={4} />
-            </BarChart>
-          </ChartContainer>
-        </div>
+          <CarouselItem key={2}>
+            <div className="w-full text-center text-gray-600 font-medium">Figma Contribution Score</div>
+            <ChartContainer config={figmaDataConfig} className="w-full">
+              <BarChart accessibilityLayer data={figmaData}>
+                <CartesianGrid vertical={false} />
+                <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="totalVersions" fill="var(--color-totalVersions)" radius={4} />
+                <Bar dataKey="score" fill="var(--color-score)" radius={4} />
+              </BarChart>
+            </ChartContainer>
+          </CarouselItem>
 
-        <div>
-          <div className="w-full text-center text-gray-600 font-medium">Tasks Contribution Score</div>
-          <ChartContainer config={tasksDataConfig} className="w-full">
-            <BarChart accessibilityLayer data={tasksData}>
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="tasksAssigned" fill="var(--color-tasksAssigned)" radius={4} />
-              <Bar dataKey="tasksCompleted" fill="var(--color-tasksCompleted)" radius={4} />
-              <Bar dataKey="score" fill="var(--color-score)" radius={4} />
-            </BarChart>
-          </ChartContainer>
-        </div>
-      </Slider>
+          <CarouselItem key={3}>
+            <div className="w-full text-center text-gray-600 font-medium">Tasks Contribution Score</div>
+            <ChartContainer config={tasksDataConfig} className="w-full">
+              <BarChart accessibilityLayer data={tasksData}>
+                <CartesianGrid vertical={false} />
+                <XAxis dataKey="user" tickLine={false} tickMargin={10} axisLine={false} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="tasksAssigned" fill="var(--color-tasksAssigned)" radius={4} />
+                <Bar dataKey="tasksCompleted" fill="var(--color-tasksCompleted)" radius={4} />
+                <Bar dataKey="score" fill="var(--color-score)" radius={4} />
+              </BarChart>
+            </ChartContainer>
+          </CarouselItem>
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     </div>
   );
 };

@@ -36,17 +36,13 @@ const Stage = () => {
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
-      const role = getHackathonRole();
-      if (role != 'participant') window.location.replace('/?action=sync');
+      const now = moment();
+      if (hackathon.isEnded) window.location.replace('/participant/ended');
+      else if (now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
+        window.location.replace('/participant/team');
       else {
-        const now = moment();
-        if (hackathon.isEnded) window.location.replace('/participant/ended');
-        else if (now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-          window.location.replace('/participant/team');
-        else {
-          getTeam();
-          getCurrentRound();
-        }
+        getTeam();
+        getCurrentRound();
       }
     }
   }, []);

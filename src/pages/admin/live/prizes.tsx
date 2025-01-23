@@ -14,6 +14,8 @@ import { SERVER_ERROR } from '@/config/errors';
 import { HackathonPrize, HackathonTeam, HackathonTrack } from '@/types';
 import { initialHackathonPrize } from '@/types/initials';
 import postHandler from '@/handlers/post_handler';
+import moment from 'moment';
+import { isAccessDeniedError } from '@/utils/funcs/misc';
 
 export default function PrizeDistributionPage() {
   const dispatch = useDispatch();
@@ -51,7 +53,10 @@ export default function PrizeDistributionPage() {
       });
       setPrizes(prizes || []);
     } else {
-      Toaster.error(res.data?.message || SERVER_ERROR);
+      const message = res.data?.message;
+      Toaster.error(message || SERVER_ERROR);
+
+      if (isAccessDeniedError(message)) window.location.assign('/');
     }
   };
 
@@ -69,7 +74,10 @@ export default function PrizeDistributionPage() {
         };
       });
     } else {
-      Toaster.error(res.data?.message || SERVER_ERROR);
+      const message = res.data?.message;
+      Toaster.error(message || SERVER_ERROR);
+
+      if (isAccessDeniedError(message)) window.location.assign('/');
     }
   };
 
@@ -82,7 +90,10 @@ export default function PrizeDistributionPage() {
       setTeams(teams || []);
       setDisplayTeams(teams || []);
     } else {
-      Toaster.error(res.data?.message || SERVER_ERROR);
+      const message = res.data?.message;
+      Toaster.error(message || SERVER_ERROR);
+
+      if (isAccessDeniedError(message)) window.location.assign('/');
     }
   };
 
@@ -143,9 +154,9 @@ export default function PrizeDistributionPage() {
   );
 
   useEffect(() => {
-    const role = getHackathonRole();
-    if (role != 'admin' && role != 'org') window.location.replace('/?action=sync');
+    if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
+    else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
     else {
       (async () => {
         await getHackathonAnalytics();
@@ -161,23 +172,27 @@ export default function PrizeDistributionPage() {
 
   return (
     <BaseWrapper>
-      <AppSidebar
-        hackathonName={hackathonData.name}
-        hackathonTagline={hackathonData.tagline}
-        tracks={hackathonData.noTracks}
-        participants={hackathonData.noParticipants}
-        totalRemaining={hackathonData.remainingParticipants}
-        handleEndHackathon={handleEndHackathon}
-      />
-      <div className={'w-5/6 h-base flex flex-col items-center py-5 overflow-hidden gap-5'}>
-        <div className={'text-6xl max-lg:text-5xl max-md:text-4xl gradient-text-3 font-bold'}>Prize distribution</div>
-        <PrizesCarousel prizes={prizes} currentPrize={currentPrize} setCurrentPrize={setCurrentPrize} />
-        <div className={'mt-5 w-4/5 max-lg:w-5/6 max-md:10/12 h-3/4 overflow-y-scroll --scrollbar px-20 max-lg:px-10 max-md:px-2 flex flex-col gap-1'}>
-          <Accordion type={'single'} collapsible className={'space-y-1'}>
-            {displayTeams.map(team => (
-              <TeamAccordianItem team={team} key={team.id} selected={isTeamSelected(team)} onSelect={onTeamSelect} />
-            ))}
-          </Accordion>
+      <div className="w-full h-full flex max-md:flex-col-reverse">
+        <AppSidebar
+          hackathonName={hackathonData.name}
+          hackathonTagline={hackathonData.tagline}
+          tracks={hackathonData.noTracks}
+          participants={hackathonData.noParticipants}
+          totalRemaining={hackathonData.remainingParticipants}
+          handleEndHackathon={handleEndHackathon}
+        />
+        <div className={'w-5/6 max-md:w-full h-base max-md:h-fit flex flex-col items-center py-5 overflow-hidden gap-5'}>
+          <div className={'text-6xl max-lg:text-5xl max-md:text-4xl gradient-text-3 font-bold'}>Prize distribution</div>
+          <PrizesCarousel prizes={prizes} currentPrize={currentPrize} setCurrentPrize={setCurrentPrize} />
+          <div
+            className={'mt-5 w-4/5 max-lg:w-5/6 max-md:10/12 h-3/4 overflow-y-scroll --scrollbar px-20 max-lg:px-10 max-md:px-2 flex flex-col gap-1'}
+          >
+            <Accordion type={'single'} collapsible className={'space-y-1'}>
+              {displayTeams.map(team => (
+                <TeamAccordianItem team={team} key={team.id} selected={isTeamSelected(team)} onSelect={onTeamSelect} />
+              ))}
+            </Accordion>
+          </div>
         </div>
       </div>
     </BaseWrapper>

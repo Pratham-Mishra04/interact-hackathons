@@ -9,13 +9,14 @@ import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { ORG_URL } from '@/config/routes';
 import Toaster from '@/utils/toaster';
-import { SERVER_ERROR } from '@/config/errors';
+import { ACCESS_DENIED, ADMIN_AUTHORIZATION_DENIED, ORG_AUTHORIZATION_DENIED, SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import { GetServerSidePropsContext } from 'next';
 import CommentBox from '@/components/comment/comment_box';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
+import { isAccessDeniedError } from '@/utils/funcs/misc';
 
 export default function Page({ tid }: { tid: string }) {
   const [team, setTeam] = useState(initialHackathonTeam);
@@ -29,15 +30,17 @@ export default function Page({ tid }: { tid: string }) {
     if (res.statusCode === 200) {
       setTeam(res.data.team);
     } else {
-      Toaster.error(res.data?.message || SERVER_ERROR);
+      const message = res.data?.message;
+      Toaster.error(message || SERVER_ERROR);
+
+      if (isAccessDeniedError(message)) window.location.assign('/');
     }
   };
 
   useEffect(() => {
-    const role = getHackathonRole();
-    if (role != 'admin' && role != 'org') window.location.replace('/?action=sync');
-    else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
+    if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (!hackathon.isEnded) window.location.replace('/admin/live');
+    else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
     else getTeam();
   }, [tid]);
 

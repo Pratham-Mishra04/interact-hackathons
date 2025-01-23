@@ -16,6 +16,7 @@ import CommentBox from '@/components/comment/comment_box';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
 import { getHackathonRole } from '@/utils/funcs/hackathons';
+import { isAccessDeniedError } from '@/utils/funcs/misc';
 
 export default function Page({ tid }: { tid: string }) {
   const [team, setTeam] = useState(initialHackathonTeam);
@@ -29,13 +30,15 @@ export default function Page({ tid }: { tid: string }) {
     if (res.statusCode === 200) {
       setTeam(res.data.team);
     } else {
-      Toaster.error(res.data?.message || SERVER_ERROR);
+      const message = res.data?.message;
+      Toaster.error(message || SERVER_ERROR);
+
+      if (isAccessDeniedError(message)) window.location.assign('/');
     }
   };
 
   useEffect(() => {
-    const role = getHackathonRole();
-    if (role != 'admin' && role != 'org') window.location.replace('/?action=sync');
+    if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
     else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
     else getTeam();

@@ -17,9 +17,9 @@ export const AppSidebar = ({ hackathonName, hackathonTagline, tracks, participan
   const router = useRouter();
 
   return (
-    <div className={'h-base w-1/6 max-lg:w-3/12 max-md:5/12 bg-white'}>
-      <div className={'flex flex-col justify-between h-base'}>
-        <div className={'h-full px-5'}>
+    <div className={'h-base w-1/6 max-md:w-full md:bg-white max-md:mt-16'}>
+      <div className={'flex flex-col justify-between md:h-base'}>
+        <div className={'h-full px-5 max-md:hidden'}>
           <div className={'pt-5 py-2.5 space-y-2'}>
             <div className={'text-3xl text-wrap font-bold gradient-text-3 font-primary max-md:text-2xl'}>{hackathonName}</div>
             <div className={'text-black text-sm mt-2 font-primary max-md:text-sm'}>{hackathonTagline}</div>

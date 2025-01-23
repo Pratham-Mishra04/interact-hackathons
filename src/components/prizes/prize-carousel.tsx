@@ -177,13 +177,12 @@ export interface PrizeCardProps {
 }
 
 export const Prize = ({
-                        // index,
-                        prize,
-                        isCurrent,
-                        setCurrentPrize,
-                        // setInFrameIndex
-}: PrizeCardProps) => {
-
+  // index,
+  prize,
+  isCurrent,
+  setCurrentPrize,
+}: // setInFrameIndex
+PrizeCardProps) => {
   return (
     <div
       onClick={() => {
@@ -209,7 +208,7 @@ export const Prize = ({
       )}
       {isCurrent && <BorderBeam />}
       {prize.hackathonTrackID && (
-        <div className={'absolute px-2 py-0.5 top-1 left-1 text-white bg-[#00EA41] text-xs rounded-full w-fit'}>{prize.track?.title}</div>
+        <div className={'absolute px-2 py-1 top-2 left-2 text-white bg-primary_black text-xs rounded-full w-fit'}>{prize.track?.title}</div>
       )}
       <div className={'flex flex-col'}>
         <p className={'text-2xl max-md:text-lg font-primary text-center font-semibold'}>{prize.title}</p>
