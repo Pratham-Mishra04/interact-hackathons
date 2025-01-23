@@ -34,8 +34,7 @@ export default function Page({ tid }: { tid: string }) {
   };
 
   useEffect(() => {
-    const role = getHackathonRole();
-    if (role != 'admin' && role != 'org') window.location.replace('/?action=sync');
+    if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
     else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
     else getTeam();

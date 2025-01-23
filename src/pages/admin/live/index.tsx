@@ -18,7 +18,6 @@ import { useRouter } from 'next/router';
 const Index = () => {
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
   const [nextRound, setNextRound] = useState<HackathonRound | null>(null);
-  const [clickedOnEndHackathon, setClickedOnEndHackathon] = useState(false);
   const [announcementReloadTrigger, setAnnouncementReloadTrigger] = useState(false);
 
   const hackathon = useSelector(currentHackathonSelector);
@@ -31,14 +30,17 @@ const Index = () => {
     if (res.statusCode == 200) {
       setCurrentRound(res.data.round);
       setNextRound(res.data.nextRound);
+
+      if (!res.data.round && res.data.nextRound && res.data.nextRound.index == 0) {
+        window.location.replace('/admin/stage');
+      }
     } else {
       Toaster.error(res.data.message || SERVER_ERROR);
     }
   };
 
   useEffect(() => {
-    const role = getHackathonRole();
-    if (role != 'admin' && role != 'org') window.location.replace('/?action=sync');
+    if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
     else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
     else getCurrentRound();

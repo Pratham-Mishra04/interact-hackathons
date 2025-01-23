@@ -37,7 +37,6 @@ const Ended = () => {
     const res = await getHandler(`/hackathons/${hackathon.id}/participants/announcements/`);
     if (res.statusCode == 200) {
       setAnnouncements(res.data.announcements);
-      console.log(res.data.announcements);
     } else {
       Toaster.error(res.data.message || SERVER_ERROR);
     }
@@ -46,16 +45,12 @@ const Ended = () => {
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
-      const role = getHackathonRole();
-      if (role != 'participant') window.location.replace('/?action=sync');
+      if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
+        window.location.replace('/participant/team');
+      else if (!hackathon.isEnded) window.location.replace('/participant/live');
       else {
-        if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-          window.location.replace('/participant/team');
-        else if (!hackathon.isEnded) window.location.replace('/participant/live');
-        else {
-          getTeam();
-          fetchAnnouncements();
-        }
+        getTeam();
+        fetchAnnouncements();
       }
     }
   }, []);

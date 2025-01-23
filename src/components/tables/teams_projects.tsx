@@ -100,7 +100,9 @@ const TeamProjectsTable = () => {
     <div className="flex flex-col gap-4">
       {!hackathon.isEnded && role == 'admin' && (
         <>
-          <NewTeam tracks={tracks} />
+          <div className="w-full flex justify-end">
+            <NewTeam tracks={tracks} />
+          </div>
           <AddTeamMember show={clickedOnAddMember} setShow={setClickedOnAddMember} team={clickedTeam} />
         </>
       )}

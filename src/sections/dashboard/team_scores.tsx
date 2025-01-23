@@ -225,7 +225,7 @@ const RoundScorecard = ({
       <div className="w-full p-3 bg-white text-primary_text rounded-md flex flex-col md:flex-row md:justify-between gap-4">
         <span className="w-full flex flex-col md:flex-row items-center gap-2">
           <Trophy size={32} />
-          <h1 className="text-xl md:text-3xl font-semibold text-nowrap">Overall Score</h1>
+          <h1 className="text-xl md:text-2xl font-semibold text-nowrap">Overall Round Score</h1>
           {isJudgingAllowed ? (
             <>
               <div className="flex-center gap-4">

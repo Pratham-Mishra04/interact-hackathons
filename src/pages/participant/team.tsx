@@ -52,18 +52,14 @@ const Team = () => {
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
-      const role = getHackathonRole();
-      if (role != 'participant') window.location.replace('/?action=sync');
-      else {
-        const now = moment();
-        if (hackathon.isEnded) window.location.replace('/participant/ended');
-        else if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime))) {
-          if (now.isAfter(hackathon.startTime)) window.location.replace('/participant/live');
-          else window.location.replace('/');
-        } else {
-          getTeam();
-          getTracks();
-        }
+      const now = moment();
+      if (hackathon.isEnded) window.location.replace('/participant/ended');
+      else if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime))) {
+        if (now.isAfter(hackathon.startTime)) window.location.replace('/participant/live');
+        else window.location.replace('/');
+      } else {
+        getTeam();
+        getTracks();
       }
     }
   }, []);

@@ -27,7 +27,7 @@ const Live = () => {
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       if (!res.data.round && res.data.nextRound && res.data.nextRound.index == 0) {
         window.location.replace('/participant/stage');
@@ -41,7 +41,7 @@ const Live = () => {
 
   const getTeam = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       const team = res.data.team;
       if (!team) Toaster.error('Team Not Found');
@@ -57,16 +57,12 @@ const Live = () => {
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
-      const role = getHackathonRole();
-      if (role != 'participant') window.location.replace('/?action=sync');
+      if (hackathon.isEnded) window.location.replace('/participant/ended');
+      else if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
+        window.location.replace('/participant/team');
       else {
-        if (hackathon.isEnded) window.location.replace('/participant/ended');
-        else if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-          window.location.replace('/participant/team');
-        else {
-          getTeam();
-          getCurrentRound();
-        }
+        getTeam();
+        getCurrentRound();
       }
     }
   }, []);

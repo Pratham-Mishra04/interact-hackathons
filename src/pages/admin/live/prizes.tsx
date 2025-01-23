@@ -14,6 +14,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import { HackathonPrize, HackathonTeam, HackathonTrack } from '@/types';
 import { initialHackathonPrize } from '@/types/initials';
 import postHandler from '@/handlers/post_handler';
+import moment from 'moment';
 
 export default function PrizeDistributionPage() {
   const dispatch = useDispatch();
@@ -143,9 +144,9 @@ export default function PrizeDistributionPage() {
   );
 
   useEffect(() => {
-    const role = getHackathonRole();
-    if (role != 'admin' && role != 'org') window.location.replace('/?action=sync');
+    if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
+    else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
     else {
       (async () => {
         await getHackathonAnalytics();

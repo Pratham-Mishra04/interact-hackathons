@@ -39,7 +39,9 @@ const NewTeam = ({ tracks }: Props) => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger>
-        <Button>Add Team</Button>
+        <Button className="w-40" variant="outline">
+          Add a New Team
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

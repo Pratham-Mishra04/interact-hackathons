@@ -100,7 +100,9 @@ const TeamsTable = ({ showAllFilters = true }) => {
     <div className="flex flex-col gap-4">
       {role == 'admin' && (
         <>
-          <NewTeam tracks={tracks} />
+          <div className="w-full flex justify-end">
+            <NewTeam tracks={tracks} />
+          </div>
           <AddTeamMember show={clickedOnAddMember} setShow={setClickedOnAddMember} team={clickedTeam} />
         </>
       )}
