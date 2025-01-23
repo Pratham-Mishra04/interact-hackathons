@@ -1,4 +1,3 @@
-import HackathonCard from '@/components/hackathon_card';
 import { Button } from '@/components/ui/button';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
@@ -21,80 +20,8 @@ import { EffectCoverflow } from 'swiper/modules';
 import "swiper/css"
 import "swiper/css/effect-coverflow"
 import Link from 'next/link';
-import EventCard from '@/components/event_card';
-
-const dummyUser: User = {
-  id: "user123",
-  name: "Dumbo",
-  tagline: "Just chilling",
-  email: "dummyuser@example.com",
-  username: "dummy_user",
-  fullName: "Dummy User",
-  profilePic: "https://avatars.githubusercontent.com/u/148696092?v=4",
-  bio: "A passionate developer exploring the world of technology.",
-  github: "https://github.com/dummyuser",
-  linkedin: "https://linkedin.com/in/dummyuser",
-  twitter: "https://twitter.com/dummyuser",
-  instagram: "https://instagram.com/dummyuser",
-  website: "https://dummyuser.dev",
-  tags: ["JavaScript", "React", "Node.js"],
-  memberSince: new Date("2020-01-01"),
-  graduationYear: 2025,
-  followingCount: 100,
-  followersCount: 200,
-  noOfProjects: 5,
-  noOfHackathons: 3,
-  noOfAchievements: 2,
-  noOfPublications: 1,
-  achievements: ["Best Hackathon Project 2023", "Published Research on AI"],
-  profile: {
-    id: "profile123",
-    userID: "user123",
-    achievements: [
-      { id: "achieve1", title: "Hackathon Winner", date: "2023-10-15", description: "Won first place in the ABC hackathon." },
-      { id: "achieve2", title: "Open Source Contributor", date: "2024-03-01", description: "Contributed to XYZ open-source project." },
-    ],
-    school: "XYZ High School",
-    degree: "Bachelor of Science in Computer Science",
-    yearOfGraduation: 2025,
-    description: "A passionate developer looking to collaborate on innovative tech projects.",
-    areasOfCollaboration: ["Web Development", "Machine Learning", "Open Source Contributions"],
-    hobbies: ["Coding", "Reading", "Gaming"],
-    location: "New York, USA",
-    phoneNo: "+1 123-456-7890",
-    email: "johndoe@example.com",
-  },
-  projects: [
-    {
-      id: "project1",
-      name: "Portfolio Website",
-      description: "A personal portfolio showcasing my skills and projects.",
-      tags: ["HTML", "CSS", "JavaScript"],
-      image: USER_PROFILE_PIC_URL,
-      githubLink: USER_PROFILE_PIC_URL,
-      liveLink: "https://dummyuser.dev",
-      createdAt: new Date("2021-05-10"),
-      noOfLikes: 50,
-      noOfComments: 10,
-    },
-  ],
-  hackathons: [
-    {
-      id: "hackathon1",
-      title: "Global Hack 2023",
-      description: "A global hackathon focused on solving real-world problems.",
-      tags: ["AI", "Blockchain"],
-      organizationID: "org123",
-      startTime: new Date("2023-06-10T10:00:00Z"),
-      endTime: new Date("2023-06-12T18:00:00Z"),
-      location: "Online",
-      createdAt: new Date("2023-05-01"),
-      noLikes: 150,
-      noComments: 30,
-      noViews: 1000,
-    },
-  ],
-};
+import { HackathonCard } from '@/components/event_card';
+import { initialUser } from '@/types/initials';
 
 interface LiveCard {
   text: string,
@@ -115,6 +42,7 @@ const Index = () => {
   const [adminHackathons, setAdminHackathons] = useState<Hackathon[]>([]);
   const [orgHackathons, setOrgHackathons] = useState<Hackathon[]>([]);
   const [hackathonFilter, setHackathonFilter] = useState<HackathonType>(HackathonType.DEFAULT);
+  const [userProfile, setUserProfile] = useState<User>(initialUser);
 
   const fetchHackathons = async (URL: string, setter: React.Dispatch<React.SetStateAction<Hackathon[]>>) => {
     const res = await getHandler(URL);
@@ -125,6 +53,15 @@ const Index = () => {
     }
   };
 
+  const fetchUserProfile = async ()=>{
+    const res = await getHandler("/users/me");
+    if (res.statusCode == 200) {
+      setUserProfile(res.data.user);
+    } else {
+      Toaster.error(res.data.message || SERVER_ERROR);
+    }
+  }
+
   const userStateSynchronizer = useUserStateSynchronizer();
 
   const user = useSelector(userSelector);
@@ -133,6 +70,7 @@ const Index = () => {
     fetchHackathons('/hackathons/me', setRegisteredHackathons);
     fetchHackathons('/hackathons/admin/me', setAdminHackathons);
     fetchHackathons('/hackathons/org/me', setOrgHackathons);
+    fetchUserProfile();
   }, []);
 
   useEffect(() => {
@@ -176,7 +114,7 @@ const Index = () => {
 
         <div className={"w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 px-14 max-md:px-7 mt-5"}>
           <div className={"w-full"}>
-            <UserInfo user={dummyUser} />
+            <UserInfo user={userProfile} />
           </div>
           <div className={"w-2/5 max-lg:w-full"}>
             <LiveOnInteract cards={dummyLiveCards} />
@@ -186,37 +124,37 @@ const Index = () => {
         <div className={"w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 px-14 max-md:px-7 mt-5 overflow-hidden"}>
           <div className={"flex flex-col gap-2 w-full"}>
             <div className={"flex gap-2"}>
-              <HackathonFilterItem
+              {registeredHackathons.length > 0 && <HackathonFilterItem
                 currentFilter={hackathonFilter}
                 setFilter={setHackathonFilter}
                 value={HackathonType.REGISTERED}
-              />
-              <HackathonFilterItem
+              />}
+              {adminHackathons.length > 0 && <HackathonFilterItem
                 currentFilter={hackathonFilter}
                 setFilter={setHackathonFilter}
                 value={HackathonType.ADMIN}
-              />
-              <HackathonFilterItem
+              />}
+              {orgHackathons.length > 0 && <HackathonFilterItem
                 currentFilter={hackathonFilter}
                 setFilter={setHackathonFilter}
                 value={HackathonType.ORG}
-              />
+              />}
             </div>
-            <div className={"w-full bg-slate-100 h-[30rem] overflow-y-auto overflow-x-hidden pr-5 flex justify-start rounded-xl"}>
+            <div className={"w-full h-[30rem] overflow-y-auto overflow-x-hidden pr-5 flex justify-start rounded-xl"}>
               <div className={"grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-6"}>
                 {hackathonFilter == HackathonType.REGISTERED && registeredHackathons.length > 0 && (
                   registeredHackathons.map(hackathon => (
-                    <div className={"max-w-80"} key={hackathon.id}><EventCard event={hackathon} /></div>
+                    <div className={"max-w-80"} key={hackathon.id}><HackathonCard hackathon={hackathon} /></div>
                   ))
                 )}
                 {hackathonFilter == HackathonType.ADMIN && adminHackathons.length > 0 && (
                   adminHackathons.map(hackathon => (
-                    <div className={"max-w-80"} key={hackathon.id}><EventCard event={hackathon} /></div>
+                    <div className={"max-w-80"} key={hackathon.id}><HackathonCard hackathon={hackathon} /></div>
                   ))
                 )}
                 {hackathonFilter == HackathonType.ORG && orgHackathons.length > 0 && (
                   orgHackathons.map(hackathon => (
-                    <div className={"max-w-80"} key={hackathon.id}><EventCard event={hackathon} /></div>
+                    <div className={"max-w-80"} key={hackathon.id}><HackathonCard hackathon={hackathon} /></div>
                   ))
                 )}
               </div>
@@ -225,43 +163,45 @@ const Index = () => {
 
             </div>
           </div>
-          <div></div>
-        </div>
-
-        <div className="w-full md:w-[95%] mx-auto h-full flex flex-col gap-8 py-8">
-          <div className="w-full flex flex-col gap-8 p-4">
-            {registeredHackathons && registeredHackathons.length > 0 && (
-              <div className="w-full flex flex-col">
-                <div className="text-lg md:text-xl px-4 py-1 rounded-t-xl font-medium bg-white text-primary_text w-fit">Registered Hackathons</div>
-                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-3 rounded-xl rounded-tl-none">
-                  {registeredHackathons.map(hackathon => (
-                    <HackathonCard key={hackathon.id} hackathon={hackathon} />
-                  ))}
-                </div>
-              </div>
-            )}
-            {adminHackathons && adminHackathons.length > 0 && (
-              <div className="w-full flex flex-col">
-                <div className="text-lg md:text-xl px-4 py-1 rounded-t-xl font-medium bg-white text-primary_text w-fit">Admin Hackathons</div>
-                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-3 rounded-xl rounded-tl-none">
-                  {adminHackathons.map(hackathon => (
-                    <HackathonCard key={hackathon.id} hackathon={hackathon} isAdmin={true} />
-                  ))}
-                </div>
-              </div>
-            )}
-            {orgHackathons && orgHackathons.length > 0 && (
-              <div className="w-full flex flex-col">
-                <div className="text-lg md:text-xl px-4 py-1 rounded-t-xl font-medium bg-white text-primary_text w-fit">Org Hackathons</div>
-                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-3 rounded-xl rounded-tl-none">
-                  {orgHackathons.map(hackathon => (
-                    <HackathonCard key={hackathon.id} hackathon={hackathon} isAdmin={true} />
-                  ))}
-                </div>
-              </div>
-            )}
+          <div>
+            {/*{People to follow}*/}
           </div>
         </div>
+
+        {/*<div className="w-full md:w-[95%] mx-auto h-full flex flex-col gap-8 py-8">*/}
+        {/*  <div className="w-full flex flex-col gap-8 p-4">*/}
+        {/*    {registeredHackathons && registeredHackathons.length > 0 && (*/}
+        {/*      <div className="w-full flex flex-col">*/}
+        {/*        <div className="text-lg md:text-xl px-4 py-1 rounded-t-xl font-medium bg-white text-primary_text w-fit">Registered Hackathons</div>*/}
+        {/*        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-3 rounded-xl rounded-tl-none">*/}
+        {/*          {registeredHackathons.map(hackathon => (*/}
+        {/*            <HackathonCard key={hackathon.id} hackathon={hackathon} />*/}
+        {/*          ))}*/}
+        {/*        </div>*/}
+        {/*      </div>*/}
+        {/*    )}*/}
+        {/*    {adminHackathons && adminHackathons.length > 0 && (*/}
+        {/*      <div className="w-full flex flex-col">*/}
+        {/*        <div className="text-lg md:text-xl px-4 py-1 rounded-t-xl font-medium bg-white text-primary_text w-fit">Admin Hackathons</div>*/}
+        {/*        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-3 rounded-xl rounded-tl-none">*/}
+        {/*          {adminHackathons.map(hackathon => (*/}
+        {/*            <HackathonCard key={hackathon.id} hackathon={hackathon} isAdmin={true} />*/}
+        {/*          ))}*/}
+        {/*        </div>*/}
+        {/*      </div>*/}
+        {/*    )}*/}
+        {/*    {orgHackathons && orgHackathons.length > 0 && (*/}
+        {/*      <div className="w-full flex flex-col">*/}
+        {/*        <div className="text-lg md:text-xl px-4 py-1 rounded-t-xl font-medium bg-white text-primary_text w-fit">Org Hackathons</div>*/}
+        {/*        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-3 rounded-xl rounded-tl-none">*/}
+        {/*          {orgHackathons.map(hackathon => (*/}
+        {/*            <HackathonCard key={hackathon.id} hackathon={hackathon} isAdmin={true} />*/}
+        {/*          ))}*/}
+        {/*        </div>*/}
+        {/*      </div>*/}
+        {/*    )}*/}
+        {/*  </div>*/}
+        {/*</div>*/}
       </div>
     </BaseWrapper>
   );
@@ -281,8 +221,10 @@ const HackathonFilterItem = ({
   return (
     <div
       onClick={() => setFilter(value)}
-      className={`p-2 px-3 bg-white rounded-lg cursor-pointer shadow-sm ${
-        currentFilter == value && "bg-sky-400 text-white shadow-none font-medium"
+      className={`p-2 px-3 rounded-lg cursor-pointer shadow-sm transition-all duration-300 ${
+        currentFilter === value 
+          ? "bg-sky-400 text-white shadow-none font-medium"
+          : "bg-white"
       } ${className}`}
     >
       {value}
@@ -341,7 +283,7 @@ const LiveOnInteract = ({
 
   return (
     <div className={"w-full h-full p-2 pb-5 rounded-xl"} style={{
-      background: "radial-gradient(circle, rgba(36,45,85,1) 0%, rgba(0,0,0,1) 100%)",
+      background: "radial-gradient(circle, rgba(25,78,145,1) 0%, rgba(13,19,43,1) 100%)",
     }}>
     <div className={"text-white"}>Live on Interact</div>
       <Swiper
@@ -378,9 +320,9 @@ const UserInfo = ({
   return (
     <div className={"w-full bg-white flex flex-col gap-2 p-4 rounded-xl"}>
       <div className={"flex w-full gap-10 justify-between max-lg:flex-col max-lg:gap-2"}>
-        <div className={"flex gap-6 w-full lg:w-1/3 justify-around"}>
+        <div className={"flex gap-6 w-full lg:w-1/2 justify-around"}>
           <Image
-            src={user.profilePic}
+            src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
             alt={"user-profile-pic"}
             width={152}
             height={152}
@@ -391,13 +333,14 @@ const UserInfo = ({
             <div className={"text-lg"}>{user.tagline}</div>
           </div>
         </div>
-        <div className={"border border-neutral-600 border-dotted p-2 rounded-xl w-full min-h-32 lg:w-2/3 text-wrap shrink"}>
+        <div className={"border border-neutral-600 border-dotted p-2 rounded-xl w-full min-h-32 lg:w-1/2 text-wrap shrink"}>
           {user.bio}
+          {!user.bio && <span className={"text-neutral-500"}>Your bio</span>}
         </div>
       </div>
       <div className={"border border-neutral-600 border-dotted shadow-sm rounded-xl flex flex-wrap p-2 gap-2"}>
-        <Tag icon={<GraduationCapIcon className={"size-5"} strokeWidth={1.5} />} text={user.profile.school} />
-        <Tag icon={<MapPinIcon className={"size-4"} strokeWidth={1.5} />} text={user.profile.location} />
+        {user.profile.school !== "" && <Tag icon={<GraduationCapIcon className={"size-5"} strokeWidth={1.5} />} text={user.profile.school} />}
+        {user.profile.location !== "" && <Tag icon={<MapPinIcon className={'size-4'} strokeWidth={1.5} />} text={user.profile.location} />}
         {user.tags.map(tag => (
           <Tag text={tag} key={tag} />
         ))}
