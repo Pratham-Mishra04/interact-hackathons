@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import { setCurrentHackathon } from '@/slices/hackathonSlice';
 import { formatPrice } from '@/utils/funcs/misc';
 import { Id } from 'react-toastify';
+import { EVENT_PIC_HASH_DEFAULT } from '@/config/constants';
 
 interface Props {
   event: Event;
@@ -200,7 +201,9 @@ export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; is
           height={200}
           src={`${EVENT_PIC_URL}/${hackathon.coverPic}`}
           alt="Event Pic"
-          className="w-full h-48 rounded-2xl overflow-hidden mb-4"
+          className="w-full rounded-2xl mb-4"
+          placeholder="blur"
+          blurDataURL={hackathon.blurHash || EVENT_PIC_HASH_DEFAULT}
         />
         <div className="absolute bottom-[-10px] -left-4">
           <UserHoverCard

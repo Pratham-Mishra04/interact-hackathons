@@ -4,7 +4,6 @@ import { AppSidebar } from '@/components/prizes/app-sidebar';
 import { TeamAccordianItem } from '@/components/prizes/team-accordian';
 import PrizesCarousel from '@/components/prizes/prize-carousel';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { ORG_URL } from '@/config/routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentHackathonSelector, markHackathonEnded } from '@/slices/hackathonSlice';
