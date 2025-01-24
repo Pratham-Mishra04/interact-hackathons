@@ -9,7 +9,13 @@ import AnnouncementCard from '@/components/announcement_card';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 
-const ViewAnnouncements = ({ triggerReload }: { triggerReload: boolean }) => {
+const ViewAnnouncements = ({
+ triggerReload, trigger, triggerClass
+}: {
+  triggerReload: boolean,
+  trigger?: React.ReactNode,
+  triggerClass?: string,
+}) => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   const hackathon = useSelector(currentHackathonSelector);
@@ -29,8 +35,8 @@ const ViewAnnouncements = ({ triggerReload }: { triggerReload: boolean }) => {
 
   return (
     <Sheet>
-      <SheetTrigger className="w-1/2">
-        <Button className="w-full bg-primary_text">View All Announcements</Button>
+      <SheetTrigger className={`w-1/2 h-full ${triggerClass}`}>
+        {trigger || <Button className="w-full button-gradient">View All Announcements</Button> }
       </SheetTrigger>
       <SheetContent className="w-[400px] space-y-6">
         <SheetHeader>

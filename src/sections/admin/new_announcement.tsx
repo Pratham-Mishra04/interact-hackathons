@@ -10,7 +10,13 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import Editor from '@/components/editor';
 import { Button } from '@/components/ui/button';
 
-const NewAnnouncement = ({ setTriggerReload }: { setTriggerReload: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const NewAnnouncement = ({
+                           setTriggerReload,
+  triggerClass
+}: {
+  setTriggerReload: React.Dispatch<React.SetStateAction<boolean>>,
+  triggerClass?: string,
+}) => {
   const [content, setContent] = useState<string>('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -45,8 +51,8 @@ const NewAnnouncement = ({ setTriggerReload }: { setTriggerReload: React.Dispatc
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger className="w-1/2">
-        <Button className="w-full bg-primary_text">Create New Announcement</Button>
+      <DialogTrigger className={`w-1/2 ${triggerClass} `}>
+        <Button className="w-full button-gradient">Create New Announcement</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

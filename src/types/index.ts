@@ -774,6 +774,8 @@ export interface Hackathon {
   isEnded: boolean;
   eventID: string;
   history: HackathonHistory[];
+  // event_card
+  prizes: HackathonPrize[];
 }
 
 export interface HackathonTrack {
