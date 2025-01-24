@@ -49,7 +49,7 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchHackathons = async (URL: string, setter: React.Dispatch<React.SetStateAction<Hackathon[]>>) => {
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       setter(res.data.hackathons || []);
     } else {
@@ -58,7 +58,7 @@ const Index = () => {
   };
 
   const fetchUserProfile = async () => {
-    const res = await getHandler('/users/me');
+    const res = await getHandler('/users/me', undefined, true);
     if (res.statusCode == 200) {
       setUserProfile(res.data.user);
       setLoading(false);
