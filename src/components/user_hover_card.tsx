@@ -10,10 +10,7 @@ const UserHoverCard = ({ trigger, user }: { trigger: ReactNode; user: User }) =>
     <HoverCard>
       <HoverCardTrigger>{trigger}</HoverCardTrigger>
       <HoverCardContent className="w-80">
-        <Link
-          href={`/${user.isOrganization ? 'organisations' : 'users'}/${user.username}`}
-          className="flex justify-between space-x-4"
-        >
+        <Link href={`/${user.isOrganization ? 'organisations' : 'users'}/${user.username}`} className="flex justify-between space-x-4">
           <Image
             crossOrigin="anonymous"
             width={100}

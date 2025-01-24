@@ -12,7 +12,7 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Image from 'next/image';
-import { USER_PROFILE_PIC_URL } from '@/config/routes';
+import { EXPLORE_URL, FRONTEND_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import { FlagIcon, GraduationCapIcon, MapPinIcon } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow } from 'swiper/modules';
@@ -23,6 +23,7 @@ import { HackathonCard } from '@/components/event_card';
 import { initialUser } from '@/types/initials';
 import { motion } from 'motion/react';
 import FadeIn from '@/components/animation/fade-in';
+import UserCard from '@/components/common/user_card';
 
 interface LiveCard {
   text: string;
@@ -43,6 +44,7 @@ const Index = () => {
   const [orgHackathons, setOrgHackathons] = useState<Hackathon[]>([]);
   const [hackathonFilter, setHackathonFilter] = useState<HackathonType>(HackathonType.DEFAULT);
   const [userProfile, setUserProfile] = useState<User>(initialUser);
+  const [users, setUsers] = useState<User[]>([]);
 
   const fetchHackathons = async (URL: string, setter: React.Dispatch<React.SetStateAction<Hackathon[]>>) => {
     const res = await getHandler(URL);
@@ -92,12 +94,36 @@ const Index = () => {
     }
   }, [window.location.search]);
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   function handleLogout() {
     Cookies.remove('token');
     Cookies.remove('refresh_token');
     Cookies.remove('id');
     window.location.replace('/login');
   }
+
+  const fetchUsers = () => {
+    const URL = `${EXPLORE_URL}/users?order=trending&limit=5`;
+    getHandler(URL, undefined, true)
+      .then(res => {
+        if (res.statusCode === 200) {
+          const profileData: User[] = res.data.users || [];
+          setUsers(profileData.filter(u => u.id != user.id));
+        } else {
+          if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
+          else {
+            Toaster.error(SERVER_ERROR, 'error_toaster');
+          }
+        }
+      })
+      .catch(err => {
+        Toaster.error(SERVER_ERROR, 'error_toaster');
+      });
+  };
+
   return (
     <BaseWrapper>
       <div className="w-full bg-[#E1F1FF] min-h-base h-full">
@@ -112,7 +138,7 @@ const Index = () => {
           </Button>
         </div>
 
-        <div className={'w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 px-14 max-md:px-7 mt-5'}>
+        <div className={'w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 mt-5 px-14 max-md:px-7'}>
           <div className={'w-full'}>
             <FadeIn initialScale={1}>
               <UserInfo user={userProfile} />
@@ -123,8 +149,8 @@ const Index = () => {
           </div>
         </div>
 
-        <div className={'w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 px-14 max-md:px-7 mt-5 overflow-hidden'}>
-          <div className={'flex flex-col gap-2 w-full'}>
+        <div className={'w-full flex max-lg:flex-col gap-4 mt-5 px-14 max-md:px-7 pb-4'}>
+          <div className={'w-3/4 space-y-2'}>
             <FadeIn initialScale={1}>
               <div className={'flex gap-2'}>
                 {registeredHackathons.length > 0 && (
@@ -138,7 +164,7 @@ const Index = () => {
                 )}
               </div>
             </FadeIn>
-            <div className={'w-full h-[30rem] overflow-y-auto overflow-x-hidden pr-5 flex justify-start rounded-xl'}>
+            <div className={'w-full flex rounded-xl'}>
               <div className={'grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-6'}>
                 {hackathonFilter == HackathonType.REGISTERED &&
                   registeredHackathons.length > 0 &&
@@ -163,9 +189,17 @@ const Index = () => {
                   ))}
               </div>
             </div>
-            <div></div>
           </div>
-          <div>{/*{People to follow}*/}</div>
+          <div className="w-1/4">
+            <div className="w-full flex flex-col gap-2 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300 animate-fade_half sticky top-24 max-h-base overflow-y-auto">
+              <div className="w-fit text-2xl font-bold blue-text-gradient">Profiles to Follow</div>
+              <div className="w-full flex flex-col gap-2">
+                {users?.map(user => (
+                  <UserCard key={user.id} user={user} forTrending />
+                ))}
+              </div>
+            </div>{' '}
+          </div>
         </div>
       </div>
     </BaseWrapper>
@@ -233,50 +267,52 @@ const LiveCard = ({ card }: { card: LiveCard }) => {
 const LiveOnInteract = ({ cards }: { cards: LiveCard[] }) => {
   return (
     <div
-      className={'w-full h-full p-2 pb-5 rounded-xl'}
+      className={'w-full h-full py-4 rounded-xl flex flex-col justify-between gap-2'}
       style={{
         background: 'radial-gradient(circle, rgba(25,78,145,1) 0%, rgba(13,19,43,1) 100%)',
       }}
     >
-      {/* <div className={'text-white'}>Live on Interact</div> */}
-      <Swiper
-        modules={[EffectCoverflow]}
-        effect={'coverflow'}
-        grabCursor={true}
-        centeredSlides={true}
-        slidesPerView={3}
-        initialSlide={1}
-        coverflowEffect={{
-          rotate: 20,
-          stretch: 0,
-          depth: 100,
-          modifier: 2.5,
-          slideShadows: true,
-        }}
-        className={'max-w-[30rem]'}
-      >
-        {cards.map((card, index) => (
-          <SwiperSlide key={card.text}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.2 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                duration: 0.4,
-                delay: index * 0.1,
-              }}
-            >
-              <LiveCard card={card} />
-            </motion.div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      <div className={'w-fit mx-auto text-2xl font-semibold text-white'}>Live on Interact!</div>
+      <div className="w-full">
+        <Swiper
+          modules={[EffectCoverflow]}
+          effect={'coverflow'}
+          grabCursor={true}
+          centeredSlides={true}
+          slidesPerView={3}
+          initialSlide={1}
+          coverflowEffect={{
+            rotate: 20,
+            stretch: 0,
+            depth: 100,
+            modifier: 2.5,
+            slideShadows: true,
+          }}
+          className={'w-full'}
+        >
+          {cards.map((card, index) => (
+            <SwiperSlide key={card.text}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.2 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.4,
+                  delay: index * 0.1,
+                }}
+              >
+                <LiveCard card={card} />
+              </motion.div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
     </div>
   );
 };
 
 const UserInfo = ({ user }: { user: User }) => {
   return (
-    <div className={'w-full bg-white flex flex-col gap-2 p-4 rounded-xl'}>
+    <div className={'w-full h-full bg-white flex flex-col gap-4 p-4 rounded-xl'}>
       <div className={'flex w-full gap-10 justify-between max-lg:flex-col max-lg:gap-2'}>
         <div className={'flex gap-6 w-full lg:w-1/2 justify-around'}>
           <Image
@@ -284,16 +320,21 @@ const UserInfo = ({ user }: { user: User }) => {
             alt={'user-profile-pic'}
             width={152}
             height={152}
-            className={'w-40 h-40 rounded-xl'}
+            className={'w-32 h-32 rounded-full'}
           />
-          <div className={'w-full'}>
-            <div className={'text-2xl font-bold'}>{user.name}</div>
-            <div className={'text-lg'}>{user.tagline}</div>
+          <div className={'w-full flex flex-col gap-2 justify-between'}>
+            <div>
+              <div className={'text-2xl font-bold'}>{user.name}</div>
+              <div className={'text-lg'}>{user.tagline}</div>
+            </div>
+            <Link href={`${FRONTEND_URL}/users/${user.username}`} target="_blank">
+              <Button variant={'outline'}>Edit Profile</Button>
+            </Link>
           </div>
         </div>
         <div className={'border border-neutral-600 border-dotted p-2 rounded-xl w-full min-h-32 lg:w-1/2 text-wrap shrink'}>
           {user.bio}
-          {!user.bio && <span className={'text-neutral-500'}>Your bio</span>}
+          {!user.bio && <span className={'text-neutral-500'}>You haven&apos;t added your bio yet.</span>}
         </div>
       </div>
       <div className={'border border-neutral-600 border-dotted shadow-sm rounded-xl flex flex-wrap p-2 gap-2'}>
