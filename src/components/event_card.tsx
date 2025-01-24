@@ -203,7 +203,7 @@ export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; is
           alt="Event Pic"
           className="w-full rounded-2xl mb-4"
           placeholder="blur"
-          blurDataURL={hackathon.blurHash || EVENT_PIC_HASH_DEFAULT}
+          blurDataURL={hackathon.blurHash ? (hackathon.blurHash == 'no-hash' ? EVENT_PIC_HASH_DEFAULT : hackathon.blurHash) : EVENT_PIC_HASH_DEFAULT}
         />
         <div className="absolute bottom-[-10px] -left-4">
           <UserHoverCard
