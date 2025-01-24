@@ -24,6 +24,7 @@ import { initialUser } from '@/types/initials';
 import { motion } from 'motion/react';
 import FadeIn from '@/components/animation/fade-in';
 import UserCard from '@/components/common/user_card';
+import Loader from '@/components/common/loader';
 
 interface LiveCard {
   text: string;
@@ -45,6 +46,7 @@ const Index = () => {
   const [hackathonFilter, setHackathonFilter] = useState<HackathonType>(HackathonType.DEFAULT);
   const [userProfile, setUserProfile] = useState<User>(initialUser);
   const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchHackathons = async (URL: string, setter: React.Dispatch<React.SetStateAction<Hackathon[]>>) => {
     const res = await getHandler(URL);
@@ -59,6 +61,7 @@ const Index = () => {
     const res = await getHandler('/users/me');
     if (res.statusCode == 200) {
       setUserProfile(res.data.user);
+      setLoading(false);
     } else {
       Toaster.error(res.data.message || SERVER_ERROR);
     }
@@ -139,10 +142,14 @@ const Index = () => {
         </div>
 
         <div className={'w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 mt-5 px-14 max-md:px-7'}>
-          <div className={'w-full'}>
-            <FadeIn initialScale={1}>
-              <UserInfo user={userProfile} />
-            </FadeIn>
+          <div className={'w-3/5'}>
+            {loading ? (
+              <Loader />
+            ) : (
+              <FadeIn initialScale={1}>
+                <UserInfo user={userProfile} />
+              </FadeIn>
+            )}
           </div>
           <div className={'w-2/5 max-lg:w-full'}>
             <LiveOnInteract cards={dummyLiveCards} />
@@ -191,14 +198,16 @@ const Index = () => {
             </div>
           </div>
           <div className="w-1/4">
-            <div className="w-full flex flex-col gap-2 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300 animate-fade_half sticky top-24 max-h-base overflow-y-auto">
-              <div className="w-fit text-2xl font-bold blue-text-gradient">Profiles to Follow</div>
-              <div className="w-full flex flex-col gap-2">
-                {users?.map(user => (
-                  <UserCard key={user.id} user={user} forTrending />
-                ))}
+            {users && users.length > 0 && (
+              <div className="w-full flex flex-col gap-2 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300 animate-fade_half sticky top-24 max-h-base overflow-y-auto">
+                <div className="w-fit text-2xl font-bold blue-text-gradient">Profiles to Follow</div>
+                <div className="w-full flex flex-col gap-2">
+                  {users?.map(user => (
+                    <UserCard key={user.id} user={user} forTrending />
+                  ))}
+                </div>
               </div>
-            </div>{' '}
+            )}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Event, Hackathon, HackathonRound } from '@/types';
 import Image from 'next/image';
 import { EVENT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
@@ -18,6 +18,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { setCurrentHackathon } from '@/slices/hackathonSlice';
 import { formatPrice } from '@/utils/funcs/misc';
+import { Id } from 'react-toastify';
 
 interface Props {
   event: Event;
@@ -117,6 +118,8 @@ const LowerCardItem = ({ title, content }: { title: string; content: string }) =
 };
 
 export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; isAdmin?: boolean }) => {
+  const [mutex, setMutex] = useState(false);
+
   const router = useRouter();
 
   const getCurrentRound = async () => {
@@ -129,13 +132,14 @@ export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; is
     }
   };
 
-  const buildURL = (currentRound: HackathonRound, nextRound: HackathonRound) => {
+  const buildURL = (toasterID: Id, currentRound: HackathonRound, nextRound: HackathonRound) => {
     let URL = '';
     if (isAdmin) URL += 'admin';
     else URL += 'participant';
     switch (getHackathonStage(hackathon, true, currentRound, nextRound)) {
       case HACKATHON_NOT_STARTED:
         URL = '#';
+        Toaster.stopLoad(toasterID, "Hackathon hasn't started.", 0);
         break;
       case HACKATHON_TEAM_REGISTRATION:
         if (isAdmin) URL += '/teams';
@@ -151,15 +155,23 @@ export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; is
         URL += `/ended`;
         break;
     }
+
+    Toaster.stopLoad(toasterID, 'Hackathon loaded! Redirecting to dashboard...', 1);
     return URL;
   };
 
   const dispatch = useDispatch();
 
   const handleClick = async () => {
+    if (mutex) return;
+    setMutex(true);
+
+    const toaster = Toaster.startLoad('Fetching Hackathon details...');
+
     dispatch(setCurrentHackathon(hackathon));
     const [currentRound, nextRound] = (await getCurrentRound()) || [undefined, undefined];
-    router.push(buildURL(currentRound, nextRound));
+    router.push(buildURL(toaster, currentRound, nextRound));
+    setMutex(false);
   };
 
   const startDate = hackathon.startTime ? new Date(hackathon.startTime) : null;
