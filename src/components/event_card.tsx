@@ -8,10 +8,12 @@ import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import {
-  getHackathonStage, HACKATHON_COMPLETED, HACKATHON_LIVE,
+  getHackathonStage,
+  HACKATHON_COMPLETED,
+  HACKATHON_LIVE,
   HACKATHON_NOT_STARTED,
   HACKATHON_TEAM_ENDED,
-  HACKATHON_TEAM_REGISTRATION
+  HACKATHON_TEAM_REGISTRATION,
 } from '@/utils/funcs/hackathons';
 import { useDispatch } from 'react-redux';
 import { setCurrentHackathon } from '@/slices/hackathonSlice';
@@ -24,7 +26,7 @@ const getDurationInHours = (startTime: Date, endTime: Date) => {
   const start = new Date(startTime);
   const end = new Date(endTime);
   const durationMs = end.getTime() - start.getTime();
-  const durationHours = durationMs / (1000 * 60 * 60);// Convert milliseconds to hours
+  const durationHours = durationMs / (1000 * 60 * 60); // Convert milliseconds to hours
   return `${Math.ceil(durationHours)} hours`;
 };
 
@@ -88,10 +90,7 @@ const EventCard = ({ event }: Props) => {
             title={event.hackathonID ? 'Prize' : 'Duration'}
             content={event.hackathonID ? getPrizeAmount() : getDurationInHours(event.startTime, event.endTime)}
           />
-          <LowerCardItem
-            title={event.hackathonID ? 'Team' : 'Location'}
-            content={event.hackathonID ? getTeamSize() : event.location}
-          />
+          <LowerCardItem title={event.hackathonID ? 'Team' : 'Location'} content={event.hackathonID ? getTeamSize() : event.location} />
           <LowerCardItem title="Date" content={`${formattedDay} ${formattedMonth}`} />
         </div>
       </div>
@@ -108,14 +107,7 @@ const LowerCardItem = ({ title, content }: { title: string; content: string }) =
   );
 };
 
-export const HackathonCard = ({
- hackathon,
-  isAdmin,
-}: {
-  hackathon: Hackathon
-  isAdmin?: boolean
-}) => {
-
+export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; isAdmin?: boolean }) => {
   const router = useRouter();
 
   const getCurrentRound = async () => {
@@ -161,7 +153,6 @@ export const HackathonCard = ({
     router.push(buildURL(currentRound, nextRound));
   };
 
-
   const startDate = hackathon.startTime ? new Date(hackathon.startTime) : null;
   const formattedMonth = startDate ? new Intl.DateTimeFormat('en-US', { month: 'short' }).format(startDate) : 'N/A';
   const formattedDay = startDate ? startDate.getDate() : 'N/A';
@@ -178,7 +169,10 @@ export const HackathonCard = ({
   };
 
   return (
-    <div className="relative w-full max-w-md bg-white dark:bg-dark_primary_comp_hover rounded-3xl p-4 hover:shadow-xl transition-ease-300 m-2" onClick={handleClick}>
+    <div
+      className="relative w-full max-w-md bg-white dark:bg-dark_primary_comp_hover rounded-3xl p-4 hover:shadow-xl transition-ease-300 m-2 cursor-pointer"
+      onClick={handleClick}
+    >
       <div className="relative">
         <Image
           width={400}
@@ -215,13 +209,10 @@ export const HackathonCard = ({
 
         <div className="grid grid-cols-3 gap-4">
           <LowerCardItem
-            title={hackathon.prizes[0]?.amount ? 'Prize' : "Duration"}
-            content={hackathon.prizes[0]?.amount ? getPrizeAmount(): getDurationInHours(hackathon.startTime, hackathon.endTime)}
+            title={hackathon.prizes[0]?.amount ? 'Prize' : 'Duration'}
+            content={hackathon.prizes[0]?.amount ? getPrizeAmount() : getDurationInHours(hackathon.startTime, hackathon.endTime)}
           />
-          <LowerCardItem
-            title={'Team'}
-            content={getTeamSize()}
-          />
+          <LowerCardItem title={'Team'} content={getTeamSize()} />
           <LowerCardItem title="Date" content={`${formattedDay} ${formattedMonth}`} />
         </div>
       </div>

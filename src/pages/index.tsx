@@ -9,35 +9,33 @@ import Protect from '@/utils/wrappers/protect';
 import BaseWrapper from '@/wrappers/base';
 import { SignOut } from '@phosphor-icons/react';
 import Cookies from 'js-cookie';
-import React, { useCallback, useEffect, useRef, useState, Dispatch } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Image from 'next/image';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { FlagIcon, GraduationCapIcon, MapPinIcon } from 'lucide-react';
-
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow } from 'swiper/modules';
-import "swiper/css"
-import "swiper/css/effect-coverflow"
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
 import Link from 'next/link';
 import { HackathonCard } from '@/components/event_card';
 import { initialUser } from '@/types/initials';
-import { motion } from "motion/react"
+import { motion } from 'motion/react';
 import FadeIn from '@/components/animation/fade-in';
 
 interface LiveCard {
-  text: string,
-  linkText: string,
-  href: string,
+  text: string;
+  linkText: string;
+  href: string;
 }
 
 enum HackathonType {
-  REGISTERED ="Registered Hackathons",
-  ADMIN = "Admin Hackathons",
-  ORG = "Organisation Hackathons",
-  DEFAULT = "",
+  REGISTERED = 'Registered Hackathons',
+  ADMIN = 'Admin Hackathons',
+  ORG = 'Organisation Hackathons',
+  DEFAULT = '',
 }
-
 
 const Index = () => {
   const [registeredHackathons, setRegisteredHackathons] = useState<Hackathon[]>([]);
@@ -55,14 +53,14 @@ const Index = () => {
     }
   };
 
-  const fetchUserProfile = async ()=>{
-    const res = await getHandler("/users/me");
+  const fetchUserProfile = async () => {
+    const res = await getHandler('/users/me');
     if (res.statusCode == 200) {
       setUserProfile(res.data.user);
     } else {
       Toaster.error(res.data.message || SERVER_ERROR);
     }
-  }
+  };
 
   const userStateSynchronizer = useUserStateSynchronizer();
 
@@ -77,9 +75,9 @@ const Index = () => {
 
   useEffect(() => {
     if (hackathonFilter == HackathonType.DEFAULT) {
-      if (registeredHackathons.length > 0) setHackathonFilter(HackathonType.REGISTERED)
-      else if (adminHackathons.length > 0) setHackathonFilter(HackathonType.ADMIN)
-      else if (orgHackathons.length > 0) setHackathonFilter(HackathonType.ORG)
+      if (registeredHackathons.length > 0) setHackathonFilter(HackathonType.REGISTERED);
+      else if (adminHackathons.length > 0) setHackathonFilter(HackathonType.ADMIN);
+      else if (orgHackathons.length > 0) setHackathonFilter(HackathonType.ORG);
       else setHackathonFilter(HackathonType.DEFAULT);
     }
   }, [registeredHackathons, adminHackathons, orgHackathons]);
@@ -114,68 +112,60 @@ const Index = () => {
           </Button>
         </div>
 
-        <div className={"w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 px-14 max-md:px-7 mt-5"}>
-          <div className={"w-full"}>
-            <FadeIn initialScale={1}><UserInfo user={userProfile} /></FadeIn>
+        <div className={'w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 px-14 max-md:px-7 mt-5'}>
+          <div className={'w-full'}>
+            <FadeIn initialScale={1}>
+              <UserInfo user={userProfile} />
+            </FadeIn>
           </div>
-          <div className={"w-2/5 max-lg:w-full"}>
+          <div className={'w-2/5 max-lg:w-full'}>
             <LiveOnInteract cards={dummyLiveCards} />
           </div>
         </div>
 
-        <div className={"w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 px-14 max-md:px-7 mt-5 overflow-hidden"}>
-          <div className={"flex flex-col gap-2 w-full"}>
+        <div className={'w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 px-14 max-md:px-7 mt-5 overflow-hidden'}>
+          <div className={'flex flex-col gap-2 w-full'}>
             <FadeIn initialScale={1}>
-              <div className={"flex gap-2"}>
-                {registeredHackathons.length > 0 && <HackathonFilterItem
-                  currentFilter={hackathonFilter}
-                  setFilter={setHackathonFilter}
-                  value={HackathonType.REGISTERED}
-                />}
-                {adminHackathons.length > 0 && <HackathonFilterItem
-                  currentFilter={hackathonFilter}
-                  setFilter={setHackathonFilter}
-                  value={HackathonType.ADMIN}
-                />}
-                {orgHackathons.length > 0 && <HackathonFilterItem
-                  currentFilter={hackathonFilter}
-                  setFilter={setHackathonFilter}
-                  value={HackathonType.ORG}
-                />}
+              <div className={'flex gap-2'}>
+                {registeredHackathons.length > 0 && (
+                  <HackathonFilterItem currentFilter={hackathonFilter} setFilter={setHackathonFilter} value={HackathonType.REGISTERED} />
+                )}
+                {adminHackathons.length > 0 && (
+                  <HackathonFilterItem currentFilter={hackathonFilter} setFilter={setHackathonFilter} value={HackathonType.ADMIN} />
+                )}
+                {orgHackathons.length > 0 && (
+                  <HackathonFilterItem currentFilter={hackathonFilter} setFilter={setHackathonFilter} value={HackathonType.ORG} />
+                )}
               </div>
             </FadeIn>
-            <div className={"w-full h-[30rem] overflow-y-auto overflow-x-hidden pr-5 flex justify-start rounded-xl"}>
-              <div className={"grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-6"}>
-                {hackathonFilter == HackathonType.REGISTERED && registeredHackathons.length > 0 && (
-                  registeredHackathons.map((hackathon, index) => (
-                    <FadeIn key={hackathon.id} className={"max-w-80"} delay={index*0.02}>
+            <div className={'w-full h-[30rem] overflow-y-auto overflow-x-hidden pr-5 flex justify-start rounded-xl'}>
+              <div className={'grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-6'}>
+                {hackathonFilter == HackathonType.REGISTERED &&
+                  registeredHackathons.length > 0 &&
+                  registeredHackathons.map(hackathon => (
+                    <FadeIn key={hackathon.id} className={'max-w-80'}>
                       <HackathonCard hackathon={hackathon} />
                     </FadeIn>
-                  ))
-                )}
-                {hackathonFilter == HackathonType.ADMIN && adminHackathons.length > 0 && (
-                  adminHackathons.map((hackathon, index) => (
-                    <FadeIn key={hackathon.id} className={"max-w-80"} delay={index*0.02}>
+                  ))}
+                {hackathonFilter == HackathonType.ADMIN &&
+                  adminHackathons.length > 0 &&
+                  adminHackathons.map(hackathon => (
+                    <FadeIn key={hackathon.id} className={'max-w-80'}>
                       <HackathonCard hackathon={hackathon} isAdmin />
                     </FadeIn>
-                  ))
-                )}
-                {hackathonFilter == HackathonType.ORG && orgHackathons.length > 0 && (
-                  orgHackathons.map((hackathon, index) => (
-                    <FadeIn key={hackathon.id} className={"max-w-80"} delay={index*0.02}>
+                  ))}
+                {hackathonFilter == HackathonType.ORG &&
+                  orgHackathons.length > 0 &&
+                  orgHackathons.map(hackathon => (
+                    <FadeIn key={hackathon.id} className={'max-w-80'}>
                       <HackathonCard hackathon={hackathon} isAdmin />
                     </FadeIn>
-                  ))
-                )}
+                  ))}
               </div>
             </div>
-            <div>
-
-            </div>
+            <div></div>
           </div>
-          <div>
-            {/*{People to follow}*/}
-          </div>
+          <div>{/*{People to follow}*/}</div>
         </div>
       </div>
     </BaseWrapper>
@@ -186,84 +176,72 @@ const HackathonFilterItem = ({
   currentFilter,
   setFilter,
   value,
-  className
-}:{
-  currentFilter: HackathonType,
-  setFilter: React.Dispatch<React.SetStateAction<HackathonType>>,
-  value: HackathonType
-  className?: string,
-})=>{
+  className,
+}: {
+  currentFilter: HackathonType;
+  setFilter: React.Dispatch<React.SetStateAction<HackathonType>>;
+  value: HackathonType;
+  className?: string;
+}) => {
   return (
     <div
       onClick={() => setFilter(value)}
       className={`p-2 px-3 rounded-lg cursor-pointer shadow-sm transition-all duration-300 ${
-        currentFilter === value 
-          ? "bg-sky-400 text-white shadow-none font-medium"
-          : "bg-white"
+        currentFilter === value ? 'bg-sky-400 text-white shadow-none font-medium' : 'bg-white'
       } ${className}`}
     >
       {value}
     </div>
-  )
-}
+  );
+};
 
-const Tag = ({
-               icon,
-               text
-             }: {
-  icon?: React.ReactNode,
-  text: string
-}) => {
+const Tag = ({ icon, text }: { icon?: React.ReactNode; text: string }) => {
   return (
-    <span
-      className={'flex justify-between items-center px-3.5 py-0.5 text-sm gap-2 border border-dotted border-neutral-600 rounded-full'}>
+    <span className={'flex justify-between items-center px-3.5 py-0.5 text-sm gap-2 border border-dotted border-neutral-600 rounded-full'}>
       {icon}
       <span>{text}</span>
     </span>
-  )
-}
+  );
+};
 
 const dummyLiveCards: LiveCard[] = [
-  { text: "550+", linkText: "Projects", href: "/" },
-  { text: "2.5k", linkText: "Active Users", href: "/" },
-  { text: "10+", linkText: "Hackathons", href: "/" },
-]
+  { text: '550+', linkText: 'Projects', href: '/' },
+  { text: '2.5k', linkText: 'Active Users', href: '/' },
+  { text: '10+', linkText: 'Hackathons', href: '/' },
+];
 
-const LiveCard = ({
-  card
-}: {
-  card: LiveCard
-})=>{
+const LiveCard = ({ card }: { card: LiveCard }) => {
   return (
-    <div className={"size-[11rem] rounded-xl text-white shadow-xl flex justify-center items-center"} style={{
-      // background: rgb(5,17,88);
-      background: "radial-gradient(circle, rgba(57,141,247,1) 0%, rgba(27,66,204,1) 100%)",
-    }}>
-      <div className={"flex flex-col justify-center gap-2"}>
-        <div className={"text-center text-2xl font-bold"}>{card.text}</div>
-        <Link className={"border border-white rounded-full p-2 px-3 flex items-center gap-1.5"} href={card.href}>
-          <FlagIcon fill={"white"} className={"size-3.5 mt-0.5"} />
-          <p className={"text-sm"}>{card.linkText}</p>
+    <div
+      className={'size-[11rem] rounded-xl text-white shadow-xl flex justify-center items-center'}
+      style={{
+        // background: rgb(5,17,88);
+        background: 'radial-gradient(circle, rgba(57,141,247,1) 0%, rgba(27,66,204,1) 100%)',
+      }}
+    >
+      <div className={'flex flex-col justify-center gap-2'}>
+        <div className={'text-center text-2xl font-bold'}>{card.text}</div>
+        <Link className={'border border-white rounded-full p-2 px-3 flex items-center gap-1.5'} href={card.href}>
+          <FlagIcon fill={'white'} className={'size-3.5 mt-0.5'} />
+          <p className={'text-sm'}>{card.linkText}</p>
         </Link>
       </div>
     </div>
-  )
-}
+  );
+};
 
-const LiveOnInteract = ({
-  cards
-}: {
-  cards: LiveCard[]
-})=>{
-
+const LiveOnInteract = ({ cards }: { cards: LiveCard[] }) => {
   return (
-    <div className={"w-full h-full p-2 pb-5 rounded-xl"} style={{
-      background: "radial-gradient(circle, rgba(25,78,145,1) 0%, rgba(13,19,43,1) 100%)",
-    }}>
-    <div className={"text-white"}>Live on Interact</div>
+    <div
+      className={'w-full h-full p-2 pb-5 rounded-xl'}
+      style={{
+        background: 'radial-gradient(circle, rgba(25,78,145,1) 0%, rgba(13,19,43,1) 100%)',
+      }}
+    >
+      {/* <div className={'text-white'}>Live on Interact</div> */}
       <Swiper
         modules={[EffectCoverflow]}
-        effect={"coverflow"}
+        effect={'coverflow'}
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={3}
@@ -275,65 +253,58 @@ const LiveOnInteract = ({
           modifier: 2.5,
           slideShadows: true,
         }}
-        className={"max-w-[30rem]"}
+        className={'max-w-[30rem]'}
       >
         {cards.map((card, index) => (
           <SwiperSlide key={card.text}>
             <motion.div
-              initial={{ opacity: 0, scale: 0.2, }}
+              initial={{ opacity: 0, scale: 0.2 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{
                 duration: 0.4,
-                delay: index * 0.1
+                delay: index * 0.1,
               }}
             >
               <LiveCard card={card} />
             </motion.div>
           </SwiperSlide>
-          ))}
+        ))}
       </Swiper>
     </div>
-)
-}
+  );
+};
 
-const UserInfo = ({
-  user
-}: {
-  user: User;
-}) => {
+const UserInfo = ({ user }: { user: User }) => {
   return (
     <div className={'w-full bg-white flex flex-col gap-2 p-4 rounded-xl'}>
       <div className={'flex w-full gap-10 justify-between max-lg:flex-col max-lg:gap-2'}>
-        <div className={"flex gap-6 w-full lg:w-1/2 justify-around"}>
+        <div className={'flex gap-6 w-full lg:w-1/2 justify-around'}>
           <Image
             src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
-            alt={"user-profile-pic"}
+            alt={'user-profile-pic'}
             width={152}
             height={152}
-            className={"w-40 h-40 rounded-xl"}
+            className={'w-40 h-40 rounded-xl'}
           />
-          <div className={"w-full flex flex-col justify-around"}>
-            <div>
-              <div className={"text-2xl font-bold"}>{user.name}</div>
-              <div className={"text-lg"}>{user.tagline}</div>
-            </div>
-            <Link href={"https://interactnow.in/"} className={"max-w-52"}><Button className={"w-full"}>Edit Details</Button></Link>
+          <div className={'w-full'}>
+            <div className={'text-2xl font-bold'}>{user.name}</div>
+            <div className={'text-lg'}>{user.tagline}</div>
           </div>
         </div>
-        <div className={"border border-neutral-600 border-dotted p-2 rounded-xl min-h-20 lg:w-1/2 text-wrap shrink"}>
+        <div className={'border border-neutral-600 border-dotted p-2 rounded-xl w-full min-h-32 lg:w-1/2 text-wrap shrink'}>
           {user.bio}
-          {!user.bio && <span className={"text-neutral-500"}>Your bio</span>}
+          {!user.bio && <span className={'text-neutral-500'}>Your bio</span>}
         </div>
       </div>
-      <div className={"border border-neutral-600 border-dotted shadow-sm rounded-xl flex flex-wrap p-2 gap-2"}>
-        {user.profile.school !== "" && <Tag icon={<GraduationCapIcon className={"size-5"} strokeWidth={1.5} />} text={user.profile.school} />}
-        {user.profile.location !== "" && <Tag icon={<MapPinIcon className={'size-4'} strokeWidth={1.5} />} text={user.profile.location} />}
+      <div className={'border border-neutral-600 border-dotted shadow-sm rounded-xl flex flex-wrap p-2 gap-2'}>
+        {user.profile.school !== '' && <Tag icon={<GraduationCapIcon className={'size-5'} strokeWidth={1.5} />} text={user.profile.school} />}
+        {user.profile.location !== '' && <Tag icon={<MapPinIcon className={'size-4'} strokeWidth={1.5} />} text={user.profile.location} />}
         {user.tags.map(tag => (
           <Tag text={tag} key={tag} />
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Protect(Index);
