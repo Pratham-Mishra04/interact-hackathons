@@ -171,7 +171,7 @@ const Index = () => {
                 )}
               </div>
             </FadeIn>
-            <div className={'w-full flex rounded-xl p-2 max-h-[28rem] overflow-auto'}>
+            <div className={'w-full flex rounded-xl p-2'}>
               <div className={'grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1 gap-6'}>
                 {hackathonFilter == HackathonType.REGISTERED &&
                   registeredHackathons.length > 0 &&
