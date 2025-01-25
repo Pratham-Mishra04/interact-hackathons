@@ -348,8 +348,8 @@ const UserInfo = ({ user }: { user: User }) => {
           </div>
         </div>
         <div className={'border border-neutral-600 border-dotted p-2 rounded-xl w-full min-h-32 lg:w-1/2 text-wrap shrink'}>
-          {user.bio}
-          {!user.bio && <span className={'text-neutral-500'}>You haven&apos;t added your bio yet.</span>}
+          {user.profile?.description || ''}
+          {!user.profile?.description && <span className={'text-neutral-500'}>You haven&apos;t added your bio yet.</span>}
         </div>
       </div>
       <div className={'border border-neutral-600 border-dotted shadow-sm rounded-xl flex flex-wrap p-2 gap-2'}>
