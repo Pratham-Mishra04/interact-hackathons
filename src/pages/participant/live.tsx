@@ -15,6 +15,7 @@ import ParticipantLiveRoundAnalytics from '@/sections/analytics/participant_live
 import TeamEliminated from '@/screens/participants/team_eliminated';
 import ProjectView from '@/screens/participants/view_project';
 import Loader from '@/components/common/loader';
+import socketService from '@/config/ws';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -63,6 +64,7 @@ const Live = () => {
       else {
         getTeam();
         getCurrentRound();
+        socketService.connect(hackathon.id);
       }
     }
   }, []);

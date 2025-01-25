@@ -14,6 +14,7 @@ import NewAnnouncement from '@/sections/admin/new_announcement';
 import ViewAnnouncements from '@/sections/admin/view_announcements';
 import TeamProjectsTable from '@/components/tables/teams_projects';
 import { useRouter } from 'next/router';
+import socketService from '@/config/ws';
 
 const Index = () => {
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
@@ -43,7 +44,10 @@ const Index = () => {
     if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
     else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
-    else getCurrentRound();
+    else {
+      getCurrentRound();
+      socketService.connect(hackathon.id);
+    }
   }, []);
 
   const role = useMemo(() => getHackathonRole(), []);

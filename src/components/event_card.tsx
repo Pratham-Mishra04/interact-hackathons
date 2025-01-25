@@ -157,7 +157,8 @@ export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; is
         break;
     }
 
-    Toaster.stopLoad(toasterID, 'Hackathon loaded! Redirecting to dashboard...', 1);
+    if (URL != '#') Toaster.stopLoad(toasterID, 'Hackathon loaded! Redirecting to dashboard...', 1);
+
     return URL;
   };
 

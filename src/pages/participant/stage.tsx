@@ -11,6 +11,7 @@ import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
 import moment from 'moment';
 import BaseWrapper from '@/wrappers/base';
 import Loader from '@/components/common/loader';
+import socketService from '@/config/ws';
 
 const Stage = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -43,6 +44,7 @@ const Stage = () => {
       else {
         getTeam();
         getCurrentRound();
+        socketService.connect(hackathon.id);
       }
     }
   }, []);

@@ -13,6 +13,7 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '
 import { Blueprint, Check, FigmaLogo, GithubLogo, Users } from '@phosphor-icons/react';
 import AnnouncementCard from '@/components/announcement_card';
 import { formatPrice } from '@/utils/funcs/misc';
+import socketService from '@/config/ws';
 
 export default function ParticipantLiveRoundAnalytics({
   teamID,
@@ -108,6 +109,7 @@ export default function ParticipantLiveRoundAnalytics({
 
     fetchAnalyticsData();
     fetchAnnouncements();
+    socketService.setupNewHackathonAnnouncement(setAnnouncements);
   }, []);
 
   const chartConfig = {

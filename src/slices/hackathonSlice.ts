@@ -99,6 +99,15 @@ export const hackathonSlice = createSlice({
       state.makeProjectsPublic = action.payload.makeProjectsPublic;
     },
 
+    updateCurrentHackathon: (state, action: PayloadAction<Partial<Hackathon>>) => {
+      Object.keys(action.payload).forEach(key => {
+        if (key in state) {
+          // @ts-ignore
+          state[key] = action.payload[key];
+        }
+      });
+    },
+
     resetCurrentHackathon: state => {
       state = initialState;
     },
@@ -109,7 +118,7 @@ export const hackathonSlice = createSlice({
   },
 });
 
-export const { setCurrentHackathon, resetCurrentHackathon, markHackathonEnded } = hackathonSlice.actions;
+export const { setCurrentHackathon, updateCurrentHackathon, resetCurrentHackathon, markHackathonEnded } = hackathonSlice.actions;
 
 export default hackathonSlice.reducer;
 

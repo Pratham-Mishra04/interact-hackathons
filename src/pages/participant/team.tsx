@@ -18,6 +18,7 @@ import patchHandler from '@/handlers/patch_handler';
 import BaseWrapper from '@/wrappers/base';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import socketService from '@/config/ws';
 
 const Team = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -60,6 +61,7 @@ const Team = () => {
       } else {
         getTeam();
         getTracks();
+        socketService.connect(hackathon.id);
       }
     }
   }, []);

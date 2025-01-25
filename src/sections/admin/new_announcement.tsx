@@ -9,13 +9,15 @@ import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import Editor from '@/components/editor';
 import { Button } from '@/components/ui/button';
+import socketService from '@/config/ws';
+import { initialAnnouncement } from '@/types/initials';
 
 const NewAnnouncement = ({
-                           setTriggerReload,
-  triggerClass
+  setTriggerReload,
+  triggerClass,
 }: {
-  setTriggerReload: React.Dispatch<React.SetStateAction<boolean>>,
-  triggerClass?: string,
+  setTriggerReload: React.Dispatch<React.SetStateAction<boolean>>;
+  triggerClass?: string;
 }) => {
   const [content, setContent] = useState<string>('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -41,6 +43,8 @@ const NewAnnouncement = ({
     if (res.statusCode === 201) {
       setTriggerReload(prev => !prev);
       Toaster.stopLoad(toaster, 'Announcement Added!', 1);
+
+      socketService.sendNewAnnouncement(res.data.announcement || initialAnnouncement);
 
       setContent('');
       setIsDialogOpen(false);
