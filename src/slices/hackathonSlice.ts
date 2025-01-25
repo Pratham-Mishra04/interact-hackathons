@@ -26,6 +26,11 @@ interface HackathonState {
   coordinators: string[];
   judges: string[];
   isEnded: boolean;
+  allowEditDuringJudging: boolean;
+  enableGithubIntegration: boolean;
+  enableFigmaIntegration: boolean;
+  enableAutoCodeReviews: boolean;
+  makeProjectsPublic: boolean;
 }
 
 const initialState: HackathonState = {
@@ -52,6 +57,11 @@ const initialState: HackathonState = {
   coordinators: [],
   judges: [],
   isEnded: false,
+  allowEditDuringJudging: false,
+  enableGithubIntegration: false,
+  enableFigmaIntegration: false,
+  enableAutoCodeReviews: false,
+  makeProjectsPublic: true,
 };
 
 export const hackathonSlice = createSlice({
@@ -82,6 +92,11 @@ export const hackathonSlice = createSlice({
       state.coordinators = action.payload.coordinators.map(user => user.id);
       state.judges = action.payload.judges.map(user => user.id);
       state.isEnded = action.payload.isEnded;
+      state.allowEditDuringJudging = action.payload.allowEditDuringJudging;
+      state.enableGithubIntegration = action.payload.enableGithubIntegration;
+      state.enableFigmaIntegration = action.payload.enableFigmaIntegration;
+      state.enableAutoCodeReviews = action.payload.enableAutoCodeReviews;
+      state.makeProjectsPublic = action.payload.makeProjectsPublic;
     },
 
     resetCurrentHackathon: state => {

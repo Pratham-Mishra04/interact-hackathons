@@ -774,6 +774,11 @@ export interface Hackathon {
   isEnded: boolean;
   eventID: string;
   history: HackathonHistory[];
+  allowEditDuringJudging: boolean;
+  enableGithubIntegration: boolean;
+  enableFigmaIntegration: boolean;
+  enableAutoCodeReviews: boolean;
+  makeProjectsPublic: boolean;
   // event_card
   prizes: HackathonPrize[];
 }
