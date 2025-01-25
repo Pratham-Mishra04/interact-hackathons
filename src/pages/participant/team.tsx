@@ -154,7 +154,7 @@ const Team = () => {
           <div className="w-full md:w-1/2 justify-center items-start flex-col gap-2">
             {team ? (
               <div className="flex-center flex-col">
-                <h4 className="w-fit gradient-text-3 text-8xl mb-4">{team.title}</h4>
+                <h4 className="w-fit gradient-text-3 text-8xl max-md:text-5xl mb-4">{team.title}</h4>
                 <div className="font-semibold text-xl">
                   The Team Code is{' '}
                   <TooltipProvider>

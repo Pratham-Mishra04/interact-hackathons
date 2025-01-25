@@ -58,7 +58,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
       className={`w-full space-y-4 p-3 md:p-6 bg-white rounded-xl shadow-md ${actions ? 'hover:shadow-xl' : 'hover:shadow-lg'} transition-ease-300`}
     >
       {actions ? (
-        <div className="w-full flex flex-col md:flex-row items-center justify-between">
+        <div className="w-full flex flex-col gap-4 md:flex-row items-center justify-between">
           {tracks && tracks.length > 0 && (
             <div className="w-full md:w-fit flex items-center gap-2">
               <p className="text-nowrap">Your Track: </p>

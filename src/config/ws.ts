@@ -1,13 +1,5 @@
-import {
-  NewAnnouncementEvent,
-  SetupHackathonEvent,
-  UpdateHackathonEvent,
-  WSEvent,
-  routeNewHackathonAnnouncement,
-  routeUpdateHackathon,
-  sendEvent,
-} from '@/helpers/ws';
-import { Announcement, Hackathon } from '@/types';
+import { NewAnnouncementEvent, SetupHackathonEvent, WSEvent, routeNewHackathonAnnouncement, routeUpdateHackathon, sendEvent } from '@/helpers/ws';
+import { Announcement } from '@/types';
 import Cookies from 'js-cookie';
 import { SOCKET_URL } from './routes';
 
@@ -64,13 +56,6 @@ class SocketService {
     if (this.socket) {
       const outgoingEvent = new SetupHackathonEvent(hackathonID);
       sendEvent('hackathon_setup', outgoingEvent, this.socket);
-    }
-  }
-
-  public sendUpdateHackathon(hackathon: Hackathon) {
-    if (this.socket) {
-      const outgoingMessageEvent = new UpdateHackathonEvent(hackathon);
-      sendEvent('send_hackathon_update', outgoingMessageEvent, this.socket);
     }
   }
 

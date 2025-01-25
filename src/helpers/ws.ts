@@ -25,14 +25,6 @@ export class SetupHackathonEvent {
   }
 }
 
-export class UpdateHackathonEvent {
-  hackathon = {};
-
-  constructor(hackathon: Hackathon) {
-    this.hackathon = hackathon;
-  }
-}
-
 export class NewAnnouncementEvent {
   announcement = initialAnnouncement;
 
@@ -74,7 +66,7 @@ export function routeNewHackathonAnnouncement(event: WSEvent, setAnnouncements: 
       const payload = (event.payload as { announcement: Announcement }).announcement;
 
       if (payload.hackathonID === currentHackathon.id) {
-        setAnnouncements(prev => [...prev, payload]);
+        setAnnouncements(prev => [payload, ...(prev || [])]);
       }
       break;
 
