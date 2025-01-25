@@ -41,7 +41,7 @@ export default function PrizeDistributionPage() {
 
   const getHackathonData = async () => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode === 200) {
       const { tracks, prizes } = res.data.hackathon as { tracks: HackathonTrack[]; prizes: HackathonPrize[] };
       setHackathonData(prev => {
@@ -62,7 +62,7 @@ export default function PrizeDistributionPage() {
   // no of participants, remaining participants
   const getHackathonAnalytics = async () => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/analytics/live`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode === 200) {
       const { totalUsers, totalUsersLeft } = res.data;
       setHackathonData(prev => {
@@ -83,7 +83,7 @@ export default function PrizeDistributionPage() {
   // teams (without round wise scores)
   const getTeamsData = async () => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams?populate=scores`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode === 200) {
       const { teams } = res.data as { teams: HackathonTeam[] };
       setTeams(teams || []);

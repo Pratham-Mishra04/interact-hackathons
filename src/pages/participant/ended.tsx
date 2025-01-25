@@ -25,7 +25,7 @@ const Ended = () => {
 
   const getTeam = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       const team = res.data.team;
       if (!team) Toaster.error('Team Not Found');
@@ -37,7 +37,7 @@ const Ended = () => {
   };
 
   const fetchAnnouncements = async () => {
-    const res = await getHandler(`/hackathons/${hackathon.id}/participants/announcements/`);
+    const res = await getHandler(`/hackathons/${hackathon.id}/participants/announcements/`, undefined, true);
     if (res.statusCode == 200) {
       setAnnouncements(res.data.announcements);
     } else {
@@ -46,7 +46,7 @@ const Ended = () => {
   };
 
   const fetchSimilarEvents = async (URL: string, setter: React.Dispatch<React.SetStateAction<Event[]>>) => {
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       setter(res.data.hackathons || []);
     } else {

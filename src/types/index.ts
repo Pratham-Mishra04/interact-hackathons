@@ -679,6 +679,7 @@ export interface Announcement {
   isEdited: boolean;
   isOpen: boolean;
   taggedUsers: User[];
+  isNew?: boolean;
   userID: string; //Dummy for type fixes in comment_box
 }
 

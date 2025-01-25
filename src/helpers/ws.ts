@@ -66,6 +66,7 @@ export function routeNewHackathonAnnouncement(event: WSEvent, setAnnouncements: 
       const payload = (event.payload as { announcement: Announcement }).announcement;
 
       if (payload.hackathonID === currentHackathon.id) {
+        payload.isNew = true;
         setAnnouncements(prev => [payload, ...(prev || [])]);
       }
       break;

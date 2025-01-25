@@ -55,11 +55,11 @@ input[type='number'] {
   background: linear-gradient(to right, #E1F1FF, #E5E7EB);
 }
 
-.button-gradient{
+.button-gradient {
   background: linear-gradient(to right, #607EE7, #5977E3, #4B9EFF);
 }
 
-.blue-text-gradient{
+.blue-text-gradient {
   background: linear-gradient(to right, #607EE7, #5977E3, #4B9EFF);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

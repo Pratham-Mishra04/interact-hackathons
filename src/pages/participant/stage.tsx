@@ -51,7 +51,7 @@ const Stage = () => {
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       if (res.data.round) {
         window.location.replace('/participant/live');

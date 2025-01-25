@@ -15,7 +15,6 @@ import { GetServerSidePropsContext } from 'next';
 import CommentBox from '@/components/comment/comment_box';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { isAccessDeniedError } from '@/utils/funcs/misc';
 
 export default function Page({ tid }: { tid: string }) {
@@ -26,7 +25,7 @@ export default function Page({ tid }: { tid: string }) {
 
   const getTeam = async () => {
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/teams/${tid}`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode === 200) {
       setTeam(res.data.team);
     } else {

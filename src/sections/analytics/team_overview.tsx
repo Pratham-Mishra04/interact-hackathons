@@ -41,7 +41,7 @@ const TeamOverviewAnalytics = ({ nextRound }: { nextRound?: HackathonRound | nul
 
   useEffect(() => {
     const fetchAnalyticsData = async () => {
-      const res = await getHandler(`/hackathons/${hackathon.id}/participants/analytics/team`);
+      const res = await getHandler(`/hackathons/${hackathon.id}/participants/analytics/team`, undefined, true);
       if (res.statusCode == 200) {
         setChartData(res.data.data);
         setTotalTeams(res.data.totalTeams);

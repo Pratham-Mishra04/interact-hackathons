@@ -13,6 +13,7 @@ import { ORG_SENIOR } from '@/config/constants';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import Editor from './editor';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import ShineBorder from './ui/shine-border';
 
 interface Props {
   announcement: Announcement;
@@ -69,54 +70,69 @@ const AnnouncementCard = ({ announcement, setAnnouncements, isAdmin = false }: P
     }
   };
 
+  const Wrapper = ({ children }: { children: React.ReactNode }) => {
+    const className =
+      'w-full h-fit relative overflow-clip bg-white font-primary flex gap-1 rounded-lg border-gray-300 border-[1px] dark:border-b-[1px] p-2 shadow-sm hover:shadow-md transition-ease-300 animate-fade_third';
+
+    return (
+      <>
+        {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
+        {announcement.isNew ? (
+          <ShineBorder className={className} color={['#A07CFE', '#98D8EF', '#4B9EFF']} borderRadius={7} borderWidth={1.5}>
+            {children}
+          </ShineBorder>
+        ) : (
+          <div className={className}>{children}</div>
+        )}
+      </>
+    );
+  };
+
   return (
-    <>
-      {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
-      <div className="w-full h-fit relative overflow-clip bg-white font-primary flex gap-1 rounded-lg border-gray-300 border-[1px] dark:border-b-[1px] p-2 shadow-sm hover:shadow-md transition-ease-300 animate-fade_third">
-        <div className="w-full space-y-2">
-          <div className="w-full flex items-center justify-between gap-2 text-xs text-gray-400">
-            <div>{moment(announcement.createdAt).fromNow()}</div>
-            <div className="w-fit flex-center gap-2">
-              {announcement.isEdited && <div>(edited)</div>}
-              <DropdownMenu>
-                {isAdmin && checkParticularOrgAccess(ORG_SENIOR, announcement.hackathon?.organization || null) && (
-                  <DropdownMenuTrigger className="text-xxs">•••</DropdownMenuTrigger>
-                )}
-                <DropdownMenuContent>
-                  {!clickedOnEdit && <DropdownMenuItem onClick={() => setClickedOnEdit(true)}>Edit</DropdownMenuItem>}
-                  <DropdownMenuItem onClick={() => setClickedOnDelete(true)} className="hover:text-primary_danger">
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+    <Wrapper>
+      <div className="w-full space-y-2">
+        <div className="w-full flex items-center justify-between gap-2 text-xs text-gray-400">
+          <div>{moment(announcement.createdAt).fromNow()}</div>
+          <div className="w-fit flex-center gap-2">
+            {announcement.isEdited && <div>(edited)</div>}
+            <DropdownMenu>
+              {isAdmin && checkParticularOrgAccess(ORG_SENIOR, announcement.hackathon?.organization || null) && (
+                <DropdownMenuTrigger className="text-xxs">•••</DropdownMenuTrigger>
+              )}
+              <DropdownMenuContent>
+                {!clickedOnEdit && <DropdownMenuItem onClick={() => setClickedOnEdit(true)}>Edit</DropdownMenuItem>}
+                <DropdownMenuItem onClick={() => setClickedOnDelete(true)} className="hover:text-primary_danger">
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {clickedOnEdit ? (
+          <div className="relative flex flex-col gap-2">
+            <Editor className="min-h-40" content={announcement.content} setContent={setCaption} editable={true} />
+            <div className="dark:text-white flex items-center justify-end gap-2 max-md:gap-1">
+              <div
+                onClick={() => setClickedOnEdit(false)}
+                className="border-[1px] border-primary_black flex-center rounded-full w-16 text-xs p-1 cursor-pointer"
+              >
+                cancel
+              </div>
+              {caption == announcement.content ? (
+                <div className="bg-primary_black bg-opacity-50 text-white flex-center rounded-full w-16 text-xs p-1 cursor-default">save</div>
+              ) : (
+                <div onClick={handleEdit} className="bg-primary_black text-white flex-center rounded-full w-16 text-xs p-1 cursor-pointer">
+                  save
+                </div>
+              )}
             </div>
           </div>
-
-          {clickedOnEdit ? (
-            <div className="relative flex flex-col gap-2">
-              <Editor className="min-h-40" content={announcement.content} setContent={setCaption} editable={true} />
-              <div className="dark:text-white flex items-center justify-end gap-2 max-md:gap-1">
-                <div
-                  onClick={() => setClickedOnEdit(false)}
-                  className="border-[1px] border-primary_black flex-center rounded-full w-16 text-xs p-1 cursor-pointer"
-                >
-                  cancel
-                </div>
-                {caption == announcement.content ? (
-                  <div className="bg-primary_black bg-opacity-50 text-white flex-center rounded-full w-16 text-xs p-1 cursor-default">save</div>
-                ) : (
-                  <div onClick={handleEdit} className="bg-primary_black text-white flex-center rounded-full w-16 text-xs p-1 cursor-pointer">
-                    save
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <Editor content={announcement.content} editable={false} />
-          )}
-        </div>
+        ) : (
+          <Editor content={announcement.content} editable={false} />
+        )}
       </div>
-    </>
+    </Wrapper>
   );
 };
 

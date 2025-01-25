@@ -11,7 +11,6 @@ import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
 import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
 import moment from 'moment';
 import patchHandler from '@/handlers/patch_handler';
@@ -31,7 +30,7 @@ const Team = () => {
   //TODO get hackathon details as well to update the state in case of any updations. (rn we need to go to index and click again to reflect hackathon changes)
   const getTeam = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       setTeam(res.data.team);
     } else {
@@ -41,7 +40,7 @@ const Team = () => {
 
   const getTracks = async () => {
     const URL = `/hackathons/tracks/${hackathon.id}`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       setTracks(res.data.tracks);
     } else {

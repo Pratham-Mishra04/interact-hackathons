@@ -232,7 +232,7 @@ export default function ParticipantLiveRoundAnalytics({
       </div>
       {announcements && announcements.length > 0 && (
         <div className="w-full h-full max-h-[25rem] bg-white overflow-y-auto thin_scrollbar rounded-lg p-3">
-          <div className="text-2xl font-semibold mb-2">Announcements</div>
+          <div className="w-fit text-2xl font-semibold mb-2 blue-text-gradient">Announcements</div>
           {announcements.map(announcement => (
             <div key={announcement.id} className="pb-2">
               <AnnouncementCard announcement={announcement} />
