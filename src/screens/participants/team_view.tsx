@@ -82,7 +82,9 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
             </div>
             {user.id != team.userID && onLeaveTeam && (
               <AlertDialog>
-                <AlertDialogTrigger>Open</AlertDialogTrigger>
+                <AlertDialogTrigger>
+                  <Button variant="destructive">Leave Team</Button>
+                </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -99,7 +101,7 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
             )}
             {user.id == team.userID && (
               <AlertDialog>
-                <AlertDialogTrigger>
+                <AlertDialogTrigger disabled={team.memberships.length > 1}>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>

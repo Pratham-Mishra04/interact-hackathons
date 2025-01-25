@@ -17,13 +17,9 @@ const TeamEliminated: React.FC<TeamEliminatedProps> = ({ team }) => {
   useEffect(() => {
     const fetchSimilarEvents = async () => {
       const URL = `/explore/events/similar/${hackathon.eventID}`;
-      try {
-        const res = await getHandler(URL);
-        if (res.statusCode === 200) {
-          setSimilarEvents(res.data.events);
-        }
-      } catch (error) {
-        console.log('Error fetching similar events:', error);
+      const res = await getHandler(URL, undefined, true);
+      if (res.statusCode === 200) {
+        setSimilarEvents(res.data.events);
       }
     };
 

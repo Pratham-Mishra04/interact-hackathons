@@ -353,15 +353,13 @@ const UserInfo = ({ user }: { user: User }) => {
         </div>
       </div>
       <div className={'border border-neutral-600 border-dotted shadow-sm rounded-xl flex flex-wrap p-2 gap-2'}>
-        {user.profile.school !== '' && (
+        {user.profile?.school !== '' && (
           <Tag icon={<GraduationCapIcon className={'size-5 max-md:size-4'} strokeWidth={1.5} />} text={user.profile.school} />
         )}
-        {user.profile.location !== '' && (
+        {user.profile?.location !== '' && (
           <Tag icon={<MapPinIcon className={'size-4 max-md:size-3'} strokeWidth={1.5} />} text={user.profile.location} />
         )}
-        {user.tags.map(tag => (
-          <Tag text={tag} key={tag} />
-        ))}
+        {user.tags && user.tags.map(tag => <Tag text={tag} key={tag} />)}
       </div>
     </div>
   );

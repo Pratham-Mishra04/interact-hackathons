@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '../common/loader';
 import moment from 'moment';
@@ -17,7 +17,6 @@ import { UserPlus } from '@phosphor-icons/react';
 import { initialHackathonTeam } from '@/types/initials';
 import AddTeamMember from '@/sections/admin/add_team_member';
 import NewTeam from '@/sections/admin/new_team';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
 import { isAccessDeniedError } from '@/utils/funcs/misc';
 import { userSelector } from '@/slices/userSlice';
 
@@ -100,8 +99,6 @@ const TeamsTable = ({ showAllFilters = true }) => {
     getTracks();
   }, []);
 
-  const role = useMemo(() => getHackathonRole(), []);
-
   return (
     <div className="flex flex-col gap-4">
       {hackathon.coordinators?.includes(user.id) && (
@@ -136,7 +133,7 @@ const TeamsTable = ({ showAllFilters = true }) => {
                 <TableHead>Track</TableHead>
                 <TableHead>Created By</TableHead>
                 <TableHead className="max-md:hidden">Created At</TableHead>
-                {role == 'admin' && <TableHead>Actions</TableHead>}
+                {hackathon.coordinators?.includes(user.id) && <TableHead>Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -184,7 +181,7 @@ const TeamsTable = ({ showAllFilters = true }) => {
                     </div>
                   </TableCell>
                   <TableCell className="max-md:hidden">{moment(team.createdAt).format('hh:mm a DD MMMM')}</TableCell>
-                  {role == 'admin' && (
+                  {hackathon.coordinators?.includes(user.id) && (
                     <TableCell>
                       <UserPlus
                         className="cursor-pointer"
