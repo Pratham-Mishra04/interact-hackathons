@@ -197,7 +197,7 @@ const Index = () => {
               </div>
             </div>
           </div>
-          <div className="w-1/4 max-lg:w-full">
+          <FadeIn initialScale={1} className="w-1/4 max-lg:w-full">
             {users && users.length > 0 && (
               <div className="w-full flex flex-col gap-2 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300 animate-fade_half sticky top-24 max-h-base overflow-y-auto">
                 <div className="w-fit text-2xl font-bold blue-text-gradient">Profiles to Follow</div>
@@ -208,7 +208,7 @@ const Index = () => {
                 </div>
               </div>
             )}
-          </div>
+          </FadeIn>
         </div>
       </div>
     </BaseWrapper>
@@ -247,6 +247,7 @@ const Tag = ({ icon, text }: { icon?: React.ReactNode; text: string }) => {
   );
 };
 
+//TODO: Links to be added
 const dummyLiveCards: LiveCard[] = [
   { text: '550+', linkText: 'Projects', href: '/' },
   { text: '2.5k', linkText: 'Active Users', href: '/' },
