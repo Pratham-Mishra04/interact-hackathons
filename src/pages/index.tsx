@@ -142,7 +142,7 @@ const Index = () => {
         </div>
 
         <div className={'w-full mx-auto flex max-lg:flex-col max-lg:gap-4 gap-10 mt-5 px-14 max-md:px-7'}>
-          <div className={'w-3/5'}>
+          <div className={'w-3/5 max-lg:w-full'}>
             {loading ? (
               <Loader />
             ) : (
@@ -157,7 +157,7 @@ const Index = () => {
         </div>
 
         <div className={'w-full flex max-lg:flex-col gap-4 mt-5 px-14 max-md:px-7 pb-4'}>
-          <div className={'w-3/4 space-y-2'}>
+          <div className={'w-3/4 max-lg:w-full space-y-2 bg-white/40 p-2 rounded-xl'}>
             <FadeIn initialScale={1}>
               <div className={'flex gap-2'}>
                 {registeredHackathons.length > 0 && (
@@ -171,33 +171,33 @@ const Index = () => {
                 )}
               </div>
             </FadeIn>
-            <div className={'w-full flex rounded-xl'}>
-              <div className={'grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-6'}>
+            <div className={'w-full flex rounded-xl p-2'}>
+              <div className={'grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1 gap-6'}>
                 {hackathonFilter == HackathonType.REGISTERED &&
                   registeredHackathons.length > 0 &&
                   registeredHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={'max-w-80'}>
+                    <FadeIn key={hackathon.id} className={'max-w-80 max-lg:max-w-72'}>
                       <HackathonCard hackathon={hackathon} />
                     </FadeIn>
                   ))}
                 {hackathonFilter == HackathonType.ADMIN &&
                   adminHackathons.length > 0 &&
                   adminHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={'max-w-80'}>
+                    <FadeIn key={hackathon.id} className={'max-w-80 max-lg:max-w-72'}>
                       <HackathonCard hackathon={hackathon} isAdmin />
                     </FadeIn>
                   ))}
                 {hackathonFilter == HackathonType.ORG &&
                   orgHackathons.length > 0 &&
                   orgHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={'max-w-80'}>
+                    <FadeIn key={hackathon.id} className={'max-w-80 max-lg:max-w-72'}>
                       <HackathonCard hackathon={hackathon} isAdmin />
                     </FadeIn>
                   ))}
               </div>
             </div>
           </div>
-          <div className="w-1/4">
+          <FadeIn initialScale={1} className="w-1/4 max-lg:w-full">
             {users && users.length > 0 && (
               <div className="w-full flex flex-col gap-2 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300 animate-fade_half sticky top-24 max-h-base overflow-y-auto">
                 <div className="w-fit text-2xl font-bold blue-text-gradient">Profiles to Follow</div>
@@ -208,7 +208,7 @@ const Index = () => {
                 </div>
               </div>
             )}
-          </div>
+          </FadeIn>
         </div>
       </div>
     </BaseWrapper>
@@ -229,7 +229,7 @@ const HackathonFilterItem = ({
   return (
     <div
       onClick={() => setFilter(value)}
-      className={`p-2 px-3 rounded-lg cursor-pointer shadow-sm transition-all duration-300 ${
+      className={`p-2 px-3 max-md:text-sm rounded-lg cursor-pointer shadow-sm transition-all duration-300 ${
         currentFilter === value ? 'bg-sky-400 text-white shadow-none font-medium' : 'bg-white'
       } ${className}`}
     >
@@ -240,13 +240,14 @@ const HackathonFilterItem = ({
 
 const Tag = ({ icon, text }: { icon?: React.ReactNode; text: string }) => {
   return (
-    <span className={'flex justify-between items-center px-3.5 py-0.5 text-sm gap-2 border border-dotted border-neutral-600 rounded-full'}>
+    <span className={'flex justify-between items-center px-3.5 py-0.5 text-sm gap-2 max-md:gap-1 border border-dotted border-neutral-600 rounded-full max-md:text-sm'}>
       {icon}
       <span>{text}</span>
     </span>
   );
 };
 
+//TODO: Links to be added
 const dummyLiveCards: LiveCard[] = [
   { text: '550+', linkText: 'Projects', href: '/' },
   { text: '2.5k', linkText: 'Active Users', href: '/' },
@@ -256,17 +257,17 @@ const dummyLiveCards: LiveCard[] = [
 const LiveCard = ({ card }: { card: LiveCard }) => {
   return (
     <div
-      className={'size-[11rem] rounded-xl text-white shadow-xl flex justify-center items-center'}
+      className={'size-[11rem] max-sm:size-[8rem] rounded-xl text-white shadow-xl flex justify-center items-center'}
       style={{
         // background: rgb(5,17,88);
         background: 'radial-gradient(circle, rgba(57,141,247,1) 0%, rgba(27,66,204,1) 100%)',
       }}
     >
       <div className={'flex flex-col justify-center gap-2'}>
-        <div className={'text-center text-2xl font-bold'}>{card.text}</div>
-        <Link className={'border border-white rounded-full p-2 px-3 flex items-center gap-1.5'} href={card.href}>
+        <div className={'text-center text-2xl max-sm:text-lg font-bold'}>{card.text}</div>
+        <Link className={'border border-white rounded-full p-2 px-3 max-sm:py-1.5 max-sm:px-2 flex items-center gap-1.5'} href={card.href}>
           <FlagIcon fill={'white'} className={'size-3.5 mt-0.5'} />
-          <p className={'text-sm'}>{card.linkText}</p>
+          <p className={'text-sm max-sm:text-xs'}>{card.linkText}</p>
         </Link>
       </div>
     </div>
@@ -276,12 +277,12 @@ const LiveCard = ({ card }: { card: LiveCard }) => {
 const LiveOnInteract = ({ cards }: { cards: LiveCard[] }) => {
   return (
     <div
-      className={'w-full h-full py-4 rounded-xl flex flex-col justify-between gap-2'}
+      className={'w-full h-full py-4 rounded-xl flex flex-col justify-center gap-2'}
       style={{
         background: 'radial-gradient(circle, rgba(25,78,145,1) 0%, rgba(13,19,43,1) 100%)',
       }}
     >
-      <div className={'w-fit mx-auto text-2xl font-semibold text-white'}>Live on Interact!</div>
+      <div className={'w-fit mx-auto text-2xl max-md:text-xl font-semibold text-white'}>Live on Interact!</div>
       <div className="w-full">
         <Swiper
           modules={[EffectCoverflow]}
@@ -297,7 +298,7 @@ const LiveOnInteract = ({ cards }: { cards: LiveCard[] }) => {
             modifier: 2.5,
             slideShadows: true,
           }}
-          className={'w-full'}
+          className={'max-w-lg max-sm:max-w-sm'}
         >
           {cards.map((card, index) => (
             <SwiperSlide key={card.text}>
@@ -323,18 +324,18 @@ const UserInfo = ({ user }: { user: User }) => {
   return (
     <div className={'w-full h-full bg-white flex flex-col gap-4 p-4 rounded-xl'}>
       <div className={'flex w-full gap-10 justify-between max-lg:flex-col max-lg:gap-2'}>
-        <div className={'flex gap-6 w-full lg:w-1/2 justify-around'}>
+        <div className={'flex max-sm:flex-col gap-6 w-full lg:w-1/2 justify-around'}>
           <Image
             src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
             alt={'user-profile-pic'}
             width={152}
             height={152}
-            className={'w-32 h-32 rounded-full'}
+            className={'w-32 h-32 max-md:h-16 max-md:w-16 rounded-full'}
           />
           <div className={'w-full flex flex-col gap-2 justify-between'}>
             <div>
-              <div className={'text-2xl font-bold'}>{user.name}</div>
-              <div className={'text-lg'}>{user.tagline}</div>
+              <div className={'text-2xl font-bold max-md:xl'}>{user.name}</div>
+              <div className={'text-lg max-md:text-base'}>{user.tagline}</div>
             </div>
             <Link href={`${FRONTEND_URL}/users/${user.username}`} target="_blank">
               <Button variant={'outline'}>Edit Profile</Button>
@@ -347,8 +348,8 @@ const UserInfo = ({ user }: { user: User }) => {
         </div>
       </div>
       <div className={'border border-neutral-600 border-dotted shadow-sm rounded-xl flex flex-wrap p-2 gap-2'}>
-        {user.profile.school !== '' && <Tag icon={<GraduationCapIcon className={'size-5'} strokeWidth={1.5} />} text={user.profile.school} />}
-        {user.profile.location !== '' && <Tag icon={<MapPinIcon className={'size-4'} strokeWidth={1.5} />} text={user.profile.location} />}
+        {user.profile.school !== '' && <Tag icon={<GraduationCapIcon className={'size-5 max-md:size-4'} strokeWidth={1.5} />} text={user.profile.school} />}
+        {user.profile.location !== '' && <Tag icon={<MapPinIcon className={'size-4 max-md:size-3'} strokeWidth={1.5} />} text={user.profile.location} />}
         {user.tags.map(tag => (
           <Tag text={tag} key={tag} />
         ))}

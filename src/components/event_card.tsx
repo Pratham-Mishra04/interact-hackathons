@@ -111,9 +111,9 @@ const EventCard = ({ event }: Props) => {
 
 const LowerCardItem = ({ title, content }: { title: string; content: string }) => {
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="flex flex-col items-center gap-0.5">
       <p className="text-gray-500 font-medium dark:text-gray-300">{title}</p>
-      <p className="text-center">{content}</p>
+      <p className="text-center text-sm line-clamp-1">{content}</p>
     </div>
   );
 };
@@ -228,8 +228,8 @@ export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; is
       </div>
       <div className="space-y-6">
         <div className="space-y-1">
-          <h2 className="text-2xl font-semibold line-clamp-1">{hackathon.title}</h2>
-          <p className="text-gray-600 dark:text-gray-400">{hackathon.tagline}</p>
+          <h2 className="text-2xl max-md:text-xl font-semibold line-clamp-1">{hackathon.title}</h2>
+          <p className="text-gray-600 dark:text-gray-400 max-md:text-sm">{hackathon.tagline}</p>
         </div>
 
         <div className="grid grid-cols-3 gap-4">
