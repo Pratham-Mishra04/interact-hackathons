@@ -240,7 +240,11 @@ const HackathonFilterItem = ({
 
 const Tag = ({ icon, text }: { icon?: React.ReactNode; text: string }) => {
   return (
-    <span className={'flex justify-between items-center px-3.5 py-0.5 text-sm gap-2 max-md:gap-1 border border-dotted border-neutral-600 rounded-full max-md:text-sm'}>
+    <span
+      className={
+        'flex justify-between items-center px-3.5 py-0.5 text-sm gap-2 max-md:gap-1 border border-dotted border-neutral-600 rounded-full max-md:text-sm'
+      }
+    >
       {icon}
       <span>{text}</span>
     </span>
@@ -249,17 +253,18 @@ const Tag = ({ icon, text }: { icon?: React.ReactNode; text: string }) => {
 
 //TODO: Links to be added
 const dummyLiveCards: LiveCard[] = [
-  { text: '550+', linkText: 'Projects', href: '/' },
-  { text: '2.5k', linkText: 'Active Users', href: '/' },
-  { text: '10+', linkText: 'Hackathons', href: '/' },
+  { text: '500+', linkText: 'Projects', href: 'projects' },
+  { text: '3K+', linkText: 'Active Users', href: 'users' },
+  { text: '10+', linkText: 'Hackathons', href: 'events' },
 ];
 
 const LiveCard = ({ card }: { card: LiveCard }) => {
   return (
-    <div
+    <Link
+      href={`${FRONTEND_URL}/${card.href}`}
+      target="_blank"
       className={'size-[11rem] max-sm:size-[8rem] rounded-xl text-white shadow-xl flex justify-center items-center'}
       style={{
-        // background: rgb(5,17,88);
         background: 'radial-gradient(circle, rgba(57,141,247,1) 0%, rgba(27,66,204,1) 100%)',
       }}
     >
@@ -270,7 +275,7 @@ const LiveCard = ({ card }: { card: LiveCard }) => {
           <p className={'text-sm max-sm:text-xs'}>{card.linkText}</p>
         </Link>
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -348,8 +353,12 @@ const UserInfo = ({ user }: { user: User }) => {
         </div>
       </div>
       <div className={'border border-neutral-600 border-dotted shadow-sm rounded-xl flex flex-wrap p-2 gap-2'}>
-        {user.profile.school !== '' && <Tag icon={<GraduationCapIcon className={'size-5 max-md:size-4'} strokeWidth={1.5} />} text={user.profile.school} />}
-        {user.profile.location !== '' && <Tag icon={<MapPinIcon className={'size-4 max-md:size-3'} strokeWidth={1.5} />} text={user.profile.location} />}
+        {user.profile.school !== '' && (
+          <Tag icon={<GraduationCapIcon className={'size-5 max-md:size-4'} strokeWidth={1.5} />} text={user.profile.school} />
+        )}
+        {user.profile.location !== '' && (
+          <Tag icon={<MapPinIcon className={'size-4 max-md:size-3'} strokeWidth={1.5} />} text={user.profile.location} />
+        )}
         {user.tags.map(tag => (
           <Tag text={tag} key={tag} />
         ))}

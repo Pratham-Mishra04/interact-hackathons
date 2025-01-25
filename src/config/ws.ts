@@ -6,6 +6,7 @@ import { SOCKET_URL } from './routes';
 class SocketService {
   private static instance: SocketService | null = null;
   private socket: WebSocket | null = null;
+  private hackathonID: string | null = null;
 
   private constructor() {}
 
@@ -26,7 +27,10 @@ class SocketService {
     const token = Cookies.get('token');
     if (!token || token === '') return;
 
-    if (this.socket) return;
+    if (this.socket) {
+      this.setupHackathon(hackathonID);
+      return;
+    }
 
     const connectToSocket = () => {
       this.socket = new WebSocket(`${SOCKET_URL}?userID=${userID}&token=${token}`);
@@ -53,7 +57,9 @@ class SocketService {
   }
 
   public setupHackathon(hackathonID: string) {
-    if (this.socket) {
+    if (this.socket && this.hackathonID !== hackathonID) {
+      this.hackathonID = hackathonID;
+
       const outgoingEvent = new SetupHackathonEvent(hackathonID);
       sendEvent('hackathon_setup', outgoingEvent, this.socket);
     }
