@@ -204,7 +204,7 @@ export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; is
 
   return (
     <div
-      className="relative w-full max-w-md bg-white dark:bg-dark_primary_comp_hover rounded-3xl p-4 hover:shadow-xl transition-ease-300 m-2 cursor-pointer"
+      className="relative w-full max-w-md bg-white dark:bg-dark_primary_comp_hover rounded-3xl p-4 hover:shadow-xl transition-ease-300 cursor-pointer"
       onClick={handleClick}
     >
       <div className="relative">
@@ -221,16 +221,14 @@ export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; is
           <UserHoverCard
             trigger={
               <div className="bg-white dark:bg-dark_primary_comp_hover  rounded-full p-3">
-                <div className={`relative w-12 h-12 rounded-full flex flex-col items-center justify-center`}>
-                  <Image
-                    crossOrigin="anonymous"
-                    width={100}
-                    height={100}
-                    alt={'User Pic'}
-                    src={`${USER_PROFILE_PIC_URL}/${hackathon.organization.user.profilePic}`}
-                    className="w-10 h-10 rounded-full mt-1"
-                  />
-                </div>
+                <Image
+                  crossOrigin="anonymous"
+                  width={100}
+                  height={100}
+                  alt={'User Pic'}
+                  src={`${USER_PROFILE_PIC_URL}/${hackathon.organization.user.profilePic}`}
+                  className="w-10 h-10 rounded-full"
+                />
               </div>
             }
             user={hackathon.organization.user}

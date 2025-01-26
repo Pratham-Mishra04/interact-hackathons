@@ -13,7 +13,7 @@ import React, { useState } from 'react';
 export const ProjectDetails = ({ project }: { project: Project | undefined }) => {
   const [clickedOnReadMore, setClickedOnReadMore] = useState(false);
   return !project ? (
-    <div className="w-full h-fit flex-center text-4xl font-medium pt-32 max-md:pt-8">Project Not Submitted Yet.</div>
+    <div className="w-full h-fit flex-center text-center text-4xl font-medium pt-32">Project Not Submitted Yet.</div>
   ) : (
     <div className="w-full p-4 flex space-x-4">
       <div className="w-2/3 max-md:w-full space-y-4 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300">

@@ -47,7 +47,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
   const router = useRouter();
 
   return (
-    <div className="w-[12%] md:w-[20%] sticky top-16 left-0 bg-white h-base px-2 md:p-3 md:flex flex-col justify-between">
+    <div className="w-[20%] max-md:w-full max-md:h-16 sticky max-md:fixed md:top-16 max-md:bottom-0 left-0 bg-white h-base px-2 p-3 flex md:flex-col justify-between max-md:border-t-[1px] border-blue-200 z-50">
       <div className="w-full">
         <section className="--team-details hidden md:flex flex-col gap-2 pb-4 border-b-[2px] border-primary_text">
           <h1 className="text-2xl font-semibold">{team.title}</h1>
@@ -62,10 +62,10 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
           </div>
           <Status className="rounded-md mt-6 text-sm py-2 cursor-default" status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
         </section>
-        <section className="--menu-items flex flex-col gap-4 md:gap-2 mt-4">
+        <section className="--menu-items max-md:h-full flex md:flex-col gap-4 md:gap-2 md:mt-4">
           {data.map((item, index) => (
             <button
-              className={`flex items-center justify-center md:justify-start gap-2 h-8 md:h-fit w-full md:py-2 rounded-sm md:px-3  hover:bg-blue-300 hover:text-white  ${
+              className={`flex items-center justify-center md:justify-start gap-2 h-full md:h-fit w-full md:py-2 rounded-sm md:px-3  hover:bg-blue-300 hover:text-white ${
                 activeIndex === index ? 'bg-primary_text text-white' : 'text-primary_black/80'
               } transition-ease-300`}
               key={index}
@@ -79,7 +79,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
           ))}
         </section>
       </div>
-      <div className="w-full flex flex-col gap-2">
+      <div className="w-full flex flex-col gap-2 max-md:hidden">
         {role == 'admin' && !hackathon.isEnded && (
           <Dialog open={clickedOnEliminate} onOpenChange={setClickedOnEliminate}>
             <DialogTrigger

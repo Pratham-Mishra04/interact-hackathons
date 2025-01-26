@@ -156,60 +156,62 @@ const Index = () => {
           </div>
         </div>
 
-        <div className={'w-full flex max-lg:flex-col gap-4 mt-5 px-14 max-md:px-7 pb-4'}>
-          <div className={'w-3/4 max-md:w-full space-y-2 bg-white/40 p-2 rounded-xl'}>
-            <FadeIn initialScale={1}>
-              <div className={'flex gap-2'}>
-                {registeredHackathons.length > 0 && (
-                  <HackathonFilterItem currentFilter={hackathonFilter} setFilter={setHackathonFilter} value={HackathonType.REGISTERED} />
-                )}
-                {adminHackathons.length > 0 && (
-                  <HackathonFilterItem currentFilter={hackathonFilter} setFilter={setHackathonFilter} value={HackathonType.ADMIN} />
-                )}
-                {orgHackathons.length > 0 && (
-                  <HackathonFilterItem currentFilter={hackathonFilter} setFilter={setHackathonFilter} value={HackathonType.ORG} />
-                )}
-              </div>
-            </FadeIn>
-            <div className={'w-full flex rounded-xl p-2'}>
-              <div className={'grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1 gap-6'}>
-                {hackathonFilter == HackathonType.REGISTERED &&
-                  registeredHackathons.length > 0 &&
-                  registeredHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={'max-w-80 max-md:w-full'}>
-                      <HackathonCard hackathon={hackathon} />
-                    </FadeIn>
-                  ))}
-                {hackathonFilter == HackathonType.ADMIN &&
-                  adminHackathons.length > 0 &&
-                  adminHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={'max-w-80 max-md:w-full'}>
-                      <HackathonCard hackathon={hackathon} isAdmin />
-                    </FadeIn>
-                  ))}
-                {hackathonFilter == HackathonType.ORG &&
-                  orgHackathons.length > 0 &&
-                  orgHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={'max-w-80 max-md:w-full'}>
-                      <HackathonCard hackathon={hackathon} isAdmin />
-                    </FadeIn>
-                  ))}
-              </div>
-            </div>
-          </div>
-          <FadeIn initialScale={1} className="w-1/4 max-md:w-full">
-            {users && users.length > 0 && (
-              <div className="w-full flex flex-col gap-2 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300 animate-fade_half sticky top-24 max-h-base overflow-y-auto">
-                <div className="w-fit text-2xl font-bold blue-text-gradient">Profiles to Follow</div>
-                <div className="w-full flex flex-col gap-2">
-                  {users?.map(user => (
-                    <UserCard key={user.id} user={user} forTrending />
-                  ))}
+        {!loading && (
+          <div className={'w-full flex max-lg:flex-col gap-4 mt-5 px-14 max-md:px-7 pb-4'}>
+            <div className={'w-3/4 max-md:w-full space-y-2 bg-white/40 p-2 rounded-xl'}>
+              <FadeIn initialScale={1}>
+                <div className={'flex gap-2'}>
+                  {registeredHackathons.length > 0 && (
+                    <HackathonFilterItem currentFilter={hackathonFilter} setFilter={setHackathonFilter} value={HackathonType.REGISTERED} />
+                  )}
+                  {adminHackathons.length > 0 && (
+                    <HackathonFilterItem currentFilter={hackathonFilter} setFilter={setHackathonFilter} value={HackathonType.ADMIN} />
+                  )}
+                  {orgHackathons.length > 0 && (
+                    <HackathonFilterItem currentFilter={hackathonFilter} setFilter={setHackathonFilter} value={HackathonType.ORG} />
+                  )}
+                </div>
+              </FadeIn>
+              <div className={'w-full flex rounded-xl p-2'}>
+                <div className={'w-full grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1 gap-6'}>
+                  {hackathonFilter == HackathonType.REGISTERED &&
+                    registeredHackathons.length > 0 &&
+                    registeredHackathons.map(hackathon => (
+                      <FadeIn key={hackathon.id} className={'max-w-80 max-md:w-full'}>
+                        <HackathonCard hackathon={hackathon} />
+                      </FadeIn>
+                    ))}
+                  {hackathonFilter == HackathonType.ADMIN &&
+                    adminHackathons.length > 0 &&
+                    adminHackathons.map(hackathon => (
+                      <FadeIn key={hackathon.id} className={'max-w-80 max-md:w-full'}>
+                        <HackathonCard hackathon={hackathon} isAdmin />
+                      </FadeIn>
+                    ))}
+                  {hackathonFilter == HackathonType.ORG &&
+                    orgHackathons.length > 0 &&
+                    orgHackathons.map(hackathon => (
+                      <FadeIn key={hackathon.id} className={'max-w-80 max-md:w-full'}>
+                        <HackathonCard hackathon={hackathon} isAdmin />
+                      </FadeIn>
+                    ))}
                 </div>
               </div>
-            )}
-          </FadeIn>
-        </div>
+            </div>
+            <FadeIn initialScale={1} className="w-1/4 max-md:w-full">
+              {users && users.length > 0 && (
+                <div className="w-full flex flex-col gap-2 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300 animate-fade_half sticky top-24 max-h-base overflow-y-auto">
+                  <div className="w-fit text-2xl font-bold blue-text-gradient">Profiles to Follow</div>
+                  <div className="w-full flex flex-col gap-2">
+                    {users?.map(user => (
+                      <UserCard key={user.id} user={user} forTrending />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </FadeIn>
+          </div>
+        )}
       </div>
     </BaseWrapper>
   );
@@ -347,7 +349,7 @@ const UserInfo = ({ user }: { user: User }) => {
             </Link>
           </div>
         </div>
-        <div className={'border border-neutral-600 border-dotted p-2 rounded-xl w-full min-h-32 lg:w-1/2 text-wrap shrink'}>
+        <div className={'border border-neutral-600 border-dotted p-2 rounded-xl w-full min-h-32 lg:w-1/2 text-wrap shrink break-words'}>
           {user.profile?.description || ''}
           {!user.profile?.description && <span className={'text-neutral-500'}>You haven&apos;t added your bio yet.</span>}
         </div>

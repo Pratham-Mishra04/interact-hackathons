@@ -45,7 +45,7 @@ const ViewAnnouncements = ({
 
   return (
     <Sheet>
-      <SheetTrigger className={`w-1/2 h-full ${triggerClass}`}>
+      <SheetTrigger className={`w-1/2 max-md:w-full h-full ${triggerClass}`}>
         {trigger || <Button className="w-full button-gradient">View All Announcements</Button>}
       </SheetTrigger>
       <SheetContent className="w-[400px] space-y-6">

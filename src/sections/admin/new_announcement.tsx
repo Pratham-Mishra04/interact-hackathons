@@ -55,7 +55,7 @@ const NewAnnouncement = ({
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger className={`w-1/2 ${triggerClass} `}>
+      <DialogTrigger className={`w-1/2 max-md:w-full ${triggerClass} `}>
         <Button className="w-full button-gradient">Create New Announcement</Button>
       </DialogTrigger>
       <DialogContent>

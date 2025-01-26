@@ -114,6 +114,7 @@ export default function AdminLiveRoundAnalytics({
           innerRadius={70}
           outerRadius={100}
           height={140}
+          className="max-md:col-span-2"
         />
       ) : (
         nextRound && (
@@ -123,6 +124,7 @@ export default function AdminLiveRoundAnalytics({
             innerRadius={70}
             outerRadius={100}
             height={140}
+            className="max-md:col-span-2"
           />
         )
       )}

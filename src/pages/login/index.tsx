@@ -180,7 +180,7 @@ const Login = () => {
             <span className="underline underline-offset-2 font-medium cursor-pointer">Privacy Policy.</span>
           </div>
         </div>
-        <div className="w-[55%] max-lg:hidden min-h-base bg-onboarding  "></div>
+        <div className="w-[55%] max-lg:hidden min-h-screen bg-onboarding bg-cover"></div>
       </div>
     </>
   );

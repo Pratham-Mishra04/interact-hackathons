@@ -74,11 +74,11 @@ const Index = () => {
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                   }}
-                  className="text-4xl lg:text-8xl font-bold"
+                  className="text-6xl lg:text-8xl font-bold"
                 >
                   {currentRound ? `Round ${currentRound.index + 1}` : 'Break'}
                 </div>
-                <div className="text-2xl w-3/4 font-medium">
+                <div className="text-2xl w-3/4 max-md:w-full font-medium">
                   {currentRound ? (
                     moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.endTime)) ? (
                       'Judging is Live!'
@@ -100,7 +100,7 @@ const Index = () => {
                 </div>
               </div>
               {(currentRound || nextRound) && (
-                <div className="w-full flex gap-4">
+                <div className="w-full flex max-md:flex-col gap-4">
                   {isOrgUser && <NewAnnouncement setTriggerReload={setAnnouncementReloadTrigger} />}
                   <ViewAnnouncements triggerReload={announcementReloadTrigger} />
                 </div>

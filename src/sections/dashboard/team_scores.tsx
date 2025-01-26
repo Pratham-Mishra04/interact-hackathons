@@ -80,8 +80,6 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
       overallScore: isOverallScoreChanged ? newOverallScore : '',
     };
 
-    console.log(formData);
-
     const toaster = Toaster.startLoad('Updating Scores...');
 
     const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/score`;
@@ -270,8 +268,8 @@ const RoundScorecard = ({
           <Trophy size={32} />
           <h1 className="text-xl md:text-2xl font-semibold text-nowrap">Overall Round Score</h1>
           {isJudgingAllowed ? (
-            <div className="grow flex items-center justify-between gap-4">
-              <div className="flex-center gap-2">
+            <div className="grow flex max-md:flex-col items-center justify-between gap-4">
+              <div className="flex-center max-md:flex-col gap-2">
                 <Input
                   type="number"
                   className="bg-white text-black w-full md:w-60"
