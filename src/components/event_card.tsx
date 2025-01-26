@@ -118,13 +118,7 @@ const LowerCardItem = ({ title, content }: { title: string; content: string }) =
   );
 };
 
-export const HackathonCard = ({
-  hackathon,
-  isAdmin
-}: {
-  hackathon: Hackathon;
-  isAdmin?: boolean
-}) => {
+export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; isAdmin?: boolean }) => {
   const [mutex, setMutex] = useState(false);
 
   const router = useRouter();
@@ -189,13 +183,13 @@ export const HackathonCard = ({
   const getPrizeAmount = () => {
     if (hackathon && hackathon.prizes) {
       return (
-          '₹' +
-          formatPrice(
-              hackathon.prizes.reduce((acc, prize) => {
-                acc = acc + prize.amount;
-                return acc;
-              }, 0)
-          )
+        '₹' +
+        formatPrice(
+          hackathon.prizes.reduce((acc, prize) => {
+            acc = acc + prize.amount;
+            return acc;
+          }, 0)
+        )
       );
     }
     return 'N/A';
@@ -251,8 +245,8 @@ export const HackathonCard = ({
 
         <div className="grid grid-cols-3 gap-4">
           <LowerCardItem
-            title={hackathon.prizes.length > 0 ? 'Prize' : 'Duration'}
-            content={hackathon.prizes.length > 0 ? getPrizeAmount() : getDurationInHours(hackathon.startTime, hackathon.endTime)}
+            title={hackathon.prizes && hackathon.prizes.length > 0 ? 'Prize' : 'Duration'}
+            content={hackathon.prizes && hackathon.prizes.length > 0 ? getPrizeAmount() : getDurationInHours(hackathon.startTime, hackathon.endTime)}
           />
           <LowerCardItem title={'Team'} content={getTeamSize()} />
           <LowerCardItem title="Date" content={`${formattedDay} ${formattedMonth}`} />

@@ -146,7 +146,7 @@ const Index = () => {
             {loading ? (
               <Loader />
             ) : (
-              <FadeIn initialScale={1} className={"h-full"}>
+              <FadeIn initialScale={1} className={'h-full'}>
                 <UserInfo user={userProfile} />
               </FadeIn>
             )}
