@@ -10,6 +10,13 @@ interface Props {
 }
 
 const Links = ({ links, title = 'Links' }: Props) => {
+  const normalizeUrl = (url: string) => {
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      return `https://${url}`;
+    }
+    return url;
+  };
+
   return (
     <TooltipProvider>
       {links && links.length > 0 && (
@@ -17,6 +24,7 @@ const Links = ({ links, title = 'Links' }: Props) => {
           <div className="text-lg font-semibold">{title}</div>
           <div className="w-full flex gap-4 justify-start flex-wrap">
             {links.map(link => {
+              link = normalizeUrl(link);
               return (
                 <Link key={link} href={link} target="_blank" className="relative group">
                   <Tooltip>

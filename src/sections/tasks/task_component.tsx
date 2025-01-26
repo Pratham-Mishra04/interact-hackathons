@@ -44,7 +44,7 @@ const TaskComponent = ({
 }: Props) => {
   const isAssignedUser = (userID: string) => {
     var check = false;
-    task.users.forEach(user => {
+    task.users?.forEach(user => {
       if (user.id == userID) {
         check = true;
         return;
@@ -70,8 +70,8 @@ const TaskComponent = ({
 
   return (
     <>
-      {clickedOnUsers && <UsersList title="Task Users" users={task.users} setShow={setClickedOnUsers} />}
-      <div className="w-screen h-screen fixed bg-gray-50 top-0 overflow-y-auto flex flex-col gap-4 p-8 max-md:px-4 font-primary animate-fade_third z-10 max-md:z-20">
+      {clickedOnUsers && <UsersList title="Task Users" users={task.users || []} setShow={setClickedOnUsers} />}
+      <div className="w-screen h-base fixed bg-gray-50 top-navbar overflow-y-auto flex flex-col gap-4 p-8 max-md:px-4 font-primary animate-fade_third z-10 max-md:z-20">
         <div className="w-full flex flex-col gap-2">
           <ArrowArcLeft
             className="cursor-pointer"
@@ -84,7 +84,7 @@ const TaskComponent = ({
           <div className="w-full flex max-md:flex-col gap-4 justify-between items-center">
             <div className="flex-center gap-2">
               <div className="w-fit flex-center text-4xl font-semibold">
-                {task.prID && `${task.prID}: `}
+                {/* {task.prID && `${task.prID}: `} */}
                 {task.title}
               </div>
               <div className="relative group">
@@ -111,8 +111,8 @@ const TaskComponent = ({
                 />
               </div>
             </div>
-            <div className="max-md:w-full max-md:justify-between flex-center gap-2">
-              <div className="flex-center">
+            <div className="max-md:w-full max-md:justify-between flex-center gap-4">
+              <div className="flex-center gap-2">
                 <Gear onClick={() => setClickedOnEditTask(true)} className="cursor-pointer" size={32} />
                 <Trash onClick={() => setClickedOnDeleteTask(true)} className="cursor-pointer" size={32} />
               </div>
@@ -163,7 +163,7 @@ const TaskComponent = ({
           </div>
         </div>
 
-        {task.users.length > 0 ? (
+        {task.users?.length > 0 ? (
           <div onClick={() => setClickedOnUsers(true)} className="w-fit h-fit flex-center gap-2 cursor-pointer">
             <div className="text-xl font-medium">Assigned To: </div>
             <PictureList users={task.users} size={8} />

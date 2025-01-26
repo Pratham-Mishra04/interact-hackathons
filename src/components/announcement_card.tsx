@@ -100,7 +100,7 @@ const AnnouncementCard = ({ announcement, setAnnouncements, isAdmin = false }: P
                 <DropdownMenuTrigger className="text-xxs">•••</DropdownMenuTrigger>
               )}
               <DropdownMenuContent>
-                {!clickedOnEdit && <DropdownMenuItem onClick={() => setClickedOnEdit(true)}>Edit</DropdownMenuItem>}
+                {/* {!clickedOnEdit && <DropdownMenuItem onClick={() => setClickedOnEdit(true)}>Edit</DropdownMenuItem>} */}
                 <DropdownMenuItem onClick={() => setClickedOnDelete(true)} className="hover:text-primary_danger">
                   Delete
                 </DropdownMenuItem>

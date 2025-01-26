@@ -15,6 +15,7 @@ import ViewAnnouncements from '@/sections/admin/view_announcements';
 import TeamProjectsTable from '@/components/tables/teams_projects';
 import { useRouter } from 'next/router';
 import socketService from '@/config/ws';
+import { userSelector } from '@/slices/userSlice';
 
 const Index = () => {
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
@@ -51,6 +52,13 @@ const Index = () => {
   }, []);
 
   const role = useMemo(() => getHackathonRole(), []);
+
+  const user = useSelector(userSelector);
+
+  const isOrgUser = useMemo(
+    () => user.organizationMemberships?.map(m => m.organizationID).includes(hackathon.organizationID),
+    [user.organizationMemberships, hackathon.organizationID]
+  );
 
   return (
     <BaseWrapper>
@@ -93,7 +101,7 @@ const Index = () => {
               </div>
               {(currentRound || nextRound) && (
                 <div className="w-full flex gap-4 max-md:flex-col">
-                  <NewAnnouncement setTriggerReload={setAnnouncementReloadTrigger} />
+                  {isOrgUser && <NewAnnouncement setTriggerReload={setAnnouncementReloadTrigger} />}
                   <ViewAnnouncements triggerReload={announcementReloadTrigger} />
                 </div>
               )}

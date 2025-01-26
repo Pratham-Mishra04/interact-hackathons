@@ -28,8 +28,6 @@ const Tasks = ({ slug }: Props) => {
   const [clickedOnTask, setClickedOnTask] = useState(false);
   const [clickedTaskID, setClickedTaskID] = useState(-1);
 
-  const [clickedOnNewTask, setClickedOnNewTask] = useState(false);
-
   const [order, setOrder] = useState('deadline');
   const [priority, setPriority] = useState('');
   const [status, setStatus] = useState('');
@@ -38,6 +36,8 @@ const Tasks = ({ slug }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+
+  const [showFilters, setShowFilters] = useState(false);
 
   const getProject = () => {
     const URL = `${PROJECT_URL}/${slug}`;
@@ -69,6 +69,7 @@ const Tasks = ({ slug }: Props) => {
           const taskData = res.data.tasks || [];
           if (initialPage == 1) {
             setTasks(taskData);
+            if (taskData.length > 0) setShowFilters(true);
             const tid = new URLSearchParams(window.location.search).get('tid');
             if (tid && tid != '') {
               taskData.forEach((task: Task, i: number) => {
@@ -118,85 +119,71 @@ const Tasks = ({ slug }: Props) => {
   useEffect(() => {
     getProject();
   }, []);
+
   return (
-    <>
-      {clickedOnNewTask && <NewTask setShow={setClickedOnNewTask} project={project} setTasks={setTasks} />}
-      <div className="w-full flex flex-col">
-        <div className="w-full flex justify-between items-center">
-          <div className="flex-center gap-4">
-            <div className="w-fit text-6xl font-semibold dark:text-white font-primary ">Tasks</div>
-            {tasks && tasks.length > 0 && (
-              <div className="flex-center gap-2 max-md:hidden">
-                <Select
-                  fieldName="Status"
-                  options={['not_completed', 'completed']}
-                  icon={<ChartLine size={20} />}
-                  selectedOption={status}
-                  setSelectedOption={setStatus}
-                />
-                <Select
-                  fieldName="Priority"
-                  options={['low', 'medium', 'high']}
-                  icon={<WarningCircle size={20} />}
-                  selectedOption={priority}
-                  setSelectedOption={setPriority}
-                />
-                <Order
-                  fieldName="Sort By"
-                  options={['deadline', 'latest']}
-                  icon={<SortAscending size={20} />}
-                  selectedOption={order}
-                  setSelectedOption={setOrder}
-                />
-                <Tags selectedTags={tags} setSelectedTags={setTags} />
-                <Users
-                  fieldName="Assigned To"
-                  users={[...project.memberships.map(m => m.user), getUserFromState()]}
-                  selectedUsers={users}
-                  setSelectedUsers={setUsers}
-                />
-                {/* <Search /> */}
-              </div>
-            )}
-          </div>
-
-          <Plus
-            onClick={() => setClickedOnNewTask(true)}
-            size={42}
-            className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
-            weight="regular"
-          />
-        </div>
-
-        <div className="w-full flex flex-col gap-6 py-2">
-          {loading ? (
-            <Loader />
-          ) : tasks.length > 0 ? (
-            <div className="w-full flex justify-evenly">
-              {clickedOnTask && (
-                <TaskView
-                  taskID={clickedTaskID}
-                  tasks={tasks}
-                  project={project}
-                  setShow={setClickedOnTask}
-                  setTasks={setTasks}
-                  setClickedTaskID={setClickedTaskID}
-                />
-              )}
-              <TasksTable
-                tasks={tasks}
-                fetcher={getTasks}
-                hasMore={hasMore}
-                setClickedOnTask={setClickedOnTask}
-                setClickedTaskID={setClickedTaskID}
+    <div className="w-full flex flex-col">
+      <div className="w-full flex justify-between items-center">
+        <div className="flex-center gap-4">
+          <div className="w-fit text-6xl font-semibold dark:text-white font-primary ">Tasks</div>
+          {showFilters && (
+            <div className="flex-center gap-2 max-md:hidden">
+              <Select
+                fieldName="Status"
+                options={['not_completed', 'completed']}
+                icon={<ChartLine size={20} />}
+                selectedOption={status}
+                setSelectedOption={setStatus}
               />
+              <Select
+                fieldName="Priority"
+                options={['low', 'medium', 'high']}
+                icon={<WarningCircle size={20} />}
+                selectedOption={priority}
+                setSelectedOption={setPriority}
+              />
+              <Order
+                fieldName="Sort By"
+                options={['deadline', 'latest']}
+                icon={<SortAscending size={20} />}
+                selectedOption={order}
+                setSelectedOption={setOrder}
+              />
+              <Tags selectedTags={tags} setSelectedTags={setTags} />
+              <Users
+                fieldName="Assigned To"
+                users={[...project.memberships.map(m => m.user), getUserFromState()]}
+                selectedUsers={users}
+                setSelectedUsers={setUsers}
+              />
+              {/* <Search /> */}
             </div>
-          ) : (
-            <div className="mx-auto font-medium text-xl mt-8">No Tasks found :)</div>
           )}
         </div>
+        {!loading && <NewTask project={project} setTasks={setTasks} />}
       </div>
-    </>
+
+      <div className="w-full flex flex-col gap-6 py-2">
+        {loading ? (
+          <Loader />
+        ) : tasks.length > 0 ? (
+          <div className="w-full flex justify-evenly">
+            {clickedOnTask && (
+              <TaskView
+                taskID={clickedTaskID}
+                tasks={tasks}
+                project={project}
+                setShow={setClickedOnTask}
+                setTasks={setTasks}
+                setClickedTaskID={setClickedTaskID}
+              />
+            )}
+            <TasksTable tasks={tasks} fetcher={getTasks} hasMore={hasMore} setClickedOnTask={setClickedOnTask} setClickedTaskID={setClickedTaskID} />
+          </div>
+        ) : (
+          <div className="mx-auto font-medium text-xl mt-8">No Tasks found :)</div>
+        )}
+      </div>
+    </div>
   );
 };
 
