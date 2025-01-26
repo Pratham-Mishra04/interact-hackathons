@@ -4,8 +4,8 @@ import Loader from '../common/loader';
 import Image from 'next/image';
 import TeamSearchFilters from '../team_search_filters';
 import TeamMemberHoverCard from '@/components/team_member_hover_card';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { HackathonTeam, HackathonTrack } from '@/types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { HackathonRound, HackathonTeam, HackathonTrack } from '@/types';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
@@ -33,6 +33,7 @@ const TeamProjectsTable = () => {
   const [tracks, setTracks] = useState<HackathonTrack[]>([]);
   const [clickedOnAddMember, setClickedOnAddMember] = useState<boolean>(false);
   const [clickedTeam, setClickedTeam] = useState(initialHackathonTeam);
+  const [round, setRound] = useState<HackathonRound | undefined>();
 
   const hackathon = useSelector(currentHackathonSelector);
   const user = useSelector(userSelector);
@@ -43,12 +44,15 @@ const TeamProjectsTable = () => {
       initialPage ? initialPage : page
     }&limit=${20}&search=${search}${track != '' && track != 'none' ? `&track_id=${track}` : ''}${
       overallScore != 0 ? `&overall_score=${overallScore}` : ''
-    }${eliminated != '' && eliminated != 'none' ? `&is_eliminated=${eliminated == 'eliminated' ? 'true' : 'false'}` : ''}&order=${order}`;
+    }${
+      eliminated != '' && eliminated != 'none' ? `&is_eliminated=${eliminated == 'eliminated' ? 'true' : 'false'}` : ''
+    }&order=${order}?include=round_score`;
 
     const res = await getHandler(URL, abortController?.signal, true);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
         setTeams(res.data.teams || []);
+        setRound(res.data.round);
       } else {
         const addedTeams = [...teams, ...(res.data.teams || [])];
         if (addedTeams.length === teams.length) setHasMore(false);
@@ -124,7 +128,6 @@ const TeamProjectsTable = () => {
       />
       <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
         <Table className="bg-white rounded-md">
-          {/* <TableCaption>A list of all the participating teams</TableCaption> */}
           <TableHeader className="uppercase text-xs md:text-sm">
             <TableRow>
               <TableHead>Team Name</TableHead>
@@ -132,7 +135,7 @@ const TeamProjectsTable = () => {
               <TableHead>Track</TableHead>
               <TableHead className="max-md:hidden">Members</TableHead>
               <TableHead>Elimination Status</TableHead>
-              <TableHead>{hackathon.isEnded ? 'Overall Score' : 'Round Score'}</TableHead>
+              <TableHead>{hackathon.isEnded ? 'Overall Score' : `Round ${round ? round.index + 1 : ''} Score`}</TableHead>
               {!hackathon.isEnded && hackathon.coordinators?.includes(user.id) && <TableHead>Actions</TableHead>}
             </TableRow>
           </TableHeader>

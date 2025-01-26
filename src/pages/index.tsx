@@ -157,7 +157,7 @@ const Index = () => {
         </div>
 
         <div className={'w-full flex max-lg:flex-col gap-4 mt-5 px-14 max-md:px-7 pb-4'}>
-          <div className={'w-3/4 max-lg:w-full space-y-2 bg-white/40 p-2 rounded-xl'}>
+          <div className={'w-3/4 max-md:w-full space-y-2 bg-white/40 p-2 rounded-xl'}>
             <FadeIn initialScale={1}>
               <div className={'flex gap-2'}>
                 {registeredHackathons.length > 0 && (
@@ -176,28 +176,28 @@ const Index = () => {
                 {hackathonFilter == HackathonType.REGISTERED &&
                   registeredHackathons.length > 0 &&
                   registeredHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={'max-w-80 max-lg:max-w-72'}>
+                    <FadeIn key={hackathon.id} className={'max-w-80 max-md:w-full'}>
                       <HackathonCard hackathon={hackathon} />
                     </FadeIn>
                   ))}
                 {hackathonFilter == HackathonType.ADMIN &&
                   adminHackathons.length > 0 &&
                   adminHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={'max-w-80 max-lg:max-w-72'}>
+                    <FadeIn key={hackathon.id} className={'max-w-80 max-md:w-full'}>
                       <HackathonCard hackathon={hackathon} isAdmin />
                     </FadeIn>
                   ))}
                 {hackathonFilter == HackathonType.ORG &&
                   orgHackathons.length > 0 &&
                   orgHackathons.map(hackathon => (
-                    <FadeIn key={hackathon.id} className={'max-w-80 max-lg:max-w-72'}>
+                    <FadeIn key={hackathon.id} className={'max-w-80 max-md:w-full'}>
                       <HackathonCard hackathon={hackathon} isAdmin />
                     </FadeIn>
                   ))}
               </div>
             </div>
           </div>
-          <FadeIn initialScale={1} className="w-1/4 max-lg:w-full">
+          <FadeIn initialScale={1} className="w-1/4 max-md:w-full">
             {users && users.length > 0 && (
               <div className="w-full flex flex-col gap-2 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300 animate-fade_half sticky top-24 max-h-base overflow-y-auto">
                 <div className="w-fit text-2xl font-bold blue-text-gradient">Profiles to Follow</div>
@@ -229,7 +229,7 @@ const HackathonFilterItem = ({
   return (
     <div
       onClick={() => setFilter(value)}
-      className={`p-2 px-3 max-md:text-sm rounded-lg cursor-pointer shadow-sm transition-all duration-300 ${
+      className={`p-2 px-3 max-md:text-sm rounded-lg cursor-pointer shadow-sm transition-ease-300 ${
         currentFilter === value ? 'bg-sky-400 text-white shadow-none font-medium' : 'bg-white'
       } ${className}`}
     >
