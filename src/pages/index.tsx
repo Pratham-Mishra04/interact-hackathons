@@ -146,7 +146,7 @@ const Index = () => {
             {loading ? (
               <Loader />
             ) : (
-              <FadeIn initialScale={1}>
+              <FadeIn initialScale={1} className={"h-full"}>
                 <UserInfo user={userProfile} />
               </FadeIn>
             )}
@@ -327,9 +327,9 @@ const LiveOnInteract = ({ cards }: { cards: LiveCard[] }) => {
 
 const UserInfo = ({ user }: { user: User }) => {
   return (
-    <div className={'w-full h-full bg-white flex flex-col gap-4 p-4 rounded-xl'}>
-      <div className={'flex w-full gap-10 justify-between max-lg:flex-col max-lg:gap-2'}>
-        <div className={'flex max-sm:flex-col gap-6 w-full lg:w-1/2 justify-around'}>
+    <div className={'w-full h-full bg-white flex flex-col gap-4 p-4 rounded-xl justify-between'}>
+      <div className={'flex w-full h-full gap-10 justify-between max-lg:flex-col max-lg:gap-2'}>
+        <div className={'flex max-sm:flex-col gap-6 max-sm:gap-2 w-full lg:w-1/2 justify-around'}>
           <Image
             src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
             alt={'user-profile-pic'}

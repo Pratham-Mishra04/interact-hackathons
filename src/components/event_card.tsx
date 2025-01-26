@@ -118,7 +118,13 @@ const LowerCardItem = ({ title, content }: { title: string; content: string }) =
   );
 };
 
-export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; isAdmin?: boolean }) => {
+export const HackathonCard = ({
+  hackathon,
+  isAdmin
+}: {
+  hackathon: Hackathon;
+  isAdmin?: boolean
+}) => {
   const [mutex, setMutex] = useState(false);
 
   const router = useRouter();
@@ -181,14 +187,25 @@ export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; is
   const formattedDay = startDate ? startDate.getDate() : 'N/A';
 
   const getPrizeAmount = () => {
-    if (hackathon.prizes) {
-      return String(hackathon.prizes[0].amount);
+    if (hackathon && hackathon.prizes) {
+      return (
+          '₹' +
+          formatPrice(
+              hackathon.prizes.reduce((acc, prize) => {
+                acc = acc + prize.amount;
+                return acc;
+              }, 0)
+          )
+      );
     }
     return 'N/A';
   };
 
   const getTeamSize = () => {
-    return `${hackathon.minTeamSize || 'N/A'}-${hackathon.maxTeamSize || 'N/A'}`;
+    if (hackathon) {
+      return `${hackathon.minTeamSize || 'N/A'}-${hackathon.maxTeamSize || 'N/A'}`;
+    }
+    return 'N/A';
   };
 
   return (
@@ -234,8 +251,8 @@ export const HackathonCard = ({ hackathon, isAdmin }: { hackathon: Hackathon; is
 
         <div className="grid grid-cols-3 gap-4">
           <LowerCardItem
-            title={hackathon.prizes[0]?.amount ? 'Prize' : 'Duration'}
-            content={hackathon.prizes[0]?.amount ? getPrizeAmount() : getDurationInHours(hackathon.startTime, hackathon.endTime)}
+            title={hackathon.prizes.length > 0 ? 'Prize' : 'Duration'}
+            content={hackathon.prizes.length > 0 ? getPrizeAmount() : getDurationInHours(hackathon.startTime, hackathon.endTime)}
           />
           <LowerCardItem title={'Team'} content={getTeamSize()} />
           <LowerCardItem title="Date" content={`${formattedDay} ${formattedMonth}`} />
