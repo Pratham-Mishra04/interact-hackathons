@@ -11,7 +11,13 @@ import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import { isAccessDeniedError } from '@/utils/funcs/misc';
 
-export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRound | null }) {
+export default function AdminLiveRoundAnalytics({
+  currentRound,
+  nextRound,
+}: {
+  currentRound: HackathonRound | null;
+  nextRound: HackathonRound | null;
+}) {
   const [totalTeams, setTotalTeams] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalTeamsLeft, setTotalTeamsLeft] = useState(0);
@@ -69,7 +75,9 @@ export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRou
         </span> */}
       </AnalyticBox>
       <AnalyticBox className="hidden md:block">
-        <div className="text-sm font-semibold text-primary_btn">{round ? `Round ${(round?.index || 0) + 1} is Live!` : 'All rounds have ended.'}</div>
+        <div className="text-sm font-semibold text-primary_btn">
+          {currentRound ? `Round ${(currentRound?.index || 0) + 1} is Live!` : nextRound ? 'Break is going on.' : 'All rounds have ended.'}
+        </div>
       </AnalyticBox>
       <AnalyticBox className="flex flex-col gap-5 justify-between">
         <div className="flex items-start justify-between">
@@ -99,7 +107,25 @@ export default function AdminLiveRoundAnalytics({ round }: { round: HackathonRou
           <p>{analyticsData.total_teams.trend}</p>
         </span> */}
       </AnalyticBox>
-      {round && <TimeProgressGraph time1={moment(round?.startTime)} time2={moment(round?.endTime)} innerRadius={70} outerRadius={100} height={140} />}
+      {currentRound ? (
+        <TimeProgressGraph
+          time1={moment(currentRound?.startTime)}
+          time2={moment(currentRound?.endTime)}
+          innerRadius={70}
+          outerRadius={100}
+          height={140}
+        />
+      ) : (
+        nextRound && (
+          <TimeProgressGraph
+            time1={moment(nextRound?.startTime)}
+            time2={moment(nextRound?.endTime)}
+            innerRadius={70}
+            outerRadius={100}
+            height={140}
+          />
+        )
+      )}
     </div>
   );
 }

@@ -51,7 +51,7 @@ const ViewAnnouncements = ({
       <SheetContent className="w-[400px] space-y-6">
         <SheetHeader>
           <SheetTitle>Announcements</SheetTitle>
-          <SheetDescription>List of all the announcements which are not shown to the participants </SheetDescription>
+          <SheetDescription>List of all the announcements which are now shown to the participants </SheetDescription>
         </SheetHeader>
         {announcements && announcements.length > 0 ? (
           <div className="w-full space-y-4">

@@ -56,8 +56,8 @@ const Index = () => {
   const user = useSelector(userSelector);
 
   const isOrgUser = useMemo(
-    () => user.organizationMemberships?.map(m => m.organizationID).includes(hackathon.organizationID),
-    [user.organizationMemberships, hackathon.organizationID]
+    () => user.organizationMemberships?.map(m => m.organizationID).includes(hackathon.organizationID) || hackathon.coordinators?.includes(user.id),
+    [user, hackathon]
   );
 
   return (
@@ -66,7 +66,7 @@ const Index = () => {
         <div className=" w-full h-fit flex flex-col gap-4">
           <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
             <div className="--heading w-full md:w-1/2 h-full flex flex-col gap-4">
-              <div className="w-full h-full">
+              <div className="w-full h-full max-md:text-center">
                 <div className="text-xl">Now Ongoing</div>
                 <div
                   style={{
@@ -74,7 +74,7 @@ const Index = () => {
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                   }}
-                  className="text-3xl md:text-4xl lg:text-8xl font-bold"
+                  className="text-4xl lg:text-8xl font-bold"
                 >
                   {currentRound ? `Round ${currentRound.index + 1}` : 'Break'}
                 </div>
@@ -100,13 +100,13 @@ const Index = () => {
                 </div>
               </div>
               {(currentRound || nextRound) && (
-                <div className="w-full flex gap-4 max-md:flex-col">
+                <div className="w-full flex gap-4">
                   {isOrgUser && <NewAnnouncement setTriggerReload={setAnnouncementReloadTrigger} />}
                   <ViewAnnouncements triggerReload={announcementReloadTrigger} />
                 </div>
               )}
             </div>
-            <AdminLiveRoundAnalytics round={currentRound} />
+            <AdminLiveRoundAnalytics currentRound={currentRound} nextRound={nextRound} />
           </div>
         </div>
         <TeamProjectsTable />
