@@ -4,7 +4,7 @@ import { PRIORITY, Project, Task, User } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { MagnifyingGlass } from '@phosphor-icons/react';
+import { MagnifyingGlass, Plus } from '@phosphor-icons/react';
 import { SERVER_ERROR } from '@/config/errors';
 import moment from 'moment';
 import PrimaryButton from '@/components/buttons/primary_btn';
@@ -14,15 +14,15 @@ import Tags from '@/components/form/tags';
 import Select from '@/components/form/select';
 import Time from '@/components/form/time';
 import { getInputFieldFormatTime } from '@/utils/funcs/time';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 interface Props {
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
   project: Project;
   setShowTasks?: React.Dispatch<React.SetStateAction<boolean>>;
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 }
 
-const NewTask = ({ setShow, project, setShowTasks, setTasks }: Props) => {
+const NewTask = ({ project, setShowTasks, setTasks }: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState<string[]>([]);
@@ -31,6 +31,7 @@ const NewTask = ({ setShow, project, setShowTasks, setTasks }: Props) => {
   const [difficulty, setDifficulty] = useState('easy');
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [status, setStatus] = useState(0);
   const [mutex, setMutex] = useState(false);
@@ -111,7 +112,11 @@ const NewTask = ({ setShow, project, setShowTasks, setTasks }: Props) => {
       const task = res.data.task;
       setTasks(prev => [task, ...prev]);
 
-      setShow(false);
+      setIsDialogOpen(false);
+      setTitle('');
+      setDescription('');
+      setUsers([]);
+      setStatus(0);
       if (setShowTasks) setShowTasks(true);
       Toaster.stopLoad(toaster, 'New Task Added!', 1);
     } else {
@@ -123,19 +128,12 @@ const NewTask = ({ setShow, project, setShowTasks, setTasks }: Props) => {
     }
   };
 
-  useEffect(() => {
-    document.documentElement.style.overflowY = 'hidden';
-    document.documentElement.style.height = '100vh';
-
-    return () => {
-      document.documentElement.style.overflowY = 'auto';
-      document.documentElement.style.height = 'auto';
-    };
-  }, []);
-
   return (
-    <>
-      <div className="fixed top-[10%] max-h-[80%] max-md:top-20 w-[640px] overflow-y-auto max-md:w-5/6 backdrop-blur-2xl bg-white flex flex-col gap-4 rounded-lg p-6 max-md:p-5 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger>
+        <Plus size={42} className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer" weight="regular" />
+      </DialogTrigger>
+      <DialogContent className="min-w-[40%]">
         <div className="text-3xl max-md:text-xl font-semibold">{status == 0 ? 'Task Info' : status == 1 ? 'Select Users' : 'Review Details'}</div>
         <div className="w-full flex flex-col gap-4">
           {status == 0 ? (
@@ -214,10 +212,8 @@ const NewTask = ({ setShow, project, setShowTasks, setTasks }: Props) => {
             </>
           )}
         </div>
-      </div>
-
-      <div onClick={() => setShow(false)} className="bg-backdrop w-screen h-screen fixed top-0 left-0 animate-fade_third z-20"></div>
-    </>
+      </DialogContent>
+    </Dialog>
   );
 };
 

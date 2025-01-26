@@ -5,8 +5,6 @@ import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import deleteHandler from '@/handlers/delete_handler';
 import ConfirmDelete from '@/components/common/confirm_delete';
-import { useSelector } from 'react-redux';
-import { userSelector } from '@/slices/userSlice';
 import patchHandler from '@/handlers/patch_handler';
 import NewSubTask from './new_sub_task';
 import { initialSubTask, initialTask } from '@/types/initials';
@@ -35,8 +33,6 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, project,
   const [clickedOnDeleteSubTask, setClickedOnDeleteSubTask] = useState(false);
 
   const task = tasks[taskID] || initialTask;
-
-  const user = useSelector(userSelector);
 
   const handleDelete = async () => {
     const toaster = Toaster.startLoad('Deleting the task...');

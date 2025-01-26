@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '../common/loader';
 import Image from 'next/image';
@@ -16,7 +16,6 @@ import { UserPlus } from '@phosphor-icons/react';
 import { initialHackathonTeam } from '@/types/initials';
 import AddTeamMember from '@/sections/admin/add_team_member';
 import NewTeam from '@/sections/admin/new_team';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
 import Status from '../common/status';
 import { isAccessDeniedError } from '@/utils/funcs/misc';
 import { userSelector } from '@/slices/userSlice';
@@ -88,7 +87,7 @@ const TeamProjectsTable = () => {
 
   const getTracks = async () => {
     const URL = `/hackathons/tracks/${hackathon.id}`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       setTracks(res.data.tracks);
     } else {
@@ -99,8 +98,6 @@ const TeamProjectsTable = () => {
   useEffect(() => {
     getTracks();
   }, []);
-
-  const role = useMemo(() => getHackathonRole(), []);
 
   return (
     <div className="flex flex-col gap-4">
@@ -127,7 +124,7 @@ const TeamProjectsTable = () => {
       />
       <InfiniteScroll className="w-full" dataLength={teams.length} next={fetchTeams} hasMore={hasMore} loader={<></>}>
         <Table className="bg-white rounded-md">
-          <TableCaption>A list of all the participating teams</TableCaption>
+          {/* <TableCaption>A list of all the participating teams</TableCaption> */}
           <TableHeader className="uppercase text-xs md:text-sm">
             <TableRow>
               <TableHead>Team Name</TableHead>
@@ -136,7 +133,7 @@ const TeamProjectsTable = () => {
               <TableHead className="max-md:hidden">Members</TableHead>
               <TableHead>Elimination Status</TableHead>
               <TableHead>{hackathon.isEnded ? 'Overall Score' : 'Round Score'}</TableHead>
-              {!hackathon.isEnded && role == 'admin' && <TableHead>Actions</TableHead>}
+              {!hackathon.isEnded && hackathon.coordinators?.includes(user.id) && <TableHead>Actions</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody className="w-full">
@@ -177,7 +174,7 @@ const TeamProjectsTable = () => {
                   <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
                 </TableCell>
                 <TableCell>{hackathon.isEnded ? team.overallScore : team.roundScore}</TableCell>
-                {!hackathon.isEnded && role == 'admin' && (
+                {!hackathon.isEnded && hackathon.coordinators?.includes(user.id) && (
                   <TableCell
                     onClick={el => {
                       el.stopPropagation();

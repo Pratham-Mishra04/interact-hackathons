@@ -109,10 +109,10 @@ const EditSubTask = ({ setShow, subTask, task, setTasks }: Props) => {
       if (
         isArrEdited(
           userIDs,
-          subTask.users.map(user => user.id)
+          subTask.users?.map(user => user.id)
         )
       ) {
-        const oldUserIDs = subTask.users.map(user => user.id);
+        const oldUserIDs = subTask.users?.map(user => user.id);
         let addUsersSuccess = true;
         let removeUsersSuccess = true;
 

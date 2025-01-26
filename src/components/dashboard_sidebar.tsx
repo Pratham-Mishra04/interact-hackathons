@@ -2,7 +2,7 @@ import { Blueprint, UsersThree } from '@phosphor-icons/react';
 import { ArrowLeft } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Button } from './ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { HackathonTeam } from '@/types';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
@@ -82,21 +82,31 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
       <div className="w-full flex flex-col gap-2">
         {role == 'admin' && !hackathon.isEnded && (
           <Dialog open={clickedOnEliminate} onOpenChange={setClickedOnEliminate}>
-            <DialogTrigger className={`${team.isEliminated ? 'bg-green-500' : 'bg-red-500'} text-white py-2 rounded-md`}>
+            <DialogTrigger
+              className={`${
+                team.isEliminated ? 'bg-green-500 hover:bg-green-700' : 'bg-red-500 hover:bg-red-700'
+              } text-white py-2 rounded-md transition-ease-300`}
+            >
               {team.isEliminated ? 'Restore' : 'Eliminate'} Team
             </DialogTrigger>
             <DialogContent>
               <DialogHeader className="text-left">
                 <DialogTitle>{team.isEliminated ? 'Restore' : 'Eliminate'} Team</DialogTitle>
-                <DialogDescription>This action can be undone. This will remove the team from the competition.</DialogDescription>
+                <DialogDescription>
+                  This action can be undone.{' '}
+                  {team.isEliminated ? 'This will get the team back in the competition.' : 'This will remove the team from the competition.'}
+                </DialogDescription>
               </DialogHeader>
               <Button onClick={handleEliminateTeam} variant={team.isEliminated ? 'default' : 'destructive'}>
-                {team.isEliminated ? 'Restore' : 'Eliminate'}
+                {team.isEliminated ? 'Restore' : 'Eliminate'} Team
               </Button>
+              <DialogFooter>
+                If Judging is live, the action will be reflected after the judging ends, else it will be reflected immediately.
+              </DialogFooter>
             </DialogContent>
           </Dialog>
         )}
-        <Button onClick={() => router.back()} className="bg-primary_text mt-6">
+        <Button onClick={() => router.back()} className="bg-primary_text mt-6 transition-ease-300">
           <span className="hidden md:block">Go Back</span>
           <span className="md:hidden">
             <ArrowLeft size={16} />

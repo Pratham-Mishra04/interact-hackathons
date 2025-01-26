@@ -72,20 +72,17 @@ const EditProject = ({ project, setTeam }: Props) => {
 
     const URL = `${PROJECT_URL}/${project.slug}`;
 
-    const res = await patchHandler(URL, formData, 'multipart/form-data');
+    const res = await patchHandler(URL, formData);
 
     if (res.statusCode === 200) {
       const newProject = res.data.project;
       newProject.user = user;
+
       setTeam(prev => {
         return { ...(prev as HackathonTeam), project: newProject };
       });
 
       Toaster.stopLoad(toaster, 'Project Edited', 1);
-      setTagline('');
-      setDescription('');
-      setTags([]);
-      setLinks([]);
       setIsDialogOpen(false);
     } else Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
 
@@ -111,7 +108,7 @@ const EditProject = ({ project, setTeam }: Props) => {
           <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={5} />
         </div>
         <DialogFooter className="w-full flex-center">
-          <Button onClick={handleSubmit} type="button" variant="outline" className="w-1/2">
+          <Button onClick={handleSubmit} type="button" variant="outline" className="w-full">
             Submit
           </Button>
         </DialogFooter>
