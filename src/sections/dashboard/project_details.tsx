@@ -8,10 +8,12 @@ import { getProjectPicHash, getProjectPicURL } from '@/utils/funcs/safe_extract'
 import { FigmaLogo } from '@phosphor-icons/react';
 import { GitBranch } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useState } from 'react';
 
 export const ProjectDetails = ({ project }: { project: Project | undefined }) => {
   const [clickedOnReadMore, setClickedOnReadMore] = useState(false);
+
   return !project ? (
     <div className="w-full h-fit flex-center text-center text-4xl font-medium pt-32">Project Not Submitted Yet.</div>
   ) : (
@@ -90,19 +92,45 @@ export const ProjectDetails = ({ project }: { project: Project | undefined }) =>
         </div>
       </div>
       <div className="w-1/3 space-y-4">
-        <div className="w-full bg-white p-4 rounded-lg">
-          <div className="text-lg font-semibold text-primary_text flex items-center gap-2">
-            <GitBranch />
-            Connected Github Repositories
+        {project.githubRepos && project.githubRepos.length > 0 && (
+          <div className="w-full bg-white p-4 rounded-lg space-y-2">
+            <div className="text-lg font-semibold text-primary_text flex items-center gap-2">
+              <GitBranch />
+              Connected Github Repositories
+            </div>
+            {project.githubRepos.map((repo, index) => (
+              <li key={index} className="flex items-center w-full mb-2">
+                <Link
+                  href={repo.repoLink}
+                  target="_blank"
+                  key={index}
+                  className="w-full h-8 py-2 px-3 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
+                >
+                  <span className="font-medium">{repo.repoName}</span>
+                </Link>
+              </li>
+            ))}
           </div>
-        </div>
+        )}
 
-        <div className="w-full bg-white p-4 rounded-lg">
-          <div className="text-lg font-semibold text-primary_text flex items-center gap-2">
-            <FigmaLogo size={24} />
-            Connected Figma Files
+        {project.figmaFiles && project.figmaFiles.length > 0 && (
+          <div className="w-full bg-white p-4 rounded-lg space-y-2">
+            <div className="text-lg font-semibold text-primary_text flex items-center gap-2">
+              <FigmaLogo size={24} />
+              Connected Figma Files
+            </div>
+            {project.figmaFiles.map((file, index) => (
+              <Link
+                href={file.fileURL}
+                target="_blank"
+                key={index}
+                className="w-full h-8 py-2 px-3 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
+              >
+                <span className="font-medium line-clamp-1">{file.fileURL}</span>
+              </Link>
+            ))}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

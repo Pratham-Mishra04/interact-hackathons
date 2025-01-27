@@ -4,8 +4,9 @@ import RepositoriesComponent from '@/sections/projects/repositories';
 import FigmaComponent from '@/sections/projects/figma';
 import { HackathonTeam, Project } from '@/types';
 import Separator from '@/components/ui/separator';
-import { FigmaLogo } from '@phosphor-icons/react';
+import { FigmaLogo, Info } from '@phosphor-icons/react';
 import { GitBranch } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ProjectViewProps {
   project: Project;
@@ -24,7 +25,11 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, team, setTeam }) => 
           <RepositoriesComponent team={team} />
         </div>
         <div className="w-full bg-white p-4 rounded-xl space-y-4">
-          <ProjectBlockHeader title="Connected Figma Files" icon={<FigmaLogo size={24} />} />
+          <ProjectBlockHeader
+            title="Connected Figma Files"
+            icon={<FigmaLogo size={24} />}
+            toolTip="Designers of the team can sync their accounts and then add their respective figma files."
+          />
           <FigmaComponent team={team} />
         </div>
       </div>
@@ -32,12 +37,33 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, team, setTeam }) => 
   );
 };
 
-export const ProjectBlockHeader = ({ title, icon, separator = false }: { title: string; icon: React.ReactNode; separator?: boolean }) => {
+export const ProjectBlockHeader = ({
+  title,
+  icon,
+  separator = false,
+  toolTip,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  separator?: boolean;
+  toolTip?: string;
+}) => {
   return (
     <div className="space-y-2">
       <div className="text-lg font-semibold text-primary_text flex items-center gap-2">
         {icon}
         {title}
+
+        {toolTip && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Info />
+              </TooltipTrigger>
+              <TooltipContent>{toolTip}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </div>
       {separator && <Separator className="border-primary_text" />}
     </div>

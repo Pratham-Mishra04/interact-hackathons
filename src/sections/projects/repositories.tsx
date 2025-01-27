@@ -16,6 +16,17 @@ import deleteHandler from '@/handlers/delete_handler';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const RepositoriesComponent = ({ team }: { team: HackathonTeam }) => {
   const [githubRepos, setGithubRepos] = useState<GithubRepo[]>([]);
@@ -41,17 +52,18 @@ const RepositoriesComponent = ({ team }: { team: HackathonTeam }) => {
   }, [team]);
 
   const isValid = useMemo(() => newRepos.every(repo => isURL(repo)), [newRepos]);
+  const canAddMore = useMemo(() => newRepos.length + githubRepos.length < 5, [newRepos, githubRepos]);
 
   const handleSaveRepositories = async () => {
     const URL = `${BACKEND_URL}/auth/github/${team.id}?token=${Cookies.get('token')}&repo_links=${newRepos.join(',')}`;
     window.location.assign(URL);
   };
 
-  const handleRepoDelete = async (repo: string) => {
-    const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/github/${repo}?repoID=${repo}`;
-    const res = await deleteHandler(URL, { project_id: team.projectID });
+  const handleRepoDelete = async (repoID: string) => {
+    const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/github/${repoID}`;
+    const res = await deleteHandler(URL);
     if (res.statusCode == 200) {
-      setGithubRepos(prev => prev.filter(r => r.id != repo));
+      setGithubRepos(prev => prev.filter(r => r.id != repoID));
       Toaster.success('Repository deleted successfully');
     } else {
       Toaster.error(res.data.message || SERVER_ERROR);
@@ -93,21 +105,40 @@ const RepositoriesComponent = ({ team }: { team: HackathonTeam }) => {
         <Loader />
       ) : (
         <div className="">
-          <ul className="list-disc space-y-2">
+          <ul className="list-disc">
             {githubRepos.map((repo, index) => (
-              <li key={index} className="flex items-center w-96">
+              <li key={index} className="flex items-center w-full mb-2">
                 <Link
                   href={repo.repoLink}
                   target="_blank"
                   key={index}
-                  className="w-96 h-8 py-2 px-3 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
+                  className="w-full h-8 py-2 px-3 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
                 >
-                  <span className="text-blue-500 dark:text-blue-400 font-semibold">{repo.repoName}</span>
+                  <span className="font-medium">{repo.repoName}</span>
                 </Link>
-                <Trash className="h-5 w-5 ml-2 text-red-500 cursor-pointer" onClick={() => handleRepoDelete(repo.id)} />
+
+                <AlertDialog>
+                  <AlertDialogTrigger>
+                    <Trash className="h-5 w-5 ml-2 text-red-500 cursor-pointer" />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action will remove the connected webhook on your repository and we won&apos;t be able to track your progress. It will
+                        also deleted the existing tracked analytics on this repository.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleRepoDelete(repo.id)}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </li>
             ))}
           </ul>
+
           <Dialog>
             <DialogTrigger className="w-full">
               <Button className="w-full" variant="outline">
@@ -140,12 +171,16 @@ const RepositoriesComponent = ({ team }: { team: HackathonTeam }) => {
                     </button>
                   </div>
                 ))}
-                <div
-                  onClick={() => setNewRepos(prev => [...prev, ''])}
-                  className="w-full h-10 text-sm bg-primary_comp hover:bg-primary_comp_hover flex-center gap-2 rounded-md transition-ease-300 cursor-pointer"
-                >
-                  New Link <Plus weight="bold" />
-                </div>
+                {canAddMore ? (
+                  <div
+                    onClick={() => setNewRepos(prev => [...prev, ''])}
+                    className="w-full h-10 text-sm bg-primary_comp hover:bg-primary_comp_hover flex-center gap-2 rounded-md transition-ease-300 cursor-pointer"
+                  >
+                    New Link <Plus weight="bold" />
+                  </div>
+                ) : (
+                  <div className="text-center text-gray-500 text-sm font-medium">Can only add 5 links.</div>
+                )}
               </div>
               <TooltipProvider>
                 <Tooltip>

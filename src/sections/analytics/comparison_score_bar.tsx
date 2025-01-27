@@ -4,7 +4,7 @@ const ComparisonScoreBar = ({ max, min, score }: { max: number; min: number; sco
   const percentage = ((score - min) / (max - min)) * 100;
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 max-w-md mx-auto">
+    <div className="w-full h-full flex flex-col gap-3 max-w-md mx-auto pr-2">
       <div className="font-medium">Comparison Activity</div>
       {percentage > 100 || max == min ? (
         <div className="text-2xl font-semibold">NA</div>
@@ -24,7 +24,7 @@ const ComparisonScoreBar = ({ max, min, score }: { max: number; min: number; sco
             ></div>
           </div>
           <div
-            className="absolute mt-2 text-sm text-gray-700 -translate-x-1/2"
+            className="absolute mt-2 text-sm font-medium text-gray-700 -translate-x-1/2"
             style={{
               left: `calc(${percentage}%)`,
               bottom: '-24px',

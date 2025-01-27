@@ -246,7 +246,7 @@ export default function ParticipantLiveRoundAnalytics({
 
 export const PercentageChange = ({ change }: { change?: number }) =>
   change && change != 0 ? (
-    <div className={`${change > 0 ? 'text-green-300' : 'text-priority_high'} text-xs`}>{`${change}% ${
+    <div className={`${change > 0 ? 'text-green-300' : 'text-priority_high'} text-xs`}>{`${Math.abs(change)}% ${
       change > 0 ? 'increase' : 'decrease'
     } from last round`}</div>
   ) : (

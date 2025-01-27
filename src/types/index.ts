@@ -230,6 +230,8 @@ export interface Project {
   organization: Organization | null;
   createdAt: Date;
   history: ProjectHistory[] | null;
+  githubRepos?: GithubRepo[];
+  figmaFiles?: FigmaFile[];
 }
 
 export interface PostTag {

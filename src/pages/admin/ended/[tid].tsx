@@ -45,7 +45,7 @@ export default function Page({ tid }: { tid: string }) {
 
   const menuData: MenuItem[] = [
     {
-      title: 'Team Details',
+      title: 'Team Dashboard',
       Icon: UsersThree,
       Screen: <TeamDetails team={team} />,
     },

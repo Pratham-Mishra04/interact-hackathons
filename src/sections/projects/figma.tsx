@@ -28,11 +28,10 @@ const FigmaComponent = ({ team }: { team: HackathonTeam }) => {
   const user = useSelector(userSelector);
 
   const isValid = useMemo(() => newFigmaFiles.every(repo => isURL(repo)), [newFigmaFiles]);
+  const canAddMore = useMemo(() => newFigmaFiles.length + figmaFiles.length < 5, [newFigmaFiles, figmaFiles]);
 
   const handleSaveFigmaFiles = async () => {
-    const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/figma?projectID=${
-      team.projectID
-    }&file_urls=${newFigmaFiles.join(',')}`;
+    const URL = `/hackathons/${team.hackathonID}/participants/teams/${team.id}/project/figma?file_urls=${newFigmaFiles.join(',')}`;
     const body = {};
     const res = await postHandler(URL, body);
     if (res.statusCode == 201) {
@@ -49,6 +48,7 @@ const FigmaComponent = ({ team }: { team: HackathonTeam }) => {
   useEffect(() => {
     const status = new URLSearchParams(window.location.search).get('status');
     const username = new URLSearchParams(window.location.search).get('username');
+    const tab = new URLSearchParams(window.location.search).get('tab');
     const message = new URLSearchParams(window.location.search).get('message');
 
     if (status || message) {
@@ -56,7 +56,7 @@ const FigmaComponent = ({ team }: { team: HackathonTeam }) => {
 
       if (status) {
         if (status && status == '1') {
-          if (username && username != '') {
+          if (username && username != '' && tab && tab == 'figma') {
             Toaster.success('Synced with Figma');
             dispatch(setFigmaUsername(username));
           }
@@ -113,16 +113,16 @@ const FigmaComponent = ({ team }: { team: HackathonTeam }) => {
         <Loader />
       ) : user.figmaUsername ? (
         <div>
-          <ul className="list-disc space-y-2">
+          <ul className="list-disc">
             {figmaFiles.map((file, index) => (
               <li key={index} className="flex items-center">
                 <Link
                   href={file.fileURL}
                   target="_blank"
                   key={index}
-                  className="w-fit h-8 py-2 px-3 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
+                  className="w-[calc(100%-32px)] h-8 py-2 px-3 mb-2 rounded-lg flex items-center gap-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 shadow-sm"
                 >
-                  <span className="text-blue-500 dark:text-blue-400 font-semibold">{file.fileURL}</span>
+                  <span className="font-medium line-clamp-1">{file.fileURL}</span>
                 </Link>
                 <Trash className="h-5 w-5 ml-2 text-red-500 cursor-pointer" onClick={() => handleFigmaDelete(file.id)} />
               </li>
@@ -161,12 +161,16 @@ const FigmaComponent = ({ team }: { team: HackathonTeam }) => {
                     </button>
                   </div>
                 ))}
-                <div
-                  onClick={() => setNewFigmaFiles(prev => [...prev, ''])}
-                  className="w-full h-10 text-sm bg-primary_comp hover:bg-primary_comp_hover flex-center gap-2 rounded-md transition-ease-300 cursor-pointer"
-                >
-                  New Link <Plus weight="bold" />
-                </div>
+                {canAddMore ? (
+                  <div
+                    onClick={() => setNewFigmaFiles(prev => [...prev, ''])}
+                    className="w-full h-10 text-sm bg-primary_comp hover:bg-primary_comp_hover flex-center gap-2 rounded-md transition-ease-300 cursor-pointer"
+                  >
+                    New Link <Plus weight="bold" />
+                  </div>
+                ) : (
+                  <div className="text-center text-gray-500 text-sm font-medium">Can only add 5 links.</div>
+                )}
               </div>
               <TooltipProvider>
                 <Tooltip>

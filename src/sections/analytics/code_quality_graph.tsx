@@ -107,7 +107,7 @@ const CodeQualityGraph = ({ teamID }: { teamID: string }) => {
           transition-all duration-300 ease-in-out transform`}
                 onClick={() => setGraphIndex(index)}
               >
-                <div className="w-full flex items-center justify-between">
+                <div className="w-full h-full flex items-start justify-between">
                   <span className="text-lg font-semibold leading-none sm:text-3xl">{repo.repoName}</span>
                   <Link target="_blank" href={repo.repoLink}>
                     <ArrowUpRight />
@@ -122,7 +122,7 @@ const CodeQualityGraph = ({ teamID }: { teamID: string }) => {
         <div>No Github Repositories are connected for analytics.</div>
       )}
 
-      {/* {graphIndex != -1 && (
+      {graphIndex != -1 && chartData.map(c => c.score).reduce((a, b) => a + b, 0) != 0 && (
         <ChartContainer config={chartConfig} className="h-fit w-full">
           <BarChart data={chartData}>
             <XAxis dataKey="metric" tickLine={false} tickMargin={10} axisLine={false} angle={-75} />
@@ -130,7 +130,7 @@ const CodeQualityGraph = ({ teamID }: { teamID: string }) => {
             <Bar dataKey="score" fill="var(--color-repo)" radius={4} />
           </BarChart>
         </ChartContainer>
-      )} */}
+      )}
     </AnalyticBox>
   );
 };
