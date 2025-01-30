@@ -3,17 +3,17 @@ import getHandler from '@/handlers/get_handler';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { Announcement, HackathonRound } from '@/types';
-import TimeProgressGraph from '@/components/common/time_graph';
 import moment from 'moment';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import Masonry from 'react-masonry-css';
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { Blueprint, Check, FigmaLogo, GithubLogo, Users } from '@phosphor-icons/react';
+import { Blueprint, FigmaLogo, GithubLogo, Users } from '@phosphor-icons/react';
 import AnnouncementCard from '@/components/announcement_card';
 import { formatPrice } from '@/utils/funcs/misc';
 import socketService from '@/config/ws';
+import ShineBorder from '@/components/ui/shine-border';
 
 export default function ParticipantLiveRoundAnalytics({
   teamID,
@@ -138,7 +138,12 @@ export default function ParticipantLiveRoundAnalytics({
         </div>
         <Masonry breakpointCols={{ default: 4 }} className="w-[28rem] masonry-grid" columnClassName="masonry-grid_column">
           <div className="w-full h-24 bg-white rounded-b-lg text-3xl font-bold flex-center">₹{formatPrice(analyticsData.trackPrize)}</div>
-          <div className="w-[calc(200%-16px)] h-48 bg-white rounded-lg m-2">
+          <ShineBorder
+            className="w-[calc(200%-16px)] h-48 bg-white rounded-lg m-2 shadow-lg"
+            color={['#A07CFE', '#98D8EF', '#4B9EFF']}
+            borderRadius={7}
+            borderWidth={1.5}
+          >
             {!currentRound ? (
               nextRound ? (
                 <div className="w-full h-full flex-center text-lg">Next round starts {moment(nextRound.startTime).fromNow()}</div>
@@ -205,7 +210,7 @@ export default function ParticipantLiveRoundAnalytics({
                 </RadialBarChart>
               </ChartContainer>
             )}
-          </div>
+          </ShineBorder>
           <div></div>
           <div className="w-full h-24 bg-white rounded-b-lg text-3xl font-bold flex-center">{analyticsData.teamsLeftInTrack}</div>
           <div className="w-full h-[6.5rem] bg-white rounded-t-lg mt-2 text-3xl font-bold flex-center">{analyticsData.totalGithubCommits}</div>

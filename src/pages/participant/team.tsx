@@ -18,6 +18,7 @@ import BaseWrapper from '@/wrappers/base';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import socketService from '@/config/ws';
+import Image from 'next/image';
 
 const Team = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -52,16 +53,16 @@ const Team = () => {
   useEffect(() => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
-      const now = moment();
-      if (hackathon.isEnded) window.location.replace('/participant/ended');
-      else if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime))) {
-        if (now.isAfter(hackathon.startTime)) window.location.replace('/participant/live');
-        else window.location.replace('/');
-      } else {
-        getTeam();
-        getTracks();
-        socketService.connect(hackathon.id);
-      }
+      // const now = moment();
+      // if (hackathon.isEnded) window.location.replace('/participant/ended');
+      // else if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime))) {
+      //   if (now.isAfter(hackathon.startTime)) window.location.replace('/participant/live');
+      //   else window.location.replace('/');
+      // } else {
+      getTeam();
+      getTracks();
+      socketService.connect(hackathon.id);
+      // }
     }
   }, []);
 
@@ -149,7 +150,14 @@ const Team = () => {
   return (
     <BaseWrapper>
       <div className="w-full min-h-base p-8 md:p-12 flex flex-col md:justify-start gap-8 md:gap-16 font-primary">
-        <div className="w-full mx-auto flex flex-col items-center md:flex-row gap-4 md:gap-8">
+        <Image
+          width={350}
+          height={150}
+          className="w-screen h-screen object-cover absolute top-0 left-0 opacity-60"
+          src="/team-formation-bg.svg"
+          alt=""
+        />
+        <div className="w-full mx-auto flex flex-col items-center md:flex-row gap-4 md:gap-8 z-10">
           <div className="w-full md:w-1/2 justify-center items-start flex-col gap-2">
             {team ? (
               <div className="flex-center flex-col">
@@ -195,7 +203,7 @@ const Team = () => {
             tracks={tracks}
           />
         ) : (
-          <div className="w-full flex flex-col md:flex-row gap-4 md:gap-12">
+          <div className="w-full flex flex-col md:flex-row gap-4 md:gap-12 z-10">
             <CreateTeam
               show={clickedOnCreateTeam}
               setShow={setClickedOnCreateTeam}

@@ -55,7 +55,9 @@ const TeamView = ({ team, onLeaveTeam, onDeleteTeam, onKickMember, onUpdateTeam,
 
   return (
     <div
-      className={`w-full space-y-4 p-3 md:p-6 bg-white rounded-xl shadow-md ${actions ? 'hover:shadow-xl' : 'hover:shadow-lg'} transition-ease-300`}
+      className={`w-full space-y-4 p-3 md:p-6 bg-white rounded-xl shadow-md ${
+        actions ? 'hover:shadow-xl' : 'hover:shadow-lg'
+      } z-10 transition-ease-300`}
     >
       {actions ? (
         <div className="w-full flex flex-col gap-4 md:flex-row items-center justify-between">

@@ -82,7 +82,14 @@ const AnnouncementCard = ({ announcement, setAnnouncements, isAdmin = false }: P
             {children}
           </ShineBorder>
         ) : (
-          <div className={className}>{children}</div>
+          <div
+            className={className + ' text-white'}
+            style={{
+              background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+            }}
+          >
+            {children}
+          </div>
         )}
       </>
     );
@@ -91,8 +98,8 @@ const AnnouncementCard = ({ announcement, setAnnouncements, isAdmin = false }: P
   return (
     <Wrapper>
       <div className="w-full space-y-2">
-        <div className="w-full flex items-center justify-between gap-2 text-xs text-gray-400">
-          <div>{moment(announcement.createdAt).fromNow()}</div>
+        <div className="w-full flex items-center justify-between gap-2 text-xs text-gray-200">
+          <div>{moment(announcement.createdAt).format('HH:MM A, DD MMM')}</div>
           <div className="w-fit flex-center gap-2">
             {announcement.isEdited && <div>(edited)</div>}
             <DropdownMenu>

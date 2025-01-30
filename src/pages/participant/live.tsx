@@ -8,7 +8,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Tasks from '@/screens/participants/tasks';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
 import ParticipantLiveRoundAnalytics from '@/sections/analytics/participant_live_round_analytics';
@@ -16,6 +15,7 @@ import TeamEliminated from '@/screens/participants/team_eliminated';
 import ProjectView from '@/screens/participants/view_project';
 import Loader from '@/components/common/loader';
 import socketService from '@/config/ws';
+import TeamNotRegistered from '@/screens/participants/not_registered';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -159,7 +159,7 @@ const Live = () => {
           <Loader />
         </div>
       ) : (
-        <div className="text-4xl font-medium mx-auto py-16 text-primary_danger">Team not registered for this Hackathon.</div>
+        <TeamNotRegistered />
       )}
     </BaseWrapper>
   );

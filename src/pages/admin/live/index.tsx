@@ -90,7 +90,7 @@ const Index = () => {
                   ) : (
                     <div className="space-y-6">
                       <div> All rounds are over.</div>
-                      {role == 'admin' && (
+                      {hackathon.coordinators?.includes(user.id) && (
                         <Button onClick={() => router.push('/admin/live/prizes')} className="w-full" variant="destructive">
                           End Hackathon
                         </Button>

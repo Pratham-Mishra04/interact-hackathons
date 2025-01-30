@@ -22,7 +22,7 @@ const Tags = ({ label, tags, setTags, maxTags, required = false }: Props) => {
         </div>
       )}
 
-      <TagsField tags={tags} setTags={setTags} maxTags={maxTags} />
+      <TagsField tags={tags} setTags={setTags} maxTags={maxTags} suggestions />
     </div>
   );
 };
