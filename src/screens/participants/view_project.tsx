@@ -7,6 +7,8 @@ import Separator from '@/components/ui/separator';
 import { FigmaLogo, Info } from '@phosphor-icons/react';
 import { GitBranch } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useSelector } from 'react-redux';
+import { currentHackathonSelector } from '@/slices/hackathonSlice';
 
 interface ProjectViewProps {
   project: Project;
@@ -15,22 +17,35 @@ interface ProjectViewProps {
 }
 
 const ProjectView: React.FC<ProjectViewProps> = ({ project, team, setTeam }) => {
+  const hackathon = useSelector(currentHackathonSelector);
   return (
     <div className="w-full flex max-md:flex-col gap-4">
       <OverviewComponent project={project} setTeam={setTeam} />
 
       <div className="w-1/3 max-md:w-full space-y-4">
         <div className="w-full bg-white p-4 rounded-xl space-y-4">
-          <ProjectBlockHeader title="Connected Github Repositories" icon={<GitBranch />} />
-          <RepositoriesComponent team={team} />
+          {hackathon.enableGithubIntegration ? (
+            <>
+              <ProjectBlockHeader title="Connected Github Repositories" icon={<GitBranch />} />
+              <RepositoriesComponent team={team} />
+            </>
+          ) : (
+            <>Github Integrations not enabled for this hackathon. You can include your Github Repository Link in project links tab.</>
+          )}
         </div>
         <div className="w-full bg-white p-4 rounded-xl space-y-4">
-          <ProjectBlockHeader
-            title="Connected Figma Files"
-            icon={<FigmaLogo size={24} />}
-            toolTip="Designers of the team can sync their accounts and then add their respective figma files."
-          />
-          <FigmaComponent team={team} />
+          {hackathon.enableFigmaIntegration ? (
+            <>
+              <ProjectBlockHeader
+                title="Connected Figma Files"
+                icon={<FigmaLogo size={24} />}
+                toolTip="Designers of the team can sync their accounts and then add their respective figma files."
+              />
+              <FigmaComponent team={team} />
+            </>
+          ) : (
+            <>Figma Integrations not enabled for this hackathon. You can include your Figma File Link in project links tab.</>
+          )}
         </div>
       </div>
     </div>

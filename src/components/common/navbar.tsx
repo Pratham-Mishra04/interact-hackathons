@@ -17,8 +17,8 @@ const Navbar = () => {
   const path = window.location.pathname?.replace('/', '');
 
   return (
-    <div className="w-full h-12 md:h-navbar bg-navbar dark:bg-dark_navbar text-gray-500 dark:text-white border-gray-300 border-b-[1px] dark:border-0 glassMorphism backdrop-blur-sm fixed top-0 flex justify-between px-4 items-center z-20">
-      {clickedOnProfile && <ProfileDropdown setShow={setClickedOnProfile} />}     
+    <div className="w-full h-navbar bg-navbar dark:bg-dark_navbar text-gray-500 dark:text-white border-gray-300 border-b-[1px] dark:border-0 glassMorphism backdrop-blur-sm fixed top-0 flex justify-between px-4 items-center z-20">
+      {clickedOnProfile && <ProfileDropdown setShow={setClickedOnProfile} />}
       <Link href={'/'} className="hidden dark:flex dark:flex-row">
         <ReactSVG src="/onboarding_logo_dark.svg" />
         {hackathon && <span className="text-black dark:text-white font-medium">X {hackathon.organizationTitle}</span>}

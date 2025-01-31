@@ -6,7 +6,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import AdminLiveRoundAnalytics from '@/sections/analytics/admin_live_round_analytics';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import { useSelector } from 'react-redux';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
 import { Button } from '@/components/ui/button';
@@ -50,8 +49,6 @@ const Index = () => {
       socketService.connect(hackathon.id);
     }
   }, []);
-
-  const role = useMemo(() => getHackathonRole(), []);
 
   const user = useSelector(userSelector);
 

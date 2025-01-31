@@ -19,6 +19,17 @@ import { Plus, Trash, X } from '@phosphor-icons/react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const FigmaComponent = ({ team }: { team: HackathonTeam }) => {
   const [figmaFiles, setFigmaFiles] = useState<FigmaFile[]>([]);
@@ -86,7 +97,7 @@ const FigmaComponent = ({ team }: { team: HackathonTeam }) => {
     const res = await deleteHandler(URL, { projectID: team.projectID });
     if (res.statusCode == 200) {
       setFigmaFiles(prev => prev.filter(r => r.id != repo));
-      Toaster.success('Repository deleted successfully');
+      Toaster.success('Figma File deleted successfully');
     } else {
       Toaster.error(res.data.message || SERVER_ERROR);
     }
@@ -124,7 +135,24 @@ const FigmaComponent = ({ team }: { team: HackathonTeam }) => {
                 >
                   <span className="font-medium line-clamp-1">{file.fileURL}</span>
                 </Link>
-                <Trash className="h-5 w-5 ml-2 text-red-500 cursor-pointer" onClick={() => handleFigmaDelete(file.id)} />
+                <AlertDialog>
+                  <AlertDialogTrigger>
+                    <Trash className="h-5 w-5 ml-2 text-red-500 cursor-pointer" />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action will remove the connection on your figma file and we won&apos;t be able to track your progress. It will also
+                        deleted the existing tracked analytics on this file.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleFigmaDelete(file.id)}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </li>
             ))}
           </ul>

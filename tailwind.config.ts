@@ -43,6 +43,7 @@ const config: Config = {
       backgroundImage: {
         onboarding: 'url("/assets/onboarding.webp")',
         new_post: 'url("/assets/new_post.webp")',
+        base: "url('/team-formation-bg.svg')",
       },
       colors: {
         primary_text: '#478EE1',

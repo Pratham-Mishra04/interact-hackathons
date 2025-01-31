@@ -16,6 +16,7 @@ import ProjectView from '@/screens/participants/view_project';
 import Loader from '@/components/common/loader';
 import socketService from '@/config/ws';
 import TeamNotRegistered from '@/screens/participants/not_registered';
+import Image from 'next/image';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -80,7 +81,7 @@ const Live = () => {
         team.isEliminated && currentRound && !moment().isBetween(currentRound?.judgingStartTime, currentRound?.endTime) ? (
           <TeamEliminated team={team} />
         ) : (
-          <div className="w-full min-h-base bg-[#E1F1FF] p-12 flex flex-col gap-10">
+          <div className="w-full min-h-base p-12 flex flex-col gap-10">
             <div className="w-full flex flex-col md:flex-row gap-8">
               <div className="w-full md:w-2/5 flex flex-col items-center justify-between gap-8">
                 <div

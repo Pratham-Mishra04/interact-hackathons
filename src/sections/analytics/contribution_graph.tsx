@@ -159,17 +159,6 @@ const ContributionsGraph = ({
     );
   }
 
-  const settings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-    autoplay: true,
-    autoplaySpeed: 5000,
-  };
-
   const overallDataConfig = {
     codeContribution: {
       label: 'Code',
@@ -254,7 +243,7 @@ const ContributionsGraph = ({
             </ChartContainer>
           </CarouselItem>
 
-          {codeData.map(c => c.score).reduce((a, b) => a + b, 0) > 0 && (
+          {hackathon.enableGithubIntegration && codeData.map(c => c.score).reduce((a, b) => a + b, 0) > 0 && (
             <CarouselItem key={1}>
               <div className="w-full text-center text-gray-600 font-medium">Github Contribution Score</div>
               <ChartContainer config={codeDataConfig} className="w-full">
@@ -271,7 +260,7 @@ const ContributionsGraph = ({
             </CarouselItem>
           )}
 
-          {figmaData.map(f => f.score).reduce((a, b) => a + b, 0) > 0 && (
+          {hackathon.enableFigmaIntegration && figmaData.map(f => f.score).reduce((a, b) => a + b, 0) > 0 && (
             <CarouselItem key={2}>
               <div className="w-full text-center text-gray-600 font-medium">Figma Contribution Score</div>
               <ChartContainer config={figmaDataConfig} className="w-full">

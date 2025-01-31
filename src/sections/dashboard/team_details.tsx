@@ -70,7 +70,7 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
             <span className="text-primary_black">{team.memberships?.length}</span>
           </h2>
         </div>
-        <Status status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
+        <Status className="text-xs w-fit px-4 rounded-full" status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
       </section>
 
       {team.id && (
@@ -79,17 +79,21 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
             {!hackathon.isEnded && (
               <div className="w-full flex flex-col gap-4">
                 <div className="w-full flex gap-4">
-                  <AnalyticsCard
-                    title="Github Commits"
-                    value={analyticsData.totalGithubCommits}
-                    change={analyticsData.githubCommitPercentageChange == 0 ? undefined : analyticsData.githubCommitPercentageChange}
-                  />
-                  <AnalyticsCard
-                    title="Figma Activity"
-                    value={analyticsData.totalFigmaHistories}
-                    change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
-                  />
-                  <div className="w-1/3 h-36 bg-white rounded-xl p-4 max-md:hidden">
+                  {hackathon.enableGithubIntegration && (
+                    <AnalyticsCard
+                      title="Github Commits"
+                      value={analyticsData.totalGithubCommits}
+                      change={analyticsData.githubCommitPercentageChange == 0 ? undefined : analyticsData.githubCommitPercentageChange}
+                    />
+                  )}
+                  {hackathon.enableFigmaIntegration && (
+                    <AnalyticsCard
+                      title="Figma Activity"
+                      value={analyticsData.totalFigmaHistories}
+                      change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
+                    />
+                  )}
+                  <div className="w-full h-36 bg-white rounded-xl p-4 max-md:hidden">
                     <ComparisonScoreBar
                       max={analyticsData.maxActivityCount}
                       min={analyticsData.minActivityCount}
@@ -111,7 +115,11 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
             <div className="w-full flex flex-col gap-4 pb-3 max-md:hidden">
               <ContributionsGraph teamID={team.id} setScores={setScores} />
             </div>
-            <CodeQualityGraph teamID={team.id} />
+            {hackathon.enableAutoCodeReviews ? (
+              <CodeQualityGraph teamID={team.id} />
+            ) : (
+              <div className="bg-white">Automated COde reviews not enabled for this hackathon.</div>
+            )}
           </div>
           <div className="w-1/3 max-md:w-full flex flex-col gap-4">
             {team.memberships?.map(membership => {

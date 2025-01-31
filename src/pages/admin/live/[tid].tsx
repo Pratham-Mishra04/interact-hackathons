@@ -73,7 +73,7 @@ export default function Page({ tid }: { tid: string }) {
       <div className="w-full bg-[#E1F1FF] min-h-base">
         <div className="w-full flex items-start justify-between h-full">
           <DashboardSidebar data={menuData} activeIndex={activeIndex} setActiveIndex={setActiveIndex} team={team} setTeam={setTeam} />
-          <div className="h-fit w-[80%] max-md:w-full max-md:pb-16">{ActiveScreen}</div>
+          <div className="h-fit w-full max-md:pb-16 md:pl-[20%]">{ActiveScreen}</div>
         </div>
       </div>
     </BaseWrapper>

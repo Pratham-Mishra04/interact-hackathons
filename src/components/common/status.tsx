@@ -3,9 +3,16 @@ import { cn } from '@/lib/utils';
 const Status = ({ className, status }: { className?: string; status: 'eliminated' | 'not eliminated' }) => {
   return (
     <button
-      className={cn(`${status === 'eliminated' ? 'bg-red-500' : 'bg-green-500'} text-white text-xs font-medium px-3 py-1 rounded-full`, className)}
+      className={cn(
+        `w-full text-white py-2 rounded-md ${
+          status === 'eliminated'
+            ? 'bg-gradient-to-r from-[#ff2d5e] via-[#FF1B69] to-[#FF0E37]'
+            : 'bg-gradient-to-r from-[#76C38F] via-[#60CF8C] to-[#A7C12C]'
+        }`,
+        className
+      )}
     >
-      {status === 'eliminated' ? 'Eliminated' : 'Not Eliminated'}
+      <div className="capitalize">{status}</div>
     </button>
   );
 };

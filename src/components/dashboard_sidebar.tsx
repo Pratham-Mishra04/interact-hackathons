@@ -47,7 +47,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
   const router = useRouter();
 
   return (
-    <div className="w-[20%] max-md:w-full max-md:h-16 sticky max-md:fixed md:top-16 max-md:bottom-0 left-0 bg-white h-base px-2 p-3 flex md:flex-col justify-between max-md:border-t-[1px] border-blue-200 z-50">
+    <div className="w-[20%] max-md:w-full max-md:h-16 fixed max-md:fixed md:top-16 max-md:bottom-0 left-0 bg-white h-base px-2 p-3 flex md:flex-col justify-between max-md:border-t-[1px] border-blue-200 z-50">
       <div className="w-full">
         <section className="--team-details hidden md:flex flex-col gap-2 pb-4 border-b-[2px] border-primary_text">
           <h1 className="text-2xl font-semibold">{team.title}</h1>
@@ -84,8 +84,10 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
           <Dialog open={clickedOnEliminate} onOpenChange={setClickedOnEliminate}>
             <DialogTrigger
               className={`${
-                team.isEliminated ? 'bg-green-500 hover:bg-green-700' : 'bg-red-500 hover:bg-red-700'
-              } text-white py-2 rounded-md transition-ease-300`}
+                !team.isEliminated
+                  ? 'bg-gradient-to-r from-[#ff2d5e] via-[#FF1B69] to-[#FF0E37]'
+                  : 'bg-gradient-to-r from-[#76C38F] via-[#60CF8C] to-[#A7C12C]'
+              } text-white py-2 rounded-md hover:opacity-65 transition-ease-300`}
             >
               {team.isEliminated ? 'Restore' : 'Eliminate'} Team
             </DialogTrigger>
@@ -106,7 +108,7 @@ const DashboardSidebar = ({ data, activeIndex, setActiveIndex, team, setTeam }: 
             </DialogContent>
           </Dialog>
         )}
-        <Button onClick={() => router.back()} className="bg-primary_text mt-6 transition-ease-300">
+        <Button onClick={() => router.back()} className="bg-primary_text transition-ease-300">
           <span className="hidden md:block">Go Back</span>
           <span className="md:hidden">
             <ArrowLeft size={16} />

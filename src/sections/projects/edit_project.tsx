@@ -105,7 +105,7 @@ const EditProject = ({ project, setTeam }: Props) => {
           <Input label="Project Tagline" val={tagline} setVal={setTagline} maxLength={50} required={true} />
           <TextArea label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
           <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
-          <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={5} />
+          <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={10} />
         </div>
         <DialogFooter className="w-full flex-center">
           <Button onClick={handleSubmit} type="button" variant="outline" className="w-full">

@@ -115,6 +115,10 @@ const TeamScores = ({ teamID }: { teamID: string }) => {
             />
           );
         })}
+      <div className="w-full text-center text-sm font-semibold text-gray-600">
+        *Only Judges and Coordinators can edit scores, and only during the judging period of the respective round. Once the judging period ends,
+        scores cannot be changed.
+      </div>
     </div>
   );
 };
