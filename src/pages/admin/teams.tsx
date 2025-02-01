@@ -5,15 +5,20 @@ import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import BaseWrapper from '@/wrappers/base';
 import TeamsTable from '@/components/tables/teams';
+import useTimeEvaluation from "@/hooks/use-time-evaluation";
 
 const Teams = () => {
-  const hackathon = useSelector(currentHackathonSelector);
+  const hackathon = useSelector(currentHackathonSelector)
+  const isTeamFormationOver = useTimeEvaluation(
+      ()=>moment().isAfter(hackathon.teamFormationEndTime),
+      1000
+  );
 
   useEffect(() => {
     if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
-    else if (moment().isAfter(hackathon.teamFormationEndTime)) window.location.replace('/admin/live');
-  }, []);
+    else if (isTeamFormationOver) window.location.replace('/admin/live');
+  }, [isTeamFormationOver]);
 
   return (
     <BaseWrapper>

@@ -11,6 +11,7 @@ import { PencilSimple, ReadCvLogo } from '@phosphor-icons/react';
 import { ProjectBlockHeader } from '@/screens/participants/view_project';
 import EditProject from './edit_project';
 import EditProjectImages from './edit_project_images';
+import Editor from "@/components/editor";
 
 interface OverviewComponentProps {
   project: Project;
@@ -91,23 +92,24 @@ const OverviewComponent: React.FC<OverviewComponentProps> = ({ project, setTeam 
         </div>
       </div>
       <div className="w-full flex flex-col gap-4">
-        <div className="whitespace-pre-line">
-          {project.description.length > 200 ? (
-            clickedOnReadMore ? (
-              project.description
-            ) : (
-              <>
-                {project.description.substring(0, 200)}
-                <span onClick={() => setClickedOnReadMore(true)} className="text-xs italic opacity-60 cursor-pointer">
-                  {' '}
-                  Read More...
-                </span>
-              </>
-            )
-          ) : (
-            renderContentWithLinks(project.description)
-          )}
-        </div>
+        <Editor editable={false} content={project.description} />
+        {/*<div className="whitespace-pre-line">*/}
+        {/*  /!*{project.description.length > 200 ? (*!/*/}
+        {/*  /!*  clickedOnReadMore ? (*!/*/}
+        {/*  /!*    project.description*!/*/}
+        {/*  /!*  ) : (*!/*/}
+        {/*  /!*    <>*!/*/}
+        {/*  /!*      {project.description.substring(0, 200)}*!/*/}
+        {/*  /!*      <span onClick={() => setClickedOnReadMore(true)} className="text-xs italic opacity-60 cursor-pointer">*!/*/}
+        {/*  /!*        {' '}*!/*/}
+        {/*  /!*        Read More...*!/*/}
+        {/*  /!*      </span>*!/*/}
+        {/*  /!*    </>*!/*/}
+        {/*  /!*  )*!/*/}
+        {/*  /!*) : (*!/*/}
+        {/*  /!*  renderContentWithLinks(project.description)*!/*/}
+        {/*  /!*)}*!/*/}
+        {/*</div>*/}
         <Links links={project.links} />
       </div>
     </div>

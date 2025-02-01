@@ -10,11 +10,18 @@ import getHandler from '@/handlers/get_handler';
 import { SERVER_ERROR } from '@/config/errors';
 import Toaster from '@/utils/toaster';
 import { HackathonRound } from '@/types';
+import useTimeEvaluation from "@/hooks/use-time-evaluation";
 
 const Stage = () => {
   const [nextRound, setNextRound] = useState<HackathonRound | null>(null);
-
   const hackathon = useSelector(currentHackathonSelector);
+  const isTeamFormationTime = useTimeEvaluation(
+      ()=>moment().isBetween(
+          moment(hackathon.teamFormationStartTime),
+          moment(hackathon.teamFormationEndTime)
+      ),
+      1000
+  )
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
@@ -34,11 +41,11 @@ const Stage = () => {
     else {
       const now = moment();
       if (hackathon.isEnded) window.location.replace('/admin/ended');
-      else if (now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
+      else if (isTeamFormationTime)
         window.location.replace('/admin/team');
       else getCurrentRound();
     }
-  }, []);
+  }, [isTeamFormationTime]);
 
   return (
     <BaseWrapper>

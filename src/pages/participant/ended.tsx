@@ -14,12 +14,20 @@ import Link from 'next/link';
 import { FRONTEND_URL } from '@/config/routes';
 import Overview from '@/sections/projects/overview';
 import EventCard from '@/components/event_card';
+import useTimeEvaluation from "@/hooks/use-time-evaluation";
 
 const Ended = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [similarEvents, setSimilarEvents] = useState<Event[]>([]);
+  const isTeamFormationTime = useTimeEvaluation(
+      ()=>moment().isBetween(
+          moment(hackathon.teamFormationStartTime),
+          moment(hackathon.teamFormationEndTime)
+      ),
+      1000,
+  )
 
   const hackathon = useSelector(currentHackathonSelector);
 
@@ -58,22 +66,16 @@ const Ended = () => {
     setLoading(false);
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
-      if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-        window.location.replace('/participant/team');
+      if (isTeamFormationTime) window.location.replace('/participant/team');
       else if (!hackathon.isEnded) window.location.replace('/participant/live');
       else {
-        if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-          window.location.replace('/participant/team');
-        else if (!hackathon.isEnded) window.location.replace('/participant/live');
-        else {
-          getTeam();
-          fetchAnnouncements();
-          //TODO: SIMILAR EVENTS ROUTES
-          fetchSimilarEvents(`/events/similar/${hackathon.eventID}`, setSimilarEvents);
-        }
+        getTeam();
+        fetchAnnouncements();
+        //TODO: SIMILAR EVENTS ROUTES
+        fetchSimilarEvents(`/events/similar/${hackathon.eventID}`, setSimilarEvents);
       }
     }
-  }, []);
+  }, [isTeamFormationTime]);
 
   return (
     <BaseWrapper>

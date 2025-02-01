@@ -15,13 +15,22 @@ import TeamProjectsTable from '@/components/tables/teams_projects';
 import { useRouter } from 'next/router';
 import socketService from '@/config/ws';
 import { userSelector } from '@/slices/userSlice';
+import useRelativeTime from "@/hooks/use-relative-time";
+import useTimeEvaluation from "@/hooks/use-time-evaluation";
 
 const Index = () => {
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
   const [nextRound, setNextRound] = useState<HackathonRound | null>(null);
   const [announcementReloadTrigger, setAnnouncementReloadTrigger] = useState(false);
-
+  const judgingStartTime = useRelativeTime(currentRound?.judgingStartTime);
+  const nextRoundStartTime = useRelativeTime(nextRound?.startTime);
   const hackathon = useSelector(currentHackathonSelector);
+  const isTeamFormationTime = useTimeEvaluation(
+      ()=>moment().isBefore(hackathon.teamFormationEndTime),
+      1000
+  );
+
+
 
   const router = useRouter();
 
@@ -43,12 +52,12 @@ const Index = () => {
   useEffect(() => {
     if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
-    else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
+    else if (isTeamFormationTime) window.location.replace('/admin/teams');
     else {
       getCurrentRound();
       socketService.connect(hackathon.id);
     }
-  }, []);
+  }, [isTeamFormationTime]);
 
   const user = useSelector(userSelector);
 
@@ -80,10 +89,10 @@ const Index = () => {
                     moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.endTime)) ? (
                       'Judging is Live!'
                     ) : (
-                      moment(currentRound.judgingStartTime).isAfter(moment()) && `Judging Starts ${moment(currentRound.judgingStartTime).fromNow()}.`
+                      moment(currentRound.judgingStartTime).isAfter(moment()) && `Judging Starts ${judgingStartTime}.`
                     )
                   ) : nextRound ? (
-                    ` Round ${nextRound.index + 1} Starts ${moment(nextRound.startTime).fromNow()}.`
+                    ` Round ${nextRound.index + 1} Starts ${nextRoundStartTime}.`
                   ) : (
                     <div className="space-y-6">
                       <div> All rounds are over.</div>

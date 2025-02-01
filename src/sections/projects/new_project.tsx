@@ -2,7 +2,6 @@ import Input from '@/components/form/input';
 import Links from '@/components/form/links';
 import Select from '@/components/form/select';
 import Tags from '@/components/form/tags';
-import TextArea from '@/components/form/textarea';
 import { SERVER_ERROR } from '@/config/errors';
 import postHandler from '@/handlers/post_handler';
 import { userSelector } from '@/slices/userSlice';
@@ -14,7 +13,7 @@ import { useSelector } from 'react-redux';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, DialogFooter } from '@/components/ui/dialog';
 import { Plus } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
+import EditorInput from "@/components/form/editor-input";
 
 interface Props {
   team: HackathonTeam;
@@ -102,15 +101,9 @@ const NewProject = ({ team, setTeam }: Props) => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <div className="w-4/5 mx-auto h-90 bg-white shadow-md rounded-xl flex items-center justify-around p-4">
-          <Image width={350} height={150} src={'/fillers/project.svg'} alt="" />
-          <div className="space-y-4">
-            <div className="text-2xl font-medium">Don&apos;t Fall Behind. Start Now!</div>
-            <Button className="w-full bg-sky-400 hover:bg-sky-500 py-7 text-lg">
-              Create a New Project <Plus size={32} />
-            </Button>
-          </div>
-        </div>
+        <Button className="w-full dark:bg-dark_primary_comp_hover dark:hover:bg-dark_primary_comp_active">
+          Create a New Project <Plus size={20} />
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md min-w-[40%]">
         <DialogHeader>
@@ -120,12 +113,12 @@ const NewProject = ({ team, setTeam }: Props) => {
           <Input label="Project Title" val={title} setVal={setTitle} maxLength={25} required={true} />
           <Select label="Project Category" val={category} setVal={setCategory} options={categories} required={true} />
           <Input label="Project Tagline" val={tagline} setVal={setTagline} maxLength={50} required={true} />
-          <TextArea label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
+          <EditorInput label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
           <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
-          <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={10} />
+          <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={5} />
         </div>
         <DialogFooter className="w-full flex-center">
-          <Button onClick={handleSubmit} type="button" variant="outline" className="w-full">
+          <Button onClick={handleSubmit} type="button" variant="outline" className="w-1/2">
             Submit
           </Button>
         </DialogFooter>

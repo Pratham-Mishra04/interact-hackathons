@@ -17,6 +17,8 @@ import Loader from '@/components/common/loader';
 import socketService from '@/config/ws';
 import TeamNotRegistered from '@/screens/participants/not_registered';
 import Image from 'next/image';
+import useRelativeTime from "@/hooks/use-relative-time";
+import useTimeEvaluation from "@/hooks/use-time-evaluation";
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -24,8 +26,17 @@ const Live = () => {
   const [nextRound, setNextRound] = useState<HackathonRound | null>(null);
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-
+  const judgingStartTime = useRelativeTime(currentRound?.judgingStartTime);
+  const nextRoundStartTime = useRelativeTime(nextRound?.startTime);
   const hackathon = useSelector(currentHackathonSelector);
+  const isTeamFormationTime = useTimeEvaluation(
+      ()=>moment().isBetween(
+          moment(hackathon.teamFormationStartTime),
+          moment(hackathon.teamFormationEndTime)
+      ),
+      1000,
+  )
+
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
@@ -60,15 +71,14 @@ const Live = () => {
     if (!hackathon.id) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
       if (hackathon.isEnded) window.location.replace('/participant/ended');
-      else if (moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-        window.location.replace('/participant/team');
+      else if (isTeamFormationTime) window.location.replace('/participant/team');
       else {
         getTeam();
         getCurrentRound();
         socketService.connect(hackathon.id);
       }
     }
-  }, []);
+  }, [isTeamFormationTime]);
 
   useEffect(() => {
     const tab = new URLSearchParams(window.location.search).get('tab');
@@ -112,9 +122,9 @@ const Live = () => {
                         ? moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.endTime))
                           ? 'Judging is Live!'
                           : moment(currentRound.judgingStartTime).isAfter(moment()) &&
-                            `Judging Starts ${moment(currentRound.judgingStartTime).fromNow()}.`
+                            `Judging Starts ${judgingStartTime}.`
                         : nextRound
-                        ? ` Round ${nextRound.index + 1} Starts ${moment(nextRound.startTime).fromNow()}.`
+                        ? ` Round ${nextRound.index + 1} Starts ${nextRoundStartTime}.`
                         : 'All rounds are over.'}
                     </div>
                   </div>
