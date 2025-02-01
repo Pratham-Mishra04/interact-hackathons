@@ -17,8 +17,8 @@ import Loader from '@/components/common/loader';
 import socketService from '@/config/ws';
 import TeamNotRegistered from '@/screens/participants/not_registered';
 import Image from 'next/image';
-import useRelativeTime from "@/hooks/use-relative-time";
-import useTimeEvaluation from "@/hooks/use-time-evaluation";
+import useRelativeTime from '@/hooks/use-relative-time';
+import useTimeEvaluation from '@/hooks/use-time-evaluation';
 
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -30,12 +30,9 @@ const Live = () => {
   const nextRoundStartTime = useRelativeTime(nextRound?.startTime);
   const hackathon = useSelector(currentHackathonSelector);
   const isTeamFormationTime = useTimeEvaluation(
-      ()=>moment().isBetween(
-          moment(hackathon.teamFormationStartTime),
-          moment(hackathon.teamFormationEndTime)
-      ),
-      1000,
-  )
+    () => moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)),
+    1000
+  );
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
@@ -120,8 +117,7 @@ const Live = () => {
                       {currentRound
                         ? moment().isBetween(moment(currentRound.judgingStartTime), moment(currentRound.endTime))
                           ? 'Judging is Live!'
-                          : moment(currentRound.judgingStartTime).isAfter(moment()) &&
-                            `Judging Starts ${judgingStartTime}.`
+                          : moment(currentRound.judgingStartTime).isAfter(moment()) && `Judging Starts ${judgingStartTime}.`
                         : nextRound
                         ? ` Round ${nextRound.index + 1} Starts ${nextRoundStartTime}.`
                         : 'All rounds are over.'}

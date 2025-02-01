@@ -18,7 +18,6 @@ import BaseWrapper from '@/wrappers/base';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import socketService from '@/config/ws';
-import Image from 'next/image';
 import useTimeEvaluation from '@/hooks/use-time-evaluation';
 
 const Team = () => {

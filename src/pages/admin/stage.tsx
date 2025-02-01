@@ -38,7 +38,6 @@ const Stage = () => {
   useEffect(() => {
     if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else {
-      const now = moment();
       if (hackathon.isEnded) window.location.replace('/admin/ended');
       else if (isTeamFormationTime) window.location.replace('/admin/teams');
       else getCurrentRound();
@@ -51,7 +50,7 @@ const Stage = () => {
         <div className=" w-full h-fit">
           <div className="w-full mx-auto flex flex-col items-center md:flex-row gap-4 md:gap-8">
             <div className="w-full md:w-1/2 flex-center items-start flex-col gap-2">
-              <div className="w-fit gradient-text-3 text-9xl">Team</div>
+              <div className="w-fit gradient-text-3 text-8xl">Team</div>
               <div className="w-fit gradient-text-3 text-8xl">Overview</div>
               <div className="font-semibold text-xl">Team Formation has Ended. Round 1 starts {nextRoundStartTime}</div>
             </div>

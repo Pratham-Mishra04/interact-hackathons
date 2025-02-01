@@ -15,8 +15,8 @@ import TeamProjectsTable from '@/components/tables/teams_projects';
 import { useRouter } from 'next/router';
 import socketService from '@/config/ws';
 import { userSelector } from '@/slices/userSlice';
-import useRelativeTime from "@/hooks/use-relative-time";
-import useTimeEvaluation from "@/hooks/use-time-evaluation";
+import useRelativeTime from '@/hooks/use-relative-time';
+import useTimeEvaluation from '@/hooks/use-time-evaluation';
 
 const Index = () => {
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
@@ -25,12 +25,7 @@ const Index = () => {
   const judgingStartTime = useRelativeTime(currentRound?.judgingStartTime);
   const nextRoundStartTime = useRelativeTime(nextRound?.startTime);
   const hackathon = useSelector(currentHackathonSelector);
-  const isTeamFormationTime = useTimeEvaluation(
-      ()=>moment().isBefore(hackathon.teamFormationEndTime),
-      1000
-  );
-
-
+  const isTeamFormationTime = useTimeEvaluation(() => moment().isBefore(hackathon.teamFormationEndTime), 1000);
 
   const router = useRouter();
 
