@@ -64,7 +64,7 @@ const Card = ({ data, onClick }: { data: CommonProps; onClick?: () => void }) =>
           height={200}
           src={`${EVENT_PIC_URL}/${data.hackathon.coverPic}`}
           alt="Event Pic"
-          className="w-full h-48 rounded-2xl overflow-hidden mb-4"
+          className="w-full rounded-2xl mb-4"
           placeholder="blur"
           blurDataURL={`${EVENT_PIC_URL}/${data.hackathon.blurHash}?w=10&h=5&hash=${EVENT_PIC_HASH_DEFAULT}`}
         />

@@ -174,7 +174,7 @@ const TeamProjectsTable = () => {
                     })}
                 </TableCell>
                 <TableCell>
-                  <Status className="text-xs w-fit px-4 rounded-full" status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
+                  <Status className="text-xs w-fit px-3 py-1 rounded-full" status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
                 </TableCell>
                 <TableCell>{hackathon.isEnded ? team.overallScore : team.roundScore}</TableCell>
                 {!hackathon.isEnded && hackathon.coordinators?.includes(user.id) && (

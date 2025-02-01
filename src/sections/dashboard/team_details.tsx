@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { UsersThree } from '@phosphor-icons/react';
+import { UsersThree, Warning } from '@phosphor-icons/react';
 import { PencilRuler } from 'lucide-react';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { HackathonTeam, HackathonTeamMembership, User } from '@/types';
@@ -70,7 +70,7 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
             <span className="text-primary_black">{team.memberships?.length}</span>
           </h2>
         </div>
-        <Status className="text-xs w-fit px-4 rounded-full" status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
+        <Status className="text-xs w-fit px-3 py-1 rounded-full" status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
       </section>
 
       {team.id && (
@@ -78,22 +78,38 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
           <div className="w-2/3 max-md:w-full flex flex-col gap-4">
             {!hackathon.isEnded && (
               <div className="w-full flex flex-col gap-4">
-                <div className="w-full flex gap-4">
-                  {hackathon.enableGithubIntegration && (
+                <div className="w-full h-fit flex gap-4">
+                  {hackathon.enableGithubIntegration ? (
                     <AnalyticsCard
                       title="Github Commits"
                       value={analyticsData.totalGithubCommits}
                       change={analyticsData.githubCommitPercentageChange == 0 ? undefined : analyticsData.githubCommitPercentageChange}
                     />
+                  ) : (
+                    <div className="w-1/3 h-full bg-card-base bg-cover rounded-xl flex flex-col items-center justify-between p-2">
+                      <div className="w-full flex justify-end">
+                        <Warning className="text-primary_danger" size={20} weight="fill" />
+                      </div>
+                      <Image src="/assets/github.png" alt="Github" width={70} height={70} />
+                      <div className="w-full text-center text-sm">Github Analytics is not enabled for this hackathon.</div>
+                    </div>
                   )}
-                  {hackathon.enableFigmaIntegration && (
+                  {hackathon.enableFigmaIntegration ? (
                     <AnalyticsCard
                       title="Figma Activity"
                       value={analyticsData.totalFigmaHistories}
                       change={analyticsData.figmaHistoriesPercentageChange == 0 ? undefined : analyticsData.figmaHistoriesPercentageChange}
                     />
+                  ) : (
+                    <div className="w-1/3 h-full bg-card-base bg-cover rounded-xl flex flex-col items-center justify-between p-2">
+                      <div className="w-full flex justify-end">
+                        <Warning className="text-primary_danger" size={20} weight="fill" />
+                      </div>
+                      <Image src="/assets/figma.png" alt="Figma" width={70} height={70} />
+                      <div className="w-full text-center text-sm">Figma Analytics is not enabled for this hackathon.</div>
+                    </div>
                   )}
-                  <div className="w-full h-36 bg-white rounded-xl p-4 max-md:hidden">
+                  <div className="w-1/3 h-full bg-white rounded-xl p-4 max-md:hidden">
                     <ComparisonScoreBar
                       max={analyticsData.maxActivityCount}
                       min={analyticsData.minActivityCount}
@@ -118,7 +134,15 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
             {hackathon.enableAutoCodeReviews ? (
               <CodeQualityGraph teamID={team.id} />
             ) : (
-              <div className="bg-white">Automated COde reviews not enabled for this hackathon.</div>
+              <div className="w-full flex items-center justify-around bg-white p-2 rounded-xl relative">
+                <Warning className="absolute top-2 right-2 text-primary_danger" size={20} weight="fill" />
+
+                <Image src="/assets/figma-github.png" alt="Figma" width={240} height={160} />
+                <div className="">
+                  <span className="text-4xl font-bold">Automated</span>
+                  <div className="text-sm text-gray-600">code reviews not enabled for this hackathon.</div>
+                </div>
+              </div>
             )}
           </div>
           <div className="w-1/3 max-md:w-full flex flex-col gap-4">
@@ -152,7 +176,7 @@ function MemberCard({ membership, score }: { membership: HackathonTeamMembership
         className="w-20 h-20 rounded-full cursor-default shadow-md"
       />
       <div className="">
-        <div className="flex-center flex-wrap gap-1">
+        <div className="flex items-center flex-wrap gap-1">
           <h1 className="text-lg md:text-xl font-semibold">{user.name}</h1>
           <h1 className="text-xs">@{user.username}</h1>
         </div>
