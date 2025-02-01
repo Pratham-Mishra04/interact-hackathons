@@ -1,0 +1,190 @@
+{
+  "githubRepos": [
+    {
+      "id": "repo-1",
+      "repoName": "Awesome Web App",
+      "repoLink": "https://github.com/user/awesome-web-app",
+      "projectID": "project-1",
+      "project": {
+        "id": "project-1",
+        "slug": "awesome-web-app",
+        "userID": "user-1",
+        "title": "Awesome Web App",
+        "tagline": "A Next.js and Tailwind-powered web app.",
+        "images": ["https://example.com/image1.jpg"],
+        "hashes": ["hash1", "hash2"],
+        "description": "This project is a web app built using Next.js and Tailwind CSS.",
+        "page": "https://awesomewebapp.com",
+        "user": {
+          "id": "user-1",
+          "tags": ["developer", "open-source"],
+          "links": ["https://linkedin.com/in/user1"],
+          "email": "alice@example.com",
+          "name": "Alice Johnson",
+          "resume": "https://example.com/resume.pdf",
+          "active": true,
+          "profilePic": "https://example.com/profile1.jpg",
+          "profilePicBlurHash": "LKFjfjfjjfjf",
+          "coverPic": "https://example.com/cover1.jpg",
+          "coverPicBlurHash": "KJHdsfsdf",
+          "username": "alicej",
+          "phoneNo": "+123456789",
+          "bio": "Software engineer passionate about open source.",
+          "title": "Full-Stack Developer",
+          "tagline": "Building scalable apps.",
+          "isVerified": true,
+          "githubUsername": "alicej",
+          "figmaUsername": "alicefigma",
+          "isOrganization": false,
+          "createdAt": "2024-02-01T12:00:00Z"
+        },
+        "tags": ["nextjs", "tailwind", "typescript"],
+        "category": "Web Development",
+        "isPrivate": false,
+        "isFlagged": false,
+        "views": 500,
+        "totalNoViews": 10000,
+        "noMembers": 3,
+        "links": ["https://github.com/user/awesome-web-app"],
+        "organizationID": "org-1",
+        "createdAt": "2024-02-01T12:00:00Z"
+      },
+      "users": [
+        {
+          "id": "user-1",
+          "tags": ["developer", "open-source"],
+          "links": ["https://linkedin.com/in/user1"],
+          "email": "alice@example.com",
+          "name": "Alice Johnson",
+          "resume": "https://example.com/resume.pdf",
+          "active": true,
+          "profilePic": "https://example.com/profile1.jpg",
+          "profilePicBlurHash": "LKFjfjfjjfjf",
+          "coverPic": "https://example.com/cover1.jpg",
+          "coverPicBlurHash": "KJHdsfsdf",
+          "username": "alicej",
+          "phoneNo": "+123456789",
+          "bio": "Software engineer passionate about open source.",
+          "title": "Full-Stack Developer",
+          "tagline": "Building scalable apps.",
+          "isVerified": true,
+          "githubUsername": "alicej",
+          "figmaUsername": "alicefigma",
+          "isOrganization": false,
+          "createdAt": "2024-02-01T12:00:00Z"
+        }
+      ],
+      "commitHistories": [
+        {
+          "id": "commit-1",
+          "repoId": "repo-1",
+          "username": "alicej",
+          "userId": "user-1",
+          "user": {
+            "id": "user-1",
+            "name": "Alice Johnson",
+            "email": "alice@example.com",
+            "profilePic": "https://example.com/profile1.jpg"
+          },
+          "message": "Initial commit - project setup",
+          "addedFiles": ["index.tsx", "package.json"],
+          "modifiedFiles": [],
+          "removedFiles": [],
+          "changes": 120,
+          "timestamp": "2024-02-01T12:00:00Z"
+        },
+        {
+          "id": "commit-2",
+          "repoId": "repo-1",
+          "username": "alicej",
+          "userId": "user-1",
+          "user": {
+            "id": "user-1",
+            "name": "Alice Johnson",
+            "email": "alice@example.com",
+            "profilePic": "https://example.com/profile1.jpg"
+          },
+          "message": "Implemented authentication system",
+          "addedFiles": ["auth.ts"],
+          "modifiedFiles": ["userModel.ts"],
+          "removedFiles": [],
+          "changes": 85,
+          "timestamp": "2024-02-02T15:30:00Z"
+        },
+        {
+          "id": "commit-3",
+          "repoId": "repo-1",
+          "username": "alicej",
+          "userId": "user-1",
+          "user": {
+            "id": "user-1",
+            "name": "Alice Johnson",
+            "email": "alice@example.com",
+            "profilePic": "https://example.com/profile1.jpg"
+          },
+          "message": "Fixed bug in login flow",
+          "addedFiles": [],
+          "modifiedFiles": ["auth.ts"],
+          "removedFiles": [],
+          "changes": 45,
+          "timestamp": "2024-02-03T18:45:00Z"
+        },
+        {
+          "id": "commit-4",
+          "repoId": "repo-1",
+          "username": "alicej",
+          "userId": "user-1",
+          "user": {
+            "id": "user-1",
+            "name": "Alice Johnson",
+            "email": "alice@example.com",
+            "profilePic": "https://example.com/profile1.jpg"
+          },
+          "message": "Refactored database schema",
+          "addedFiles": [],
+          "modifiedFiles": ["databaseSchema.sql"],
+          "removedFiles": ["oldSchema.sql"],
+          "changes": 200,
+          "timestamp": "2024-02-04T14:20:00Z"
+        },
+        {
+          "id": "commit-5",
+          "repoId": "repo-1",
+          "username": "mahendrac482",
+          "userId": "user-1",
+          "user": {
+            "id": "user-1",
+            "name": "Maendra",
+            "email": "alice@example.com",
+            "profilePic": "https://example.com/profile1.jpg"
+          },
+          "message": "Added Docker support",
+          "addedFiles": ["Dockerfile"],
+          "modifiedFiles": [],
+          "removedFiles": [],
+          "changes": 60,
+          "timestamp": "2024-02-05T10:10:00Z"
+        }
+      ],
+      "readability": 8.5,
+      "maintainability": 9.0,
+      "consistency": 8.0,
+      "commenting": 7.5,
+      "correctness": 9.5,
+      "completeness": 9.0,
+      "errorHandling": 8.8,
+      "efficiency": 8.2,
+      "scalability": 9.1,
+      "security": 8.9,
+      "testCoverage": 7.8,
+      "innovation": 8.0,
+      "creativity": 7.5,
+      "complexityScore": 8.3,
+      "projectImpact": 9.2,
+      "technicalComplexity": 8.7,
+      "practicality": 9.5,
+      "plagiarism": 0.0,
+      "updatedAt": "2024-02-04T20:00:00Z"
+    }
+  ]
+}
