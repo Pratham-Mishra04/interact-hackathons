@@ -49,91 +49,96 @@ import {
 } from '@phosphor-icons/react';
 
 type EditorProps =
-  | {
-      editable: true;
-      setContent: (val: string) => void;
-      content?: string;
-      placeholder?: string;
-      limit?: number | null;
-      className?: string;
-    }
-  | {
-      editable: false;
-      content: string;
-      setContent?: never;
-      placeholder?: never;
-      limit?: never;
-      className?: string;
-    };
+    | {
+  editable: true;
+  setContent: React.Dispatch<React.SetStateAction<string>>;
+  content?: string;
+  placeholder?: string;
+  limit?: number | null;
+  className?: string;
+  enableMentions?: boolean
+}
+    | {
+  editable: false;
+  content: string;
+  setContent?: never;
+  placeholder?: never;
+  limit?: never;
+  className?: string;
+  enableMentions?: never
+};
 
 const Editor = ({
-  content = '',
-  setContent = () => {},
-  editable,
-  limit = null,
-  placeholder,
-  className,
-}: EditorProps) => {
-  //TODO: Custom KeyMaps
+                  content = '',
+                  setContent = () => {},
+                  editable,
+                  limit = null,
+                  placeholder,
+                  className,
+                  enableMentions = true
+                }: EditorProps) => {
+
+  let extensions = [
+    // StarterKit.configure({}),
+    Document,
+    Paragraph,
+    Text,
+    Blockquote, // >
+    ListItem,
+    BulletList, // +, *, +
+    OrderedList, // 1.
+    Heading.configure({
+      // #, ##, ###
+      levels: [1, 2, 3],
+    }),
+    HorizontalRule, // ---
+    CodeBlock, // ```
+    TaskItem, // - [ ]
+    TaskList,
+    Bold, // **Bold** __bold__ ctrl+b
+    Italic, // *Italic* _italic_ ctrl+i
+    Highlight, // ==Highlight==
+    Strike.configure({
+      // ~~Strike~~
+      HTMLAttributes: {
+        class: 'line-through decoration-neutral-700',
+      },
+    }),
+    Underline, // ctrl+u
+    Code, // `code`
+    Subscript, // ctrl+,
+    Superscript, // ctrl+.
+    Typography,
+    // ColorHighlighter,
+    SmilieReplacer,
+    CharacterCount.configure({
+      limit,
+    }),
+    Placeholder.configure({
+      placeholder: placeholder || 'Type something...',
+    }),
+    History, // ctrl+z, ctrl+y
+    Link.configure({
+      openOnClick: true,
+      linkOnPaste: true,
+      defaultProtocol: 'https',
+      protocols: ['http', 'https'],
+      //TODO: Configure allowed and disallowed URIs, domains, protocols, etc.
+      isAllowedUri: (url, ctx) => ctx.defaultValidate(url) && !url.startsWith('./'),
+      shouldAutoLink: url => url.startsWith('https://'),
+      HTMLAttributes: {
+        rel: 'noopener noreferrer nofollow',
+        target: '_blank',
+        class: '',
+      },
+    }),
+  ];
+
+  if (enableMentions) extensions = [...extensions, InteractMentions];
+
   const editor = useEditor({
-    content: content || '',
-    extensions: [
-      // StarterKit.configure({}),
-      Document,
-      Paragraph,
-      Text,
-      Blockquote, // >
-      ListItem,
-      BulletList, // +, *, +
-      OrderedList, // 1.
-      Heading.configure({
-        // #, ##, ###
-        levels: [1, 2, 3],
-      }),
-      HorizontalRule, // ---
-      CodeBlock, // ```
-      TaskItem, // - [ ]
-      TaskList,
-      Bold, // **Bold** __bold__ ctrl+b
-      Italic, // *Italic* _italic_ ctrl+i
-      Highlight, // ==Highlight==
-      Strike.configure({
-        // ~~Strike~~
-        HTMLAttributes: {
-          class: 'line-through decoration-neutral-700',
-        },
-      }),
-      Underline, // ctrl+u
-      Code, // `code`
-      Subscript, // ctrl+,
-      Superscript, // ctrl+.
-      Typography,
-      // ColorHighlighter,
-      SmilieReplacer,
-      CharacterCount.configure({
-        limit,
-      }),
-      Placeholder.configure({
-        placeholder: placeholder || 'Type something...',
-      }),
-      History, // ctrl+z, ctrl+y
-      Link.configure({
-        openOnClick: true,
-        linkOnPaste: true,
-        defaultProtocol: 'https',
-        protocols: ['http', 'https'],
-        //TODO: Configure allowed and disallowed URIs, domains, protocols, etc.
-        isAllowedUri: (url, ctx) => ctx.defaultValidate(url) && !url.startsWith('./'),
-        shouldAutoLink: url => url.startsWith('https://'),
-        HTMLAttributes: {
-          rel: 'noopener noreferrer nofollow',
-          target: '_blank',
-          class: '',
-        },
-      }),
-      InteractMentions,
-      // customKeyMap
-    ],
+    content: content,
+    extensions: extensions,
     autofocus: editable,
     editable: editable,
     editorProps: {
@@ -233,46 +238,46 @@ const Editor = ({
   ];
 
   const Separator = () => (
-    <div className="w-[1px] h-[18px] border-r-[1px] rounded-lg border-primary_black dark:border-gray-500" />
+      <div className="w-[1px] h-[18px] border-r-[1px] rounded-lg border-primary_black dark:border-gray-500" />
   );
 
   return (
-    <div className="flex flex-col justify-stretch px-2">
-      {editor && editable && (
-        <BubbleMenu
-          className="w-fit h-fit flex-center gap-1 editor-bubble-menu bg-gray-200 dark:bg-neutral-800 rounded-sm shadow-md p-1"
-          editor={editor}
-          tippyOptions={{ duration: 200 }}
-        >
-          {bubbleMenuButtons.map((button, index) =>
-            button.separator ? (
-              <Separator key={`separator-${index}`} />
-            ) : (
-              <BubbleMenuIcon
-                key={`button-${index}`}
-                onClick={button.action}
-                isActive={!!(button.activeCheck && editor.isActive(button.activeCheck))}
-                icon={button.icon}
-              />
-            )
-          )}
-        </BubbleMenu>
-      )}
-      <EditorContent editor={editor} />
-      {editor && editable && limit && <CountWidget charCount={charCount} limit={limit} className="m-1 ml-2" />}
-      {editor && editable && (
-        <LinkDialog open={openLinkDialog} setOpen={setOpenLinkDialog} setURL={setURL} onSubmit={onSubmitURL} />
-      )}
-    </div>
+      <div className="flex flex-col justify-stretch">
+        {editor && editable && (
+            <BubbleMenu
+                className="w-fit h-fit flex-center gap-1 editor-bubble-menu bg-gray-200 dark:bg-neutral-800 rounded-sm shadow-md p-1"
+                editor={editor}
+                tippyOptions={{ duration: 200 }}
+            >
+              {bubbleMenuButtons.map((button, index) =>
+                  button.separator ? (
+                      <Separator key={`separator-${index}`} />
+                  ) : (
+                      <BubbleMenuIcon
+                          key={`button-${index}`}
+                          onClick={button.action}
+                          isActive={!!(button.activeCheck && editor.isActive(button.activeCheck))}
+                          icon={button.icon}
+                      />
+                  )
+              )}
+            </BubbleMenu>
+        )}
+        <EditorContent editor={editor} />
+        {editor && editable && limit && <CountWidget charCount={charCount} limit={limit} className="m-1 ml-2" />}
+        {editor && editable && (
+            <LinkDialog open={openLinkDialog} setOpen={setOpenLinkDialog} setURL={setURL} onSubmit={onSubmitURL} />
+        )}
+      </div>
   );
 };
 
 const BubbleMenuIcon = ({ icon, isActive, onClick }: { icon: ReactNode; isActive: boolean; onClick?: () => void }) => (
-  <button onClick={onClick} className={isActive ? 'is-active' : ''}>
-    {React.cloneElement(icon as React.ReactElement, {
-      weight: isActive ? 'bold' : 'regular',
-    })}
-  </button>
+    <button onClick={onClick} className={isActive ? 'is-active' : ''}>
+      {React.cloneElement(icon as React.ReactElement, {
+        weight: isActive ? 'bold' : 'regular',
+      })}
+    </button>
 );
 
 export default Editor;

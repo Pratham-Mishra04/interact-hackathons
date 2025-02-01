@@ -12,13 +12,23 @@ import moment from 'moment';
 import BaseWrapper from '@/wrappers/base';
 import Loader from '@/components/common/loader';
 import socketService from '@/config/ws';
+import useTimeEvaluation from "@/hooks/use-time-evaluation";
+import useRelativeTime from "@/hooks/use-relative-time";
 
 const Stage = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
   const [nextRound, setNextRound] = useState<HackathonRound | null>(null);
   const [loading, setLoading] = useState(true);
-
   const hackathon = useSelector(currentHackathonSelector);
+  const nextRoundStartTime = useRelativeTime(nextRound?.startTime);
+  const isTeamFormationTime = useTimeEvaluation(
+      ()=>moment().isBetween(
+          moment(hackathon.teamFormationStartTime),
+          moment(hackathon.teamFormationEndTime)
+      ),
+      1000,
+  )
+
 
   const getTeam = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
@@ -39,15 +49,14 @@ const Stage = () => {
     else {
       const now = moment();
       if (hackathon.isEnded) window.location.replace('/participant/ended');
-      else if (now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)))
-        window.location.replace('/participant/team');
+      else if (isTeamFormationTime) window.location.replace('/participant/team');
       else {
         getTeam();
         getCurrentRound();
         socketService.connect(hackathon.id);
       }
     }
-  }, []);
+  }, [isTeamFormationTime]);
 
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
@@ -75,7 +84,7 @@ const Stage = () => {
                   <div className="flex-center flex-col">
                     <h4 className="w-fit gradient-text-3 text-8xl mb-4">{team.title}</h4>
                     {nextRound && (
-                      <div className="font-semibold text-xl">Team Formation has Ended. Round 1 starts {moment(nextRound?.startTime).fromNow()}</div>
+                      <div className="font-semibold text-xl">Team Formation has Ended. Round 1 starts {nextRoundStartTime}</div>
                     )}
                   </div>
                 ) : (
