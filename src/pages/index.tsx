@@ -200,7 +200,7 @@ const Index = () => {
             </div>
             <FadeIn initialScale={1} className="w-1/4 max-md:w-full">
               {users && users.length > 0 && (
-                <div className="w-full flex flex-col gap-2 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300 animate-fade_half sticky top-24 max-h-base overflow-y-auto">
+                <div className="w-full flex flex-col gap-2 bg-white dark:bg-dark_primary_comp rounded-lg p-4 transition-ease-300 animate-fade_half sticky top-20 max-h-base overflow-y-auto">
                   <div className="w-fit text-2xl font-bold blue-text-gradient">Profiles to Follow</div>
                   <div className="w-full flex flex-col gap-2">
                     {users?.map(user => (

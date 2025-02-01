@@ -94,16 +94,16 @@ const TeamOverviewAnalytics = ({ nextRound }: { nextRound?: HackathonRound | nul
           time1={moment(hackathon.teamFormationEndTime)}
           time2={moment(nextRound.startTime)}
           innerRadius={80}
-          outerRadius={140}
-          height={180}
+          outerRadius={120}
+          height={140}
         />
       ) : (
         <TimeProgressGraph
           time1={moment(hackathon.teamFormationStartTime)}
           time2={moment(hackathon.teamFormationEndTime)}
           innerRadius={80}
-          outerRadius={140}
-          height={180}
+          outerRadius={120}
+          height={140}
         />
       )}
 
