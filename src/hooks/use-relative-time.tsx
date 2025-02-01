@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import moment from 'moment';
 
 const useRelativeTime = (timestamp: Date | undefined, interval = 60000) => {
-    if (!timestamp) return '';
     const [relativeTime, setRelativeTime] = useState(() => moment(timestamp).fromNow());
 
     useEffect(() => {

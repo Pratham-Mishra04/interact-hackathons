@@ -13,12 +13,14 @@ import BaseWrapper from '@/wrappers/base';
 import Loader from '@/components/common/loader';
 import socketService from '@/config/ws';
 import useTimeEvaluation from "@/hooks/use-time-evaluation";
+import useRelativeTime from "@/hooks/use-relative-time";
 
 const Stage = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
   const [nextRound, setNextRound] = useState<HackathonRound | null>(null);
   const [loading, setLoading] = useState(true);
   const hackathon = useSelector(currentHackathonSelector);
+  const nextRoundStartTime = useRelativeTime(nextRound?.startTime);
   const isTeamFormationTime = useTimeEvaluation(
       ()=>moment().isBetween(
           moment(hackathon.teamFormationStartTime),
@@ -82,7 +84,7 @@ const Stage = () => {
                   <div className="flex-center flex-col">
                     <h4 className="w-fit gradient-text-3 text-8xl mb-4">{team.title}</h4>
                     {nextRound && (
-                      <div className="font-semibold text-xl">Team Formation has Ended. Round 1 starts {moment(nextRound?.startTime).fromNow()}</div>
+                      <div className="font-semibold text-xl">Team Formation has Ended. Round 1 starts {nextRoundStartTime}</div>
                     )}
                   </div>
                 ) : (

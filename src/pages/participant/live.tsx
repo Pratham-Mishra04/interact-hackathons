@@ -37,7 +37,6 @@ const Live = () => {
       1000,
   )
 
-
   const getCurrentRound = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/round`;
     const res = await getHandler(URL, undefined, true);
