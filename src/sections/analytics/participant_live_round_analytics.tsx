@@ -124,7 +124,7 @@ export default function ParticipantLiveRoundAnalytics({
   } satisfies ChartConfig;
 
   return (
-    <div className="w-full flex-center max-md:flex-col gap-4 max-md:hidden">
+    <div className="w-full flex max-md:flex-col gap-4 max-md:hidden">
       <div className="w-[28rem] rounded-xl">
         <div className="w-full flex gap-2">
           <div className="w-1/2 h-24 bg-white rounded-lg rounded-bl-none flex items-center justify-between px-4">
