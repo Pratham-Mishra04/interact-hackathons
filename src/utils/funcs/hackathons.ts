@@ -18,13 +18,12 @@ export const getHackathonStage = (
   nextRound?: HackathonRound
 ): string => {
   const now = moment();
-  const startTime = moment(hackathon.startTime);
   const teamFormationStartTime = moment(hackathon.teamFormationStartTime);
   const teamFormationEndTime = moment(hackathon.teamFormationEndTime);
 
   if (hackathon.isEnded) {
     return HACKATHON_COMPLETED;
-  } else if (now.isBefore(startTime)) {
+  } else if (now.isBefore(teamFormationStartTime)) {
     return HACKATHON_NOT_STARTED;
   } else if (now.isBetween(teamFormationStartTime, teamFormationEndTime, null, '[)')) {
     return HACKATHON_TEAM_REGISTRATION;

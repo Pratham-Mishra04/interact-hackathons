@@ -16,6 +16,7 @@ interface Props {
 
 const CreateTeam = ({ show, setShow, submitHandler, hackathonID, tracks }: Props) => {
   const [title, setTitle] = useState('');
+  const [regNo, setRegNo] = useState('');
   const [track, setTrack] = useState('');
   const [role, setRole] = useState('');
 
@@ -46,6 +47,13 @@ const CreateTeam = ({ show, setShow, submitHandler, hackathonID, tracks }: Props
               ))}
           </SelectContent>
         </Select>
+        <Input
+          value={regNo}
+          onChange={e => {
+            setRegNo(e.target.value);
+          }}
+          placeholder="Enter Your Registration Number"
+        />
         <Select value={role} onValueChange={setRole}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select Your Role" />
@@ -66,6 +74,7 @@ const CreateTeam = ({ show, setShow, submitHandler, hackathonID, tracks }: Props
                 trackID: track,
                 hackathonID,
                 role,
+                regNo,
               });
             } else {
               Toaster.error('Please fill in all the fields');

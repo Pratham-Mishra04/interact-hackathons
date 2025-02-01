@@ -13,6 +13,7 @@ interface Props {
 
 const JoinTeam = ({ show, setShow, submitHandler }: Props) => {
   const [token, setToken] = useState('');
+  const [regNo, setRegNo] = useState('');
   const [role, setRole] = useState('');
 
   return (
@@ -29,6 +30,13 @@ const JoinTeam = ({ show, setShow, submitHandler }: Props) => {
           }}
           placeholder="Enter Team Code"
         />
+        <Input
+          value={regNo}
+          onChange={e => {
+            setRegNo(e.target.value);
+          }}
+          placeholder="Enter Your Registration Number"
+        />
         <Select value={role} onValueChange={setRole}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select Your Role" />
@@ -41,7 +49,7 @@ const JoinTeam = ({ show, setShow, submitHandler }: Props) => {
             ))}
           </SelectContent>
         </Select>
-        <Button onClick={() => submitHandler({ token, role })}>Join Team</Button>
+        <Button onClick={() => submitHandler({ token, role, regNo })}>Join Team</Button>
       </DialogContent>
     </Dialog>
   );
