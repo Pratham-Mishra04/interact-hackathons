@@ -2,7 +2,6 @@ import Input from '@/components/form/input';
 import Links from '@/components/form/links';
 import Select from '@/components/form/select';
 import Tags from '@/components/form/tags';
-import TextArea from '@/components/form/textarea';
 import { SERVER_ERROR } from '@/config/errors';
 import { PROJECT_URL } from '@/config/routes';
 import patchHandler from '@/handlers/patch_handler';
@@ -15,6 +14,7 @@ import { useSelector } from 'react-redux';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
+import EditorInput from "@/components/form/editor-input";
 
 interface Props {
   project: Project;
@@ -103,7 +103,7 @@ const EditProject = ({ project, setTeam }: Props) => {
         <div className="w-full h-fit flex flex-col max-lg:items-center gap-4 max-lg:gap-6 max-lg:pb-4">
           <Select label="Project Category" val={category} setVal={setCategory} options={categories} required={true} />
           <Input label="Project Tagline" val={tagline} setVal={setTagline} maxLength={50} required={true} />
-          <TextArea label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
+          <EditorInput label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
           <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
           <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={10} />
         </div>

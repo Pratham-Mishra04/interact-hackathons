@@ -18,7 +18,7 @@ import BaseWrapper from '@/wrappers/base';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import socketService from '@/config/ws';
-import Image from 'next/image';
+import useTimeEvaluation from '@/hooks/use-time-evaluation';
 
 const Team = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -27,6 +27,10 @@ const Team = () => {
   const [clickedOnJoinTeam, setClickedOnJoinTeam] = useState(false);
   const user = useSelector(userSelector);
   const hackathon = useSelector(currentHackathonSelector);
+  const isTeamFormationTime = useTimeEvaluation(
+    () => moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)),
+    1000
+  );
 
   //TODO get hackathon details as well to update the state in case of any updations. (rn we need to go to index and click again to reflect hackathon changes)
   const getTeam = async () => {
@@ -55,7 +59,7 @@ const Team = () => {
     else {
       const now = moment();
       if (hackathon.isEnded) window.location.replace('/participant/ended');
-      else if (!now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime))) {
+      else if (!isTeamFormationTime) {
         if (now.isAfter(hackathon.startTime)) window.location.replace('/participant/live');
         else window.location.replace('/');
       } else {
@@ -64,7 +68,7 @@ const Team = () => {
         socketService.connect(hackathon.id);
       }
     }
-  }, []);
+  }, [isTeamFormationTime]);
 
   const handleCreateTeam = async (formData: any) => {
     const toaster = Toaster.startLoad('Creating Team');
@@ -177,8 +181,8 @@ const Team = () => {
               </div>
             ) : (
               <>
-                <h4 className="w-fit gradient-text-3 text-8xl mb-6">Team Formation</h4>
-                <div className="text-4xl font-bold">Create, and Join Teams Effortlessly.</div>
+                <h4 className="w-fit gradient-text-3 text-8xl mb-2">Team Formation</h4>
+                <div className="text-3xl font-semibold">Create, and Join Teams Effortlessly.</div>
               </>
             )}
           </div>

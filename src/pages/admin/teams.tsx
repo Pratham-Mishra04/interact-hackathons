@@ -5,15 +5,17 @@ import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
 import BaseWrapper from '@/wrappers/base';
 import TeamsTable from '@/components/tables/teams';
+import useTimeEvaluation from '@/hooks/use-time-evaluation';
 
 const Teams = () => {
   const hackathon = useSelector(currentHackathonSelector);
+  const isTeamFormationOver = useTimeEvaluation(() => moment().isAfter(hackathon.teamFormationEndTime), 1000);
 
   useEffect(() => {
     if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (hackathon.isEnded) window.location.replace('/admin/ended');
-    else if (moment().isAfter(hackathon.teamFormationEndTime)) window.location.replace('/admin/live');
-  }, []);
+    else if (isTeamFormationOver) window.location.replace('/admin/live');
+  }, [isTeamFormationOver]);
 
   return (
     <BaseWrapper>
@@ -21,8 +23,9 @@ const Teams = () => {
         <div className=" w-full h-fit">
           <div className="w-full mx-auto flex flex-col items-center md:flex-row gap-4 md:gap-8">
             <div className="w-full md:w-1/2 justify-center items-start flex-col gap-2">
-              <h4 className="w-fit gradient-text-3 text-8xl">Team Overview</h4>
-              <div className="text-3xl font-bold">Manage, Monitor, and Analyze Participation.</div>
+              <div className="w-fit gradient-text-3 text-9xl">Team</div>
+              <div className="w-fit gradient-text-3 text-8xl">Overview</div>
+              <div className="text-3xl font-semibold">Manage, Monitor, and Analyze Participation.</div>
             </div>
             <aside className="--analytics w-full md:w-1/2 h-full">
               <TeamOverviewAnalytics />
