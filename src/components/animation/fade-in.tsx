@@ -9,12 +9,14 @@ const FadeIn = ({
   initialScale = 0.95,
   delay = 0,
   duration = 0.75,
+  initialOpacity = 0,
 }: {
   children: React.ReactNode;
   className?: string;
   initialScale?: number;
   delay?: number;
   duration?: number;
+  initialOpacity?: number
 }) => {
   const motionRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
@@ -37,7 +39,7 @@ const FadeIn = ({
       animate={controls}
       initial={'hidden'}
       variants={{
-        hidden: { opacity: 0, scale: initialScale },
+        hidden: { opacity: initialOpacity, scale: initialScale },
         visible: { opacity: 1, scale: 1, y: 0, transition: { duration: duration, ease: 'easeOut', delay } },
       }}
     >
