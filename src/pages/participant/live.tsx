@@ -16,7 +16,6 @@ import ProjectView from '@/screens/participants/view_project';
 import Loader from '@/components/common/loader';
 import socketService from '@/config/ws';
 import TeamNotRegistered from '@/screens/participants/not_registered';
-import Image from 'next/image';
 import useRelativeTime from '@/hooks/use-relative-time';
 import useTimeEvaluation from '@/hooks/use-time-evaluation';
 
