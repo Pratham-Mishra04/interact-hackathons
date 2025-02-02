@@ -14,6 +14,7 @@ import AnnouncementCard from '@/components/announcement_card';
 import { formatPrice } from '@/utils/funcs/misc';
 import socketService from '@/config/ws';
 import ShineBorder from '@/components/ui/shine-border';
+import {dummyLiveCards, LiveOnInteract} from "@/pages";
 
 export default function ParticipantLiveRoundAnalytics({
   teamID,
@@ -124,7 +125,7 @@ export default function ParticipantLiveRoundAnalytics({
   } satisfies ChartConfig;
 
   return (
-    <div className="w-full flex max-md:flex-col gap-4 max-md:hidden">
+    <div className="grid grid-cols-2 max-md:flex-col gap-4 max-md:hidden">
       <div className="w-[28rem] rounded-xl">
         <div className="w-full flex gap-2">
           <div className="w-1/2 h-24 bg-white rounded-lg rounded-bl-none flex items-center justify-between px-4">
@@ -235,7 +236,7 @@ export default function ParticipantLiveRoundAnalytics({
           </div>
         </div>
       </div>
-      {announcements && announcements.length > 0 && (
+      {announcements && announcements.length > 0 ? (
         <div className="w-full h-full max-h-[25rem] bg-white overflow-y-auto thin_scrollbar rounded-lg p-3">
           <div className="w-fit text-2xl font-semibold mb-2 blue-text-gradient">Announcements</div>
           {announcements.map(announcement => (
@@ -244,16 +245,33 @@ export default function ParticipantLiveRoundAnalytics({
             </div>
           ))}
         </div>
+      ) : (
+          <div className="hidden lg:flex w-full h-full max-h-[25rem] bg-white overflow-y-auto thin_scrollbar rounded-lg p-3 flex-col justify-between">
+            <div>
+              <div className="w-full text-2xl font-semibold blue-text-gradient tracking-tight">Announcements</div>
+              <div
+                  className={'text-white py-2 px-2 rounded-xl mb-2'}
+                  style={{
+                    background: '-webkit-linear-gradient(0deg, #607ee7,#478EE1)',
+                  }}
+              >
+                <div className={"text-sm"}>Hackathon Starts, No Announcement as of now. </div>
+              </div>
+            </div>
+            <div className={"h-full"}>
+              <LiveOnInteract cards={dummyLiveCards} footer={"Join the commnunity"} />
+            </div>
+          </div>
       )}
     </div>
   );
 }
 
-export const PercentageChange = ({ change }: { change?: number }) =>
-  change && change != 0 ? (
-    <div className={`${change > 0 ? 'text-green-300' : 'text-priority_high'} text-xs`}>{`${Math.abs(change)}% ${
-      change > 0 ? 'increase' : 'decrease'
-    } from last round`}</div>
-  ) : (
-    <></>
-  );
+export const PercentageChange = ({change}: { change?: number }) =>
+    change && change != 0 ? (
+        <div className={`${change > 0 ? 'text-green-300' : 'text-priority_high'} text-xs`}>{`${Math.abs(change)}% ${
+            change > 0 ? 'increase' : 'decrease'
+        } from last round`}</div>
+    ) : (
+        <></>
+    );

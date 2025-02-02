@@ -16,6 +16,7 @@ import CommentBox from '@/components/comment/comment_box';
 import BaseWrapper from '@/wrappers/base';
 import moment from 'moment';
 import { isAccessDeniedError } from '@/utils/funcs/misc';
+import {getHackathonRole} from "@/utils/funcs/hackathons";
 
 export default function Page({ tid }: { tid: string }) {
   const [team, setTeam] = useState(initialHackathonTeam);
@@ -43,7 +44,9 @@ export default function Page({ tid }: { tid: string }) {
     else getTeam();
   }, [tid]);
 
-  const menuData: MenuItem[] = [
+  const role = getHackathonRole();
+
+  let menuData: MenuItem[] = [
     {
       title: 'Team Dashboard',
       Icon: UsersThree,
@@ -65,6 +68,10 @@ export default function Page({ tid }: { tid: string }) {
       Screen: <CommentBox item={team} type="hackathon_team" subURL={`${hackathon.organizationID}/${team.hackathonID}`} />,
     },
   ];
+
+  if (role !== 'admin') {
+    menuData = menuData.filter(menuItem=>menuItem.title !== 'Scores')
+  }
 
   const ActiveScreen = menuData[activeIndex].Screen;
 
