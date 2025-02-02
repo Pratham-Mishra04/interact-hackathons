@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import Image from 'next/image';
-import { USER_PROFILE_PIC_URL } from '@/config/routes';
+import { FRONTEND_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import { HackathonTeamMembership, User } from '@/types';
 import Link from 'next/link';
 
@@ -10,7 +10,7 @@ const TeamMemberHoverCard = ({ trigger, membership }: { trigger: ReactNode; memb
     <HoverCard>
       <HoverCardTrigger>{trigger}</HoverCardTrigger>
       <HoverCardContent className="w-64 p-2">
-        <Link href={`/users/${membership.user.username}`} className="flex items-center space-x-1">
+        <Link href={`${FRONTEND_URL}/users/${membership.user.username}`} className="flex items-center space-x-1">
           <Image
             crossOrigin="anonymous"
             width={100}

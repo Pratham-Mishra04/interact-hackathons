@@ -272,10 +272,10 @@ const LiveCard = ({ card }: { card: LiveCard }) => {
     >
       <div className={'flex flex-col justify-center gap-2'}>
         <div className={'text-center text-2xl max-sm:text-lg font-bold'}>{card.text}</div>
-        <Link className={'border border-white rounded-full p-2 px-3 max-sm:py-1.5 max-sm:px-2 flex items-center gap-1.5'} href={card.href}>
+        <div className={'border border-white rounded-full p-2 px-3 max-sm:py-1.5 max-sm:px-2 flex items-center gap-1.5'}>
           <FlagIcon fill={'white'} className={'size-3.5 mt-0.5'} />
           <p className={'text-sm max-sm:text-xs'}>{card.linkText}</p>
-        </Link>
+        </div>
       </div>
     </Link>
   );
