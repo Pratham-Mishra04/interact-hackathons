@@ -131,7 +131,7 @@ const TeamsTable = ({ showAllFilters = true }) => {
                 <TableHead className="min-w-[100px] w-1/4">Team Name</TableHead>
                 <TableHead>Members</TableHead>
                 <TableHead>Track</TableHead>
-                <TableHead>Created By</TableHead>
+                <TableHead className={'max-md:hidden'}>Created By</TableHead>
                 <TableHead className="max-md:hidden">Created At</TableHead>
                 {hackathon.coordinators?.includes(user.id) && <TableHead>Actions</TableHead>}
               </TableRow>
