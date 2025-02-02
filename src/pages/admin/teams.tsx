@@ -23,9 +23,9 @@ const Teams = () => {
         <div className=" w-full h-fit">
           <div className="w-full mx-auto flex flex-col items-center md:flex-row gap-4 md:gap-8">
             <div className="w-full md:w-1/2 justify-center items-start flex-col gap-2">
-              <div className="w-fit gradient-text-3 text-9xl">Team</div>
-              <div className="w-fit gradient-text-3 text-8xl">Overview</div>
-              <div className="text-3xl font-semibold">Manage, Monitor, and Analyze Participation.</div>
+              <div className="w-fit gradient-text-3 text-9xl max-md:text-6xl max-sm:text-5xl max-sm:w-full max-sm:text-center">Team</div>
+              <div className="w-fit gradient-text-3 text-8xl max-md:text-6xl max-sm:text-5xl max-sm:w-full max-sm:text-center max-md:mb-1">Overview</div>
+              <div className="text-3xl font-semibold max-md:text-2xl max-sm:text-center">Manage, Monitor, and Analyze Participation.</div>
             </div>
             <aside className="--analytics w-full md:w-1/2 h-full">
               <TeamOverviewAnalytics />
