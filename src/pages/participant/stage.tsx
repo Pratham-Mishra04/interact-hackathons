@@ -6,7 +6,6 @@ import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
 import TeamOverviewAnalytics from '@/sections/analytics/team_overview';
 import moment from 'moment';
 import BaseWrapper from '@/wrappers/base';

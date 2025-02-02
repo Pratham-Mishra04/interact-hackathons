@@ -65,8 +65,8 @@ const Index = () => {
     <BaseWrapper>
       <div className="w-full bg-[#E1F1FF] min-h-base p-12 max-md:p-8 flex flex-col gap-8">
         <div className=" w-full h-fit flex flex-col gap-4">
-          <div className="w-full flex flex-col md:flex-row items-start md:justify-between gap-6">
-            <div className="--heading w-full md:w-1/2 h-full flex flex-col gap-4">
+          <div className="w-full flex flex-col md:flex-row items-center md:justify-between gap-6">
+            <div className="--heading w-full md:w-1/2 h-full flex flex-col gap-6 justify-between">
               <div className="w-full h-full max-md:text-center">
                 <div className="text-xl">Now Ongoing</div>
                 <div

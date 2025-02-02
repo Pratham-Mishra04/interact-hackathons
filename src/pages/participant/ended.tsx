@@ -14,22 +14,20 @@ import Link from 'next/link';
 import { FRONTEND_URL } from '@/config/routes';
 import Overview from '@/sections/projects/overview';
 import EventCard from '@/components/event_card';
-import useTimeEvaluation from "@/hooks/use-time-evaluation";
+import useTimeEvaluation from '@/hooks/use-time-evaluation';
 
 const Ended = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [similarEvents, setSimilarEvents] = useState<Event[]>([]);
-  const isTeamFormationTime = useTimeEvaluation(
-      ()=>moment().isBetween(
-          moment(hackathon.teamFormationStartTime),
-          moment(hackathon.teamFormationEndTime)
-      ),
-      1000,
-  )
 
   const hackathon = useSelector(currentHackathonSelector);
+
+  const isTeamFormationTime = useTimeEvaluation(
+    () => moment().isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime)),
+    1000
+  );
 
   const getTeam = async () => {
     const URL = `/hackathons/${hackathon.id}/participants/teams`;
@@ -120,7 +118,7 @@ const Ended = () => {
             <div className={'text-7xl max-lg:text-6xl max-md:text-5xl text-nowrap font-bold gradient-text-3 pb-4'}>not registered</div>
             <div className={'text-3xl max-lg:text-2xl max-md:text-xl text-nowrap font-bold text-neutral-800'}>For this hackathon/Events</div>
           </div>
-          {similarEvents.length > 0 && (
+          {similarEvents && similarEvents.length > 0 && (
             <div className={'w-full'}>
               <div className={'text-3xl max-lg:text-2xl max-md:text-xl font-bold text-neutral-800'}>More Events Like This:</div>
               <div className={'w-full grid grid-cols-4 gap-5 mt-2  max-md:grid-cols-2 max-sm:grid-cols-1 justify-items-center'}>

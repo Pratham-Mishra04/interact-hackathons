@@ -35,7 +35,7 @@ const Navbar = () => {
 
       {user.id && (
         <div className="flex items-center gap-2 max-md:gap-0 z-0">
-          <span className="text-black font-medium">{user.username}</span>
+          <span className="text-black font-medium">{user.name}</span>
           <Image
             crossOrigin="anonymous"
             className="w-9 h-9 max-md:w-6 max-md:h-6 max-md:ml-2 rounded-full"

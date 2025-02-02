@@ -193,7 +193,7 @@ export default function ParticipantLiveRoundAnalytics({
                         if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
                           return (
                             <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
-                              <tspan x={viewBox.cx} y={viewBox.cy || 0} className="fill-foreground text-2xl font-bold">
+                              <tspan x={viewBox.cx} y={viewBox.cy || 0} className="fill-foreground text-xl font-bold">
                                 {roundTimeData.timeLeft}
                               </tspan>
                               <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 20} className="fill-muted-foreground">
