@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
-import EditorInput from "@/components/form/editor-input";
+import EditorInput from '@/components/form/editor-input';
 
 interface Props {
   project: Project;
@@ -60,15 +60,13 @@ const EditProject = ({ project, setTeam }: Props) => {
 
     const toaster = Toaster.startLoad('Editing your project...');
 
-    const formData = new FormData();
-
-    if (tagline != project.tagline) formData.append('tagline', tagline);
-    if (description != project.description) formData.append('description', description);
-    // if (isArrEdited(tags, project.tags))
-    tags?.forEach(tag => formData.append('tags', tag));
-    // if (isArrEdited(links, project.links))
-    links?.forEach(link => formData.append('links', link));
-    if (category != project.category) formData.append('category', category);
+    const formData = {
+      tagline,
+      description,
+      tags,
+      links,
+      category,
+    };
 
     const URL = `${PROJECT_URL}/${project.slug}`;
 
