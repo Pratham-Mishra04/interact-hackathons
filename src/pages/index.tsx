@@ -266,7 +266,7 @@ export const LiveCard = ({ card }: { card: LiveCard }) => {
     <Link
       href={`${FRONTEND_URL}/${card.href}`}
       target="_blank"
-      className={'size-[11rem] max-sm:size-[8rem] rounded-xl text-white shadow-xl flex justify-center items-center'}
+      className={'size-[11rem] max-sm:size-[8rem] rounded-xl text-white shadow-xl active:scale-95 transition-all duration-200 flex justify-center items-center'}
       style={{
         background: 'url("/live-card.png")',
         backgroundSize: 'cover',

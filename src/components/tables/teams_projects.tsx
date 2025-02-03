@@ -19,7 +19,18 @@ import NewTeam from '@/sections/admin/new_team';
 import Status from '../common/status';
 import { isAccessDeniedError } from '@/utils/funcs/misc';
 import { userSelector } from '@/slices/userSlice';
-import { getHackathonRole } from '@/utils/funcs/hackathons';
+import {getHackathonRole} from "@/utils/funcs/hackathons";
+import {TrashIcon} from "@radix-ui/react-icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import deleteHandler from "@/handlers/delete_handler";
 
 const TeamProjectsTable = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -35,6 +46,7 @@ const TeamProjectsTable = () => {
   const [clickedOnAddMember, setClickedOnAddMember] = useState<boolean>(false);
   const [clickedTeam, setClickedTeam] = useState(initialHackathonTeam);
   const [round, setRound] = useState<HackathonRound | undefined>();
+  const [showDeleteTeamDialog, setShowDeleteTeamDialog] = useState(false);
 
   const hackathon = useSelector(currentHackathonSelector);
   const user = useSelector(userSelector);
@@ -101,18 +113,26 @@ const TeamProjectsTable = () => {
     }
   };
 
+  const handleDeleteTeam = (team: HackathonTeam)=>{
+    setClickedTeam(()=>{
+      setShowDeleteTeamDialog(true);
+      return team;
+    });
+  }
+
   useEffect(() => {
     getTracks();
   }, []);
 
   return (
     <div className="flex flex-col gap-4">
-      {hackathon.coordinators?.includes(user.id) && (
+      {hackathon.coordinators?.includes(user.id) &&  (
         <>
           <div className="w-full flex justify-end">
             <NewTeam tracks={tracks} />
           </div>
           <AddTeamMember show={clickedOnAddMember} setShow={setClickedOnAddMember} team={clickedTeam} />
+          <DeleteTeam show={showDeleteTeamDialog} setShow={setShowDeleteTeamDialog} team={clickedTeam} setTeams={setTeams} />
         </>
       )}
       <TeamSearchFilters
@@ -178,16 +198,28 @@ const TeamProjectsTable = () => {
                 <TableCell>
                   <Status className="text-xs w-fit px-3 py-1 rounded-full" status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
                 </TableCell>
-                {role === 'admin' && <TableCell>{hackathon.isEnded ? team.overallScore : team.roundScore}</TableCell>}
+                {role === "admin" && <TableCell>{hackathon.isEnded ? team.overallScore : team.roundScore}</TableCell>}
                 {!hackathon.isEnded && hackathon.coordinators?.includes(user.id) && (
-                  <TableCell
-                    onClick={el => {
-                      el.stopPropagation();
-                      setClickedTeam(team);
-                      setClickedOnAddMember(true);
-                    }}
-                  >
-                    <UserPlus />
+                  <TableCell className={"flex gap-4 items-center"}>
+                    <div
+                        className={"hover:bg-gray-300/40 p-1 rounded"}
+                      onClick={el => {
+                        el.stopPropagation();
+                        setClickedTeam(team);
+                        setClickedOnAddMember(true);
+                      }}
+                    >
+                      <UserPlus className={"size-[1.15rem]"} />
+                    </div>
+                    <div
+                        className={"hover:bg-gray-300/40 p-1 rounded"}
+                        onClick={e=>{
+                          e.stopPropagation();
+                          handleDeleteTeam(team)
+                        }}
+                    >
+                      <TrashIcon className={"size-[1.15rem]"} />
+                    </div>
                   </TableCell>
                 )}
               </TableRow>
@@ -203,5 +235,52 @@ const TeamProjectsTable = () => {
     </div>
   );
 };
+
+interface DeleteTeamProps {
+  team: HackathonTeam,
+  show: boolean,
+  setShow: React.Dispatch<React.SetStateAction<boolean>>,
+  setTeams: React.Dispatch<React.SetStateAction<HackathonTeam[]>>
+}
+
+export const DeleteTeam = ({
+    team,
+    show,
+    setShow,
+    setTeams
+}: DeleteTeamProps)=>{
+
+  const hackathon = useSelector(currentHackathonSelector)
+
+  const handleCancel = ()=>setShow(false);
+
+  const handleDelete = async () => {
+    console.log(team);
+    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}`;
+    const res = await deleteHandler(URL);
+    if (res.statusCode == 200) {
+      setTeams(teams=>teams.filter(teamItem=>teamItem.id != team.id))
+      Toaster.success('Team removed successfully');
+    } else {
+      Toaster.error(res.data.message || SERVER_ERROR);
+    }
+    setShow(false);
+  }
+
+  return (
+      <Dialog open={show} onOpenChange={setShow}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className={"font-bold"}><span className={"text-red-500"}>Remove</span> {team.title}</DialogTitle>
+            <DialogDescription>This team will be removed from the hackathon. Are you absolutely sure?</DialogDescription>
+          </DialogHeader>
+          <DialogFooter className={"mt-2 max-sm:gap-1"}>
+            <Button variant={"outline"} onClick={handleCancel}>Cancel</Button>
+            <Button variant={"destructive"} onClick={handleDelete}>Remove</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+  )
+}
 
 export default TeamProjectsTable;
