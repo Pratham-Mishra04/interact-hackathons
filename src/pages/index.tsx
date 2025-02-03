@@ -25,7 +25,7 @@ import { motion } from 'motion/react';
 import FadeIn from '@/components/animation/fade-in';
 import UserCard from '@/components/common/user_card';
 import Loader from '@/components/common/loader';
-import { ReactSVG } from 'react-svg';
+import {ReactSVG} from "react-svg";
 
 interface LiveCard {
   text: string;
@@ -41,7 +41,7 @@ enum HackathonType {
 }
 
 //TODO: Links to be added
-const dummyLiveCards: LiveCard[] = [
+export const dummyLiveCards: LiveCard[] = [
   { text: '500+', linkText: 'Projects', href: 'projects' },
   { text: '3K+', linkText: 'Active Users', href: 'users' },
   { text: '10+', linkText: 'Hackathons', href: 'events' },
@@ -261,7 +261,7 @@ const Tag = ({ icon, text }: { icon?: React.ReactNode; text: string }) => {
   );
 };
 
-const LiveCard = ({ card }: { card: LiveCard }) => {
+export const LiveCard = ({ card }: { card: LiveCard }) => {
   return (
     <Link
       href={`${FRONTEND_URL}/${card.href}`}
@@ -292,59 +292,63 @@ const LiveCard = ({ card }: { card: LiveCard }) => {
   );
 };
 
-const LiveOnInteract = ({ cards }: { cards: LiveCard[] }) => {
+export const LiveOnInteract = ({ cards, footer }: { cards: LiveCard[], footer?: string }) => {
   return (
-    <div
-      className={'w-full h-full pt-2 pb-4 rounded-xl flex flex-col justify-center gap-2'}
-      style={{
-        background: 'url("/live-on-interact.png")',
-        backgroundSize: 'cover',
-      }}
-    >
-      {/*<Image src={'/live-on-interact.png'} alt={'live-on-interact'} height={572} width={1032} className={"absolute object-cover"} />*/}
-      <div className={'z-50'}>
-        <div className={'w-fit mx-auto text-2xl max-md:text-xl font-semibold text-white mb-2'}>Live on Interact!</div>
+      <div
+          className={`w-full h-full pt-3 pb-4 ${footer && 'p-2'} rounded-xl flex flex-col justify-center gap-2`}
+          style={{
+            background: 'url("/live-on-interact.png")',
+            backgroundSize: 'cover',
+          }}
+      >
+        {/*<Image src={'/live-on-interact.png'} alt={'live-on-interact'} height={572} width={1032} className={"absolute object-cover"} />*/}
+        <div
+            className={`w-fit mx-auto text-2xl max-md:text-2xl font-semibold text-white mb-1 ${!!footer && 'mb-0'}`}>Live
+          on Interact!
+        </div>
         <div className="w-full">
           <Swiper
-            modules={[EffectCoverflow]}
-            effect={'coverflow'}
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView={3}
-            initialSlide={1}
-            coverflowEffect={{
-              rotate: 20,
-              stretch: 0,
-              depth: 100,
-              modifier: 2.5,
-              slideShadows: true,
-            }}
-            className={'max-w-lg max-sm:max-w-sm'}
+              modules={[EffectCoverflow]}
+              effect={'coverflow'}
+              grabCursor={true}
+              centeredSlides={true}
+              slidesPerView={3}
+              initialSlide={1}
+              coverflowEffect={{
+                rotate: 20,
+                stretch: 0,
+                depth: 100,
+                modifier: 2.5,
+                slideShadows: true,
+              }}
+              className={'max-w-lg max-sm:max-w-sm'}
           >
             {cards.map((card, index) => (
-              <SwiperSlide key={card.text}>
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.2 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    duration: 0.4,
-                    delay: index * 0.1,
-                  }}
-                >
-                  <LiveCard card={card} />
-                </motion.div>
-              </SwiperSlide>
+                <SwiperSlide key={card.text}>
+                  <motion.div
+                      initial={{opacity: 0, scale: 0.2}}
+                      animate={{opacity: 1, scale: 1}}
+                      transition={{
+                        duration: 0.4,
+                        delay: index * 0.1,
+                      }}
+                  >
+                    <LiveCard card={card}/>
+                  </motion.div>
+                </SwiperSlide>
             ))}
           </Swiper>
         </div>
+        {footer && <div className={`w-fit mx-auto text-lg max-md:text-base font-semibold text-white`}>
+          {footer}
+        </div>}
       </div>
-    </div>
   );
 };
 
-const UserInfo = ({ user }: { user: User }) => {
+const UserInfo = ({user}: { user: User }) => {
   return (
-    <div className={'w-full h-full bg-white flex flex-col gap-4 p-4 rounded-xl justify-between'}>
+      <div className={'w-full h-full bg-white flex flex-col gap-4 p-4 rounded-xl justify-between'}>
       <div className={'flex w-full h-full gap-10 justify-between max-lg:flex-col max-lg:gap-2'}>
         <div className={'flex max-sm:flex-col gap-6 max-sm:gap-2 w-full lg:w-1/2 justify-around'}>
           <Image

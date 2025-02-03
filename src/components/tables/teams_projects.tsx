@@ -19,6 +19,7 @@ import NewTeam from '@/sections/admin/new_team';
 import Status from '../common/status';
 import { isAccessDeniedError } from '@/utils/funcs/misc';
 import { userSelector } from '@/slices/userSlice';
+import {getHackathonRole} from "@/utils/funcs/hackathons";
 
 const TeamProjectsTable = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -37,6 +38,7 @@ const TeamProjectsTable = () => {
 
   const hackathon = useSelector(currentHackathonSelector);
   const user = useSelector(userSelector);
+  const role = getHackathonRole();
 
   const fetchTeams = async (abortController?: AbortController, initialPage?: number) => {
     setLoading(true);
@@ -135,7 +137,7 @@ const TeamProjectsTable = () => {
               <TableHead>Track</TableHead>
               <TableHead className="max-md:hidden">Members</TableHead>
               <TableHead>Elimination Status</TableHead>
-              <TableHead>{hackathon.isEnded ? 'Overall Score' : `Round ${round ? round.index + 1 : ''} Score`}</TableHead>
+              {role === 'admin' && <TableHead>{hackathon.isEnded ? 'Overall Score' : `Round ${round ? round.index + 1 : ''} Score`}</TableHead>}
               {!hackathon.isEnded && hackathon.coordinators?.includes(user.id) && <TableHead>Actions</TableHead>}
             </TableRow>
           </TableHeader>
@@ -176,7 +178,7 @@ const TeamProjectsTable = () => {
                 <TableCell>
                   <Status className="text-xs w-fit px-3 py-1 rounded-full" status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
                 </TableCell>
-                <TableCell>{hackathon.isEnded ? team.overallScore : team.roundScore}</TableCell>
+                {role === "admin" && <TableCell>{hackathon.isEnded ? team.overallScore : team.roundScore}</TableCell>}
                 {!hackathon.isEnded && hackathon.coordinators?.includes(user.id) && (
                   <TableCell
                     onClick={el => {
