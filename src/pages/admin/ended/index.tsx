@@ -14,9 +14,20 @@ import configuredAxios from '@/config/axios';
 import { HistoryIcon, Loader } from 'lucide-react';
 import TeamProjectsTable from '@/components/tables/teams_projects';
 import { userSelector } from '@/slices/userSlice';
+import getHandler from '@/handlers/get_handler';
+import { HackathonRound } from '@/types';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Index = () => {
   const hackathon = useSelector(currentHackathonSelector);
+  const [rounds, setRounds] = useState<HackathonRound[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [announcementReloadTrigger, setAnnouncementReloadTrigger] = useState(false);
@@ -25,10 +36,14 @@ const Index = () => {
     if (!hackathon) window.location.replace(`/?redirect_url=${window.location.pathname}`);
     else if (!hackathon.isEnded) window.location.replace('/admin/live');
     else if (moment().isBefore(hackathon.teamFormationEndTime)) window.location.replace('/admin/teams');
+    else getRounds();
   }, []);
 
   const handleDownload = async (downloadType: 'team' | 'overall' | 'round', roundID?: string, roundIndex?: number) => {
+    const toaster = Toaster.startLoad('Downloading CSV...');
     if (loading) return;
+    setLoading(true);
+
     try {
       let URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/csv`;
       let filename = hackathon.title.replaceAll(' ', '_');
@@ -45,10 +60,10 @@ const Index = () => {
           filename += '_overall-scores';
           break;
         case 'round':
-          if (!roundID || !roundIndex) isValid = false;
+          if (!roundID || roundIndex == undefined) isValid = false;
           else {
             URL += `/rounds/${roundID}`;
-            filename += `_round-${roundID}-scores`;
+            filename += `_round-${roundIndex + 1}-scores`;
           }
           break;
         default:
@@ -56,8 +71,6 @@ const Index = () => {
       }
 
       if (!isValid) return;
-
-      setLoading(true);
 
       const response = await configuredAxios.get(URL, {
         responseType: 'blob',
@@ -75,11 +88,23 @@ const Index = () => {
       document.body.removeChild(link);
 
       window.URL.revokeObjectURL(url);
+      Toaster.stopLoad(toaster, 'CSV Downloaded', 1);
     } catch (error) {
-      Toaster.error(SERVER_ERROR);
+      Toaster.stopLoad(toaster, SERVER_ERROR, 0);
       console.error('Error downloading CSV:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getRounds = async () => {
+    const URL = `${ORG_URL}/${hackathon.organizationID}/hackathons/${hackathon.id}/rounds`;
+    const res = await getHandler(URL, undefined, true);
+    if (res.statusCode === 200) {
+      const rounds: HackathonRound[] = res.data.rounds || [];
+      setRounds(rounds.sort((a, b) => b.index - a.index));
+    } else {
+      Toaster.error(res.data?.message || SERVER_ERROR);
     }
   };
 
@@ -89,6 +114,8 @@ const Index = () => {
     () => user.organizationMemberships?.map(m => m.organizationID).includes(hackathon.organizationID),
     [user.organizationMemberships, hackathon.organizationID]
   );
+
+  const role = getHackathonRole();
 
   return (
     <BaseWrapper>
@@ -113,7 +140,7 @@ const Index = () => {
                   }
                 />
               </div>
-              {hackathon.coordinators?.includes(user.id) && (
+              {role == 'admin' && (
                 <div className="w-full flex flex-col gap-2">
                   <div className="text-xl font-bold max-md:text-center">Event Reports (in CSV)</div>
                   <div className="w-full flex gap-4 max-md:flex-col max-md:items-center relative">
@@ -136,9 +163,28 @@ const Index = () => {
                     >
                       <div className="font-semibold">Overall Team Scores</div>
                     </Button>
-                    <Button className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white" variant={'default'} disabled={true}>
-                      <div className="font-semibold">Round Wise Team Scores</div>
-                    </Button>
+                    {rounds && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="w-1/2 max-md:w-11/12">
+                          <Button
+                            onClick={() => handleDownload('round')}
+                            className="w-full bg-blue-prime hover:bg-blue-prime/75 text-white"
+                            variant={'default'}
+                          >
+                            <div className="font-semibold">Round Wise Team Scores</div>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuLabel>Select Round</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          {rounds.map(round => (
+                            <DropdownMenuItem key={round.id} onClick={() => handleDownload('round', round.id, round.index)}>
+                              Round {round.index + 1}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                   </div>
                 </div>
               )}
