@@ -13,6 +13,7 @@ import Loader from '@/components/common/loader';
 import socketService from '@/config/ws';
 import useTimeEvaluation from '@/hooks/use-time-evaluation';
 import useRelativeTime from '@/hooks/use-relative-time';
+import TeamNotRegistered from '@/screens/participants/not_registered';
 
 const Stage = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
@@ -70,28 +71,23 @@ const Stage = () => {
       <div className="w-full min-h-base p-8 md:p-12 flex flex-col md:justify-start gap-8 md:gap-16 font-primary">
         {loading ? (
           <Loader />
-        ) : (
+        ) : team ? (
           <>
             <div className="w-full mx-auto flex flex-col items-center md:flex-row gap-4 md:gap-8">
               <div className="w-full md:w-1/2 justify-center items-start flex-col gap-2">
-                {team ? (
-                  <div className="flex-center flex-col">
-                    <h4 className="w-fit gradient-text-3 text-8xl mb-4">{team.title}</h4>
-                    {nextRound && <div className="font-semibold text-xl">Team Formation has Ended. Round 1 starts {nextRoundStartTime}</div>}
-                  </div>
-                ) : (
-                  <>
-                    <h4 className="w-fit gradient-text-3 text-8xl mb-6">Team Formation has Ended.</h4>
-                    <div className="text-4xl font-bold">You cannot proceed as you did not join a team.</div>
-                  </>
-                )}
+                <div className="flex-center flex-col">
+                  <h4 className="w-fit gradient-text-3 text-8xl mb-4">{team.title}</h4>
+                  {nextRound && <div className="font-semibold text-xl">Team Formation has Ended. Round 1 starts {nextRoundStartTime}</div>}
+                </div>
               </div>
               <div className="w-full md:w-1/2 flex gap-2 md:gap-4">
                 <TeamOverviewAnalytics nextRound={nextRound} />
               </div>
             </div>
-            {team && <TeamView team={team} actions={false} />}
+            <TeamView team={team} actions={false} />
           </>
+        ) : (
+          <TeamNotRegistered />
         )}
       </div>
     </BaseWrapper>

@@ -19,7 +19,6 @@ import TeamNotRegistered from '@/screens/participants/not_registered';
 import useRelativeTime from '@/hooks/use-relative-time';
 import useTimeEvaluation from '@/hooks/use-time-evaluation';
 
-
 const Live = () => {
   const [team, setTeam] = useState<HackathonTeam | null>(null);
   const [currentRound, setCurrentRound] = useState<HackathonRound | null>(null);
