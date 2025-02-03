@@ -1,6 +1,4 @@
 import { SERVER_ERROR } from '@/config/errors';
-import getHandler from '@/handlers/get_handler';
-import { HackathonTeam } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useMemo, useState } from 'react';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
@@ -115,33 +113,35 @@ const Index = () => {
                   }
                 />
               </div>
-              <div className="w-full flex flex-col gap-2">
-                <div className="text-xl font-bold max-md:text-center">Event Reports (in CSV)</div>
-                <div className="w-full flex gap-4 max-md:flex-col max-md:items-center relative">
-                  {loading && (
-                    <div className="w-full h-full bg-white flex-center absolute top-0 right-0 bg-opacity-50 rounded-lg">
-                      <Loader />
-                    </div>
-                  )}
-                  <Button
-                    onClick={() => handleDownload('team')}
-                    className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
-                    variant={'default'}
-                  >
-                    <div className="font-semibold">Team Details</div>
-                  </Button>
-                  <Button
-                    onClick={() => handleDownload('overall')}
-                    className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
-                    variant={'default'}
-                  >
-                    <div className="font-semibold">Overall Team Scores</div>
-                  </Button>
-                  <Button className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white" variant={'default'} disabled={true}>
-                    <div className="font-semibold">Round Wise Team Scores</div>
-                  </Button>
+              {hackathon.coordinators?.includes(user.id) && (
+                <div className="w-full flex flex-col gap-2">
+                  <div className="text-xl font-bold max-md:text-center">Event Reports (in CSV)</div>
+                  <div className="w-full flex gap-4 max-md:flex-col max-md:items-center relative">
+                    {loading && (
+                      <div className="w-full h-full bg-white flex-center absolute top-0 right-0 bg-opacity-50 rounded-lg">
+                        <Loader />
+                      </div>
+                    )}
+                    <Button
+                      onClick={() => handleDownload('team')}
+                      className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
+                      variant={'default'}
+                    >
+                      <div className="font-semibold">Team Details</div>
+                    </Button>
+                    <Button
+                      onClick={() => handleDownload('overall')}
+                      className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
+                      variant={'default'}
+                    >
+                      <div className="font-semibold">Overall Team Scores</div>
+                    </Button>
+                    <Button className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white" variant={'default'} disabled={true}>
+                      <div className="font-semibold">Round Wise Team Scores</div>
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
