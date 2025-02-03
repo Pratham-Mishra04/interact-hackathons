@@ -42,6 +42,7 @@ const config: Config = {
       },
       backgroundImage: {
         onboarding: 'url("/assets/onboarding.webp")',
+        login: 'url("/assets/login.png")',
         new_post: 'url("/assets/new_post.webp")',
         base: "url('/team-formation-bg.svg')",
         'card-base': "url('/assets/card-bg.png')",
