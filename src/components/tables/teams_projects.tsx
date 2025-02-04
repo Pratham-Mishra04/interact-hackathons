@@ -12,7 +12,7 @@ import getHandler from '@/handlers/get_handler';
 import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
-import { UserPlus } from '@phosphor-icons/react';
+import {PencilSimple, UserPlus} from '@phosphor-icons/react';
 import { initialHackathonTeam } from '@/types/initials';
 import AddTeamMember from '@/sections/admin/add_team_member';
 import NewTeam from '@/sections/admin/new_team';
@@ -31,6 +31,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import deleteHandler from "@/handlers/delete_handler";
+import {Label} from "@/components/ui/label";
+import {Input} from "@/components/ui/input";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import patchHandler from "@/handlers/patch_handler";
+
 
 const TeamProjectsTable = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -47,6 +52,7 @@ const TeamProjectsTable = () => {
   const [clickedTeam, setClickedTeam] = useState(initialHackathonTeam);
   const [round, setRound] = useState<HackathonRound | undefined>();
   const [showDeleteTeamDialog, setShowDeleteTeamDialog] = useState(false);
+  const [showEditTeamDialog, setShowEditTeamDialog] = useState(false);
 
   const hackathon = useSelector(currentHackathonSelector);
   const user = useSelector(userSelector);
@@ -120,6 +126,13 @@ const TeamProjectsTable = () => {
     });
   }
 
+  const handleEditTeam = (team: HackathonTeam)=>{
+    setClickedTeam(()=>{
+      setShowEditTeamDialog(true);
+      return team;
+    });
+  }
+
   useEffect(() => {
     getTracks();
   }, []);
@@ -133,6 +146,7 @@ const TeamProjectsTable = () => {
           </div>
           <AddTeamMember show={clickedOnAddMember} setShow={setClickedOnAddMember} team={clickedTeam} />
           <DeleteTeam show={showDeleteTeamDialog} setShow={setShowDeleteTeamDialog} team={clickedTeam} setTeams={setTeams} />
+          <EditTeam show={showEditTeamDialog} setShow={setShowEditTeamDialog} team={clickedTeam} setTeams={setTeams} />
         </>
       )}
       <TeamSearchFilters
@@ -200,7 +214,7 @@ const TeamProjectsTable = () => {
                 </TableCell>
                 {role === "admin" && <TableCell>{hackathon.isEnded ? team.overallScore : team.roundScore}</TableCell>}
                 {!hackathon.isEnded && hackathon.coordinators?.includes(user.id) && (
-                  <TableCell className={"flex gap-4 items-center"}>
+                  <TableCell className={"flex gap-2 items-center max-md:gap-1"}>
                     <div
                         className={"hover:bg-gray-300/40 p-1 rounded"}
                       onClick={el => {
@@ -211,6 +225,15 @@ const TeamProjectsTable = () => {
                     >
                       <UserPlus className={"size-[1.15rem]"} />
                     </div>
+                    {role === 'admin' && <div
+                        className={"hover:bg-gray-300/40 p-1 rounded"}
+                        onClick={e=>{
+                          e.stopPropagation();
+                          handleEditTeam(team);
+                        }}
+                    >
+                      <PencilSimple className={'size-[1.15rem]'} />
+                    </div>}
                     <div
                         className={"hover:bg-gray-300/40 p-1 rounded"}
                         onClick={e=>{
@@ -236,11 +259,109 @@ const TeamProjectsTable = () => {
   );
 };
 
-interface DeleteTeamProps {
+interface TeamActionProps {
   team: HackathonTeam,
   show: boolean,
   setShow: React.Dispatch<React.SetStateAction<boolean>>,
   setTeams: React.Dispatch<React.SetStateAction<HackathonTeam[]>>
+}
+
+export const EditTeam = ({
+    team,
+    show,
+    setShow,
+    setTeams
+}: TeamActionProps)=> {
+  const hackathon = useSelector(currentHackathonSelector);
+
+  const [title, setTitle] = useState(team.title);
+  const [track, setTrack] = useState(team.track?.title || '');
+  const [tracks, setTracks] = useState<HackathonTrack[]>([]);
+
+  const getTracks = async () => {
+    const URL = `/hackathons/tracks/${hackathon.id}`;
+    const res = await getHandler(URL);
+    if (res.statusCode == 200) {
+      setTracks(res.data.tracks);
+    } else {
+      Toaster.error(res.data.message || SERVER_ERROR);
+    }
+  };
+
+  const handleCancel = ()=>setShow(false);
+
+  const handleEdit = async ()=>{
+    if (title.trim() === "" || track.trim() === "") {
+      Toaster.error("title or track cannot be empty.");
+      return;
+    }
+    const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}`;
+    const selectedTrack = tracks.find(trackObj=>trackObj.id === track);
+    const res = await patchHandler(URL, {
+      title,
+      selectedTrack,
+    })
+    if (res.statusCode == 200) {
+      setTeams(teams=>teams.map(teamObj=>{
+        if (teamObj.id === team.id){
+          return res.data.team || {...team, title, track: selectedTrack}
+        }
+        return teamObj;
+      }))
+      Toaster.success('Team details updated successfully');
+    } else {
+      Toaster.error(res.data.message || SERVER_ERROR);
+    }
+    setShow(false);
+  }
+
+  useEffect(() => {
+    setTitle(team.title)
+    getTracks();
+  }, [show]);
+
+  return (
+      <Dialog open={show} onOpenChange={setShow}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className={"font-bold"}>Edit {team.title} details</DialogTitle>
+            <DialogDescription>You can only edit title and track of this team.</DialogDescription>
+          </DialogHeader>
+          <div className={"flex gap-2"}>
+            <div className={"w-full"}>
+              <Label htmlFor={'title'}>Title</Label>
+              <Input
+                value={title}
+                onChange={(e)=>setTitle(e.target.value)}
+                type={'text'}
+                name={'title'}
+                className={"bg-neutral-100"}
+              />
+            </div>
+            <div className={"w-full"}>
+              <Label htmlFor={'track'}>Track</Label>
+              <Select name={'track'} value={track} onValueChange={setTrack}>
+                <SelectTrigger className="w-full bg-neutral-100">
+                  <SelectValue placeholder="Select Track" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tracks &&
+                    tracks.map((track, index) => (
+                      <SelectItem value={track.id} key={index}>
+                        {track.title}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter className={"mt-2 max-sm:gap-1"}>
+            <Button variant={"outline"} onClick={handleCancel}>Cancel</Button>
+            <Button variant={"destructive"} onClick={handleEdit}>Update</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+  )
 }
 
 export const DeleteTeam = ({
@@ -248,7 +369,7 @@ export const DeleteTeam = ({
     show,
     setShow,
     setTeams
-}: DeleteTeamProps)=>{
+}: TeamActionProps)=>{
 
   const hackathon = useSelector(currentHackathonSelector)
 
