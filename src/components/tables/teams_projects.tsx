@@ -263,7 +263,7 @@ export const EditTeam = ({ team, show, setShow, setTeams, tracks = [] }: TeamAct
   const hackathon = useSelector(currentHackathonSelector);
 
   const [title, setTitle] = useState(team.title);
-  const [track, setTrack] = useState(team.track?.title || '');
+  const [track, setTrack] = useState(team.track?.id || '');
 
   const handleCancel = () => setShow(false);
 
@@ -296,6 +296,7 @@ export const EditTeam = ({ team, show, setShow, setTeams, tracks = [] }: TeamAct
 
   useEffect(() => {
     setTitle(team.title);
+    setTrack(team.track?.id || '')
   }, [show]);
 
   return (
@@ -346,7 +347,6 @@ export const DeleteTeam = ({ team, show, setShow, setTeams }: TeamActionProps) =
   const handleCancel = () => setShow(false);
 
   const handleDelete = async () => {
-    console.log(team);
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}`;
     const res = await deleteHandler(URL);
     if (res.statusCode == 200) {
