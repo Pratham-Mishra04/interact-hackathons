@@ -193,6 +193,7 @@ const RepositoriesComponent = ({ team }: { team: HackathonTeam }) => {
                 </Tooltip>
               </TooltipProvider>
               <DialogFooter>*Make sure all the selected repositories are public on Github.</DialogFooter>
+              <DialogFooter className={"text-xs font-medium"}>*Do not enter .git urls, enter .com urls</DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
