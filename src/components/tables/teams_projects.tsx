@@ -347,7 +347,6 @@ export const DeleteTeam = ({ team, show, setShow, setTeams }: TeamActionProps) =
   const handleCancel = () => setShow(false);
 
   const handleDelete = async () => {
-    console.log(team);
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}`;
     const res = await deleteHandler(URL);
     if (res.statusCode == 200) {
