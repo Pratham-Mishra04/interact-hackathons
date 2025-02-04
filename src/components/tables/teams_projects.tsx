@@ -327,21 +327,21 @@ export const EditTeam = ({
             <DialogTitle className={"font-bold"}>Edit {team.title} details</DialogTitle>
             <DialogDescription>You can only edit title and track of this team.</DialogDescription>
           </DialogHeader>
-          <div className={"flex gap-2"}>
-            <div className={"w-full"}>
-              <Label htmlFor={'title'}>Title</Label>
+          <div className={"flex gap-2 max-sm:flex-col max-sm:gap-1.5"}>
+            <div className={"w-full max-sm:space-y-0.5"}>
+              <Label htmlFor={'edit-team-title'}>Title</Label>
               <Input
                 value={title}
                 onChange={(e)=>setTitle(e.target.value)}
                 type={'text'}
-                name={'title'}
+                id={'edit-team-title'}
                 className={"bg-neutral-100"}
               />
             </div>
-            <div className={"w-full"}>
-              <Label htmlFor={'track'}>Track</Label>
-              <Select name={'track'} value={track} onValueChange={setTrack}>
-                <SelectTrigger className="w-full bg-neutral-100">
+            <div className={"w-full max-sm:space-y-0.5"}>
+              <Label htmlFor={'edit-team-track'}>Track</Label>
+              <Select value={track} onValueChange={setTrack}>
+                <SelectTrigger id={'edit-team-track'} className="w-full bg-neutral-100">
                   <SelectValue placeholder="Select Track" />
                 </SelectTrigger>
                 <SelectContent>
