@@ -12,30 +12,22 @@ import getHandler from '@/handlers/get_handler';
 import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import { useSelector } from 'react-redux';
 import { currentHackathonSelector } from '@/slices/hackathonSlice';
-import {PencilSimple, UserPlus} from '@phosphor-icons/react';
+import { PencilSimple, UserPlus } from '@phosphor-icons/react';
 import { initialHackathonTeam } from '@/types/initials';
 import AddTeamMember from '@/sections/admin/add_team_member';
 import NewTeam from '@/sections/admin/new_team';
 import Status from '../common/status';
 import { isAccessDeniedError } from '@/utils/funcs/misc';
 import { userSelector } from '@/slices/userSlice';
-import {getHackathonRole} from "@/utils/funcs/hackathons";
-import {TrashIcon} from "@radix-ui/react-icons";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import deleteHandler from "@/handlers/delete_handler";
-import {Label} from "@/components/ui/label";
-import {Input} from "@/components/ui/input";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import patchHandler from "@/handlers/patch_handler";
-
+import { getHackathonRole } from '@/utils/funcs/hackathons';
+import { TrashIcon } from '@radix-ui/react-icons';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import deleteHandler from '@/handlers/delete_handler';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import patchHandler from '@/handlers/patch_handler';
 
 const TeamProjectsTable = () => {
   const [teams, setTeams] = useState<HackathonTeam[]>([]);
@@ -119,19 +111,19 @@ const TeamProjectsTable = () => {
     }
   };
 
-  const handleDeleteTeam = (team: HackathonTeam)=>{
-    setClickedTeam(()=>{
+  const handleDeleteTeam = (team: HackathonTeam) => {
+    setClickedTeam(() => {
       setShowDeleteTeamDialog(true);
       return team;
     });
-  }
+  };
 
-  const handleEditTeam = (team: HackathonTeam)=>{
-    setClickedTeam(()=>{
+  const handleEditTeam = (team: HackathonTeam) => {
+    setClickedTeam(() => {
       setShowEditTeamDialog(true);
       return team;
     });
-  }
+  };
 
   useEffect(() => {
     getTracks();
@@ -146,7 +138,7 @@ const TeamProjectsTable = () => {
           </div>
           <AddTeamMember show={clickedOnAddMember} setShow={setClickedOnAddMember} team={clickedTeam} />
           <DeleteTeam show={showDeleteTeamDialog} setShow={setShowDeleteTeamDialog} team={clickedTeam} setTeams={setTeams} />
-          <EditTeam show={showEditTeamDialog} setShow={setShowEditTeamDialog} team={clickedTeam} setTeams={setTeams} />
+          <EditTeam show={showEditTeamDialog} setShow={setShowEditTeamDialog} team={clickedTeam} setTeams={setTeams} tracks={tracks || []} />
         </>
       )}
       <TeamSearchFilters
@@ -212,36 +204,36 @@ const TeamProjectsTable = () => {
                 <TableCell>
                   <Status className="text-xs w-fit px-3 py-1 rounded-full" status={team.isEliminated ? 'eliminated' : 'not eliminated'} />
                 </TableCell>
-                {role === "admin" && <TableCell>{hackathon.isEnded ? team.overallScore : team.roundScore}</TableCell>}
+                {role === 'admin' && <TableCell>{hackathon.isEnded ? team.overallScore : team.roundScore}</TableCell>}
                 {!hackathon.isEnded && hackathon.coordinators?.includes(user.id) && (
-                  <TableCell className={"flex gap-2 items-center max-md:gap-1"}>
+                  <TableCell className={'flex gap-2 items-center max-md:gap-1'}>
                     <div
-                        className={"hover:bg-gray-300/40 p-1 rounded"}
+                      className={'hover:bg-gray-300/40 p-1 rounded'}
                       onClick={el => {
                         el.stopPropagation();
                         setClickedTeam(team);
                         setClickedOnAddMember(true);
                       }}
                     >
-                      <UserPlus className={"size-[1.15rem]"} />
+                      <UserPlus className={'size-[1.15rem]'} />
                     </div>
-                    {role === 'admin' && <div
-                        className={"hover:bg-gray-300/40 p-1 rounded"}
-                        onClick={e=>{
-                          e.stopPropagation();
-                          handleEditTeam(team);
-                        }}
+                    <div
+                      className={'hover:bg-gray-300/40 p-1 rounded'}
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleEditTeam(team);
+                      }}
                     >
                       <PencilSimple className={'size-[1.15rem]'} />
-                    </div>}
+                    </div>
                     <div
-                        className={"hover:bg-gray-300/40 p-1 rounded"}
-                        onClick={e=>{
-                          e.stopPropagation();
-                          handleDeleteTeam(team)
-                        }}
+                      className={'hover:bg-gray-300/40 p-1 rounded'}
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleDeleteTeam(team);
+                      }}
                     >
-                      <TrashIcon className={"size-[1.15rem]"} />
+                      <TrashIcon className={'size-[1.15rem]'} />
                     </div>
                   </TableCell>
                 )}
@@ -260,148 +252,132 @@ const TeamProjectsTable = () => {
 };
 
 interface TeamActionProps {
-  team: HackathonTeam,
-  show: boolean,
-  setShow: React.Dispatch<React.SetStateAction<boolean>>,
-  setTeams: React.Dispatch<React.SetStateAction<HackathonTeam[]>>
+  team: HackathonTeam;
+  show: boolean;
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  setTeams: React.Dispatch<React.SetStateAction<HackathonTeam[]>>;
+  tracks?: HackathonTrack[];
 }
 
-export const EditTeam = ({
-    team,
-    show,
-    setShow,
-    setTeams
-}: TeamActionProps)=> {
+export const EditTeam = ({ team, show, setShow, setTeams, tracks = [] }: TeamActionProps) => {
   const hackathon = useSelector(currentHackathonSelector);
 
   const [title, setTitle] = useState(team.title);
   const [track, setTrack] = useState(team.track?.title || '');
-  const [tracks, setTracks] = useState<HackathonTrack[]>([]);
 
-  const getTracks = async () => {
-    const URL = `/hackathons/tracks/${hackathon.id}`;
-    const res = await getHandler(URL);
-    if (res.statusCode == 200) {
-      setTracks(res.data.tracks);
-    } else {
-      Toaster.error(res.data.message || SERVER_ERROR);
-    }
-  };
+  const handleCancel = () => setShow(false);
 
-  const handleCancel = ()=>setShow(false);
-
-  const handleEdit = async ()=>{
-    if (title.trim() === "" || track.trim() === "") {
-      Toaster.error("title or track cannot be empty.");
+  const handleEdit = async () => {
+    if (title.trim() === '' || track.trim() === '') {
+      Toaster.error('title or track cannot be empty.');
       return;
     }
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}`;
-    const selectedTrack = tracks.find(trackObj=>trackObj.id === track);
+    const selectedTrack = tracks.find(trackObj => trackObj.id === track);
     const res = await patchHandler(URL, {
       title,
-      trackID: selectedTrack?.id
-    })
+      trackID: selectedTrack?.id,
+    });
     if (res.statusCode == 200) {
-      setTeams(teams=>teams.map(teamObj=>{
-        if (teamObj.id === team.id){
-          return {...team, title, track: selectedTrack}
-        }
-        return teamObj;
-      }))
+      setTeams(teams =>
+        teams.map(teamObj => {
+          if (teamObj.id === team.id) {
+            return { ...team, title, track: selectedTrack };
+          }
+          return teamObj;
+        })
+      );
       Toaster.success('Team details updated successfully');
     } else {
       Toaster.error(res.data.message || SERVER_ERROR);
     }
     setShow(false);
-  }
+  };
 
   useEffect(() => {
-    setTitle(team.title)
-    getTracks();
+    setTitle(team.title);
   }, [show]);
 
   return (
-      <Dialog open={show} onOpenChange={setShow}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className={"font-bold"}>Edit {team.title} details</DialogTitle>
-            <DialogDescription>You can only edit title and track of this team.</DialogDescription>
-          </DialogHeader>
-          <div className={"flex gap-2 max-sm:flex-col max-sm:gap-1.5"}>
-            <div className={"w-full max-sm:space-y-0.5"}>
-              <Label htmlFor={'edit-team-title'}>Title</Label>
-              <Input
-                value={title}
-                onChange={(e)=>setTitle(e.target.value)}
-                type={'text'}
-                id={'edit-team-title'}
-                className={"bg-neutral-100"}
-              />
-            </div>
-            <div className={"w-full max-sm:space-y-0.5"}>
-              <Label htmlFor={'edit-team-track'}>Track</Label>
-              <Select value={track} onValueChange={setTrack}>
-                <SelectTrigger id={'edit-team-track'} className="w-full bg-neutral-100">
-                  <SelectValue placeholder="Select Track" />
-                </SelectTrigger>
-                <SelectContent>
-                  {tracks &&
-                    tracks.map((track, index) => (
-                      <SelectItem value={track.id} key={index}>
-                        {track.title}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
+    <Dialog open={show} onOpenChange={setShow}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className={'font-bold'}>Edit {team.title} details</DialogTitle>
+          <DialogDescription>You can only edit title and track of this team.</DialogDescription>
+        </DialogHeader>
+        <div className={'flex gap-2 max-sm:flex-col max-sm:gap-1.5'}>
+          <div className={'w-full max-sm:space-y-0.5'}>
+            <Label htmlFor={'edit-team-title'}>Title</Label>
+            <Input value={title} onChange={e => setTitle(e.target.value)} type={'text'} id={'edit-team-title'} className={'bg-neutral-100'} />
           </div>
-          <DialogFooter className={"mt-2 max-sm:gap-1"}>
-            <Button variant={"outline"} onClick={handleCancel}>Cancel</Button>
-            <Button variant={"destructive"} onClick={handleEdit}>Update</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-  )
-}
+          <div className={'w-full max-sm:space-y-0.5'}>
+            <Label htmlFor={'edit-team-track'}>Track</Label>
+            <Select value={track} onValueChange={setTrack}>
+              <SelectTrigger id={'edit-team-track'} className="w-full bg-neutral-100">
+                <SelectValue placeholder="Select Track" />
+              </SelectTrigger>
+              <SelectContent>
+                {tracks &&
+                  tracks.map((track, index) => (
+                    <SelectItem value={track.id} key={index}>
+                      {track.title}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <DialogFooter className={'mt-2 max-sm:gap-1'}>
+          <Button variant={'outline'} onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button variant={'destructive'} onClick={handleEdit}>
+            Update
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
-export const DeleteTeam = ({
-    team,
-    show,
-    setShow,
-    setTeams
-}: TeamActionProps)=>{
+export const DeleteTeam = ({ team, show, setShow, setTeams }: TeamActionProps) => {
+  const hackathon = useSelector(currentHackathonSelector);
 
-  const hackathon = useSelector(currentHackathonSelector)
-
-  const handleCancel = ()=>setShow(false);
+  const handleCancel = () => setShow(false);
 
   const handleDelete = async () => {
     console.log(team);
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}`;
     const res = await deleteHandler(URL);
     if (res.statusCode == 200) {
-      setTeams(teams=>teams.filter(teamItem=>teamItem.id != team.id))
+      setTeams(teams => teams.filter(teamItem => teamItem.id != team.id));
       Toaster.success('Team removed successfully');
     } else {
       Toaster.error(res.data.message || SERVER_ERROR);
     }
     setShow(false);
-  }
+  };
 
   return (
-      <Dialog open={show} onOpenChange={setShow}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className={"font-bold"}><span className={"text-red-500"}>Remove</span> {team.title}</DialogTitle>
-            <DialogDescription>This team will be removed from the hackathon. Are you absolutely sure?</DialogDescription>
-          </DialogHeader>
-          <DialogFooter className={"mt-2 max-sm:gap-1"}>
-            <Button variant={"outline"} onClick={handleCancel}>Cancel</Button>
-            <Button variant={"destructive"} onClick={handleDelete}>Remove</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-  )
-}
+    <Dialog open={show} onOpenChange={setShow}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className={'font-bold'}>
+            <span className={'text-red-500'}>Remove</span> {team.title}
+          </DialogTitle>
+          <DialogDescription>This team will be removed from the hackathon. Are you absolutely sure?</DialogDescription>
+        </DialogHeader>
+        <DialogFooter className={'mt-2 max-sm:gap-1'}>
+          <Button variant={'outline'} onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button variant={'destructive'} onClick={handleDelete}>
+            Remove
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 export default TeamProjectsTable;
