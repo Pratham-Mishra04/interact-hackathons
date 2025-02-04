@@ -139,7 +139,7 @@ const TeamProjectsTable = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {hackathon.coordinators?.includes(user.id) && !hackathon.isEnded &&  (
+      {hackathon.coordinators?.includes(user.id) && !hackathon.isEnded && (
         <>
           <div className="w-full flex justify-end">
             <NewTeam tracks={tracks} />
