@@ -263,7 +263,7 @@ export const EditTeam = ({ team, show, setShow, setTeams, tracks = [] }: TeamAct
   const hackathon = useSelector(currentHackathonSelector);
 
   const [title, setTitle] = useState(team.title);
-  const [track, setTrack] = useState(team.track?.title || '');
+  const [track, setTrack] = useState(team.track?.id || '');
 
   const handleCancel = () => setShow(false);
 
@@ -296,6 +296,7 @@ export const EditTeam = ({ team, show, setShow, setTeams, tracks = [] }: TeamAct
 
   useEffect(() => {
     setTitle(team.title);
+    setTrack(team.track?.id || '')
   }, [show]);
 
   return (
