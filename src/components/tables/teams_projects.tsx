@@ -299,12 +299,12 @@ export const EditTeam = ({
     const selectedTrack = tracks.find(trackObj=>trackObj.id === track);
     const res = await patchHandler(URL, {
       title,
-      selectedTrack,
+      trackID: selectedTrack?.id
     })
     if (res.statusCode == 200) {
       setTeams(teams=>teams.map(teamObj=>{
         if (teamObj.id === team.id){
-          return res.data.team || {...team, title, track: selectedTrack}
+          return {...team, title, track: selectedTrack}
         }
         return teamObj;
       }))
