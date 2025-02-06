@@ -102,7 +102,7 @@ const Links = ({ links, showTitle = false, setLinks, maxLinks = 5, title = 'Link
                 } focus:outline-none border-[1px] rounded-lg px-4 py-2 text-sm`}
                 value={newLink}
                 onChange={el => setNewLink(el.target.value.trim())}
-                placeholder="Press enter to submit"
+                placeholder="Add link and press Enter"
               />
             </form>
           ) : (
