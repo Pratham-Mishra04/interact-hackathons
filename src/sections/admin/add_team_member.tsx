@@ -20,6 +20,7 @@ interface Props {
 const AddTeamMember = ({ show, setShow, team }: Props) => {
   const [username, setUsername] = useState('');
   const [role, setRole] = useState('');
+  const [regNo, setRegNo] = useState('');
 
   const hackathon = useSelector(currentHackathonSelector);
 
@@ -32,7 +33,7 @@ const AddTeamMember = ({ show, setShow, team }: Props) => {
       return;
     }
 
-    const formData = { username, role };
+    const formData = { username, role, registrationNo: regNo };
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/${team.id}/add`;
     const res = await postHandler(URL, formData);
     if (res.statusCode == 200) {
@@ -52,6 +53,13 @@ const AddTeamMember = ({ show, setShow, team }: Props) => {
         </DialogHeader>
         <div className="flex w-full flex-col gap-3">
           <Input value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter User's Username" />
+          <Input
+            value={regNo}
+            onChange={e => {
+              setRegNo(e.target.value);
+            }}
+            placeholder="Enter User's Registration Number"
+          />
           <Select value={role} onValueChange={setRole}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select User's Role" />
