@@ -181,7 +181,9 @@ const Team = () => {
               </div>
             ) : (
               <>
-                <h4 className="w-fit gradient-text-3 text-8xl mb-2 max-md:text-6xl max-sm:text-4xl max-md:mb-3 max-sm:w-full max-sm:text-center">Team Formation</h4>
+                <h4 className="w-fit gradient-text-3 text-8xl mb-2 max-md:text-6xl max-sm:text-4xl max-md:mb-3 max-sm:w-full max-sm:text-center">
+                  Team Formation
+                </h4>
                 <div className="text-3xl  max-md:text-2xl max-sm:text-center font-semibold">Create, and Join Teams Effortlessly.</div>
               </>
             )}
