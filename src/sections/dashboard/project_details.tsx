@@ -14,7 +14,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import EditorInput from "@/components/form/editor-input";
 import Editor from "@/components/editor";
 
 export const ProjectDetails = ({ project }: { project: Project | undefined }) => {
