@@ -32,7 +32,7 @@ const ComparisonScoreBar = ({ max, min, score }: { max: number; min: number; sco
           </div>
           <div className="w-full flex-1 blue-gradient rounded-lg flex flex-col justify-center gap-1 text-white py-2">
             <div className="text-3xl font-bold text-center">
-              {percentage}
+              {percentage.toFixed(2)}
               <span className="text-xl font-medium">%tile</span>
             </div>
             <div className="text-center text-xs">Comparison within same track.</div>

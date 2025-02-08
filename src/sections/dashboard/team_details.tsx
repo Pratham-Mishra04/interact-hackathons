@@ -194,7 +194,7 @@ export const AnalyticsCard = ({ title, value, change }: { title: string; value: 
       <div className="text-3xl font-semibold">{value}</div>
     </div>
     {change && change != 0 && (
-      <div className={`${change > 0 ? 'text-priority_low' : 'text-priority_high'} text-xs`}>{`${change}% ${
+      <div className={`${change > 0 ? 'text-priority_low' : 'text-priority_high'} text-xs`}>{`${change.toFixed(2)}% ${
         change > 0 ? 'increase' : 'decrease'
       } from last round`}</div>
     )}

@@ -2,8 +2,9 @@ import { ACCESS_DENIED, ADMIN_AUTHORIZATION_DENIED, ORG_AUTHORIZATION_DENIED } f
 
 export const formatPrice = (price: number) => {
   if (price < 1000) return price;
-  return Math.round(price / 1000) + 'K';
+  return parseFloat((price / 1000).toFixed(1)) + 'K';
 };
+
 
 export const isAccessDeniedError = (message?: string) => {
   if (!message) return false;
