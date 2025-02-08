@@ -83,7 +83,7 @@ const Live = () => {
   return (
     <BaseWrapper>
       {team ? (
-        team.isEliminated && currentRound && !moment().isBetween(currentRound?.judgingStartTime, currentRound?.endTime) ? (
+        team.isEliminated && (currentRound ? !moment().isBetween(currentRound.judgingStartTime, currentRound.endTime) : true) ? (
           <TeamEliminated team={team} />
         ) : (
           <div className="w-full min-h-base p-12 flex flex-col gap-10">
