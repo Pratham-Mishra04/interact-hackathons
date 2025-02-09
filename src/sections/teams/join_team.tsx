@@ -49,7 +49,7 @@ const JoinTeam = ({ show, setShow, submitHandler }: Props) => {
             ))}
           </SelectContent>
         </Select>
-        <Button onClick={() => submitHandler({ token, role, regNo })}>Join Team</Button>
+        <Button onClick={() => submitHandler({ token, role, registrationNo: regNo })}>Join Team</Button>
       </DialogContent>
     </Dialog>
   );

@@ -20,6 +20,7 @@ const NewTeam = ({ tracks }: Props) => {
   const [track, setTrack] = useState('');
   const [username, setUsername] = useState('');
   const [role, setRole] = useState('');
+  const [regNo, setRegNo] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const hackathon = useSelector(currentHackathonSelector);
@@ -30,7 +31,7 @@ const NewTeam = ({ tracks }: Props) => {
       return;
     }
 
-    const formData = { title, trackID: track, username, role, hackathonID: hackathon.id };
+    const formData = { title, trackID: track, username, role, hackathonID: hackathon.id, registrationNo: regNo };
     const URL = `/org/${hackathon.organizationID}/hackathons/${hackathon.id}/team/`;
     const res = await postHandler(URL, formData);
     if (res.statusCode == 201) {
@@ -75,6 +76,13 @@ const NewTeam = ({ tracks }: Props) => {
             </SelectContent>
           </Select>
           <Input value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter Team Leader's Username" />
+          <Input
+            value={regNo}
+            onChange={e => {
+              setRegNo(e.target.value);
+            }}
+            placeholder="Enter Team Leader's Registration Number"
+          />
           <Select value={role} onValueChange={setRole}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Team Leader's Role" />

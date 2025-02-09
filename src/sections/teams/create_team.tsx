@@ -74,7 +74,7 @@ const CreateTeam = ({ show, setShow, submitHandler, hackathonID, tracks }: Props
                 trackID: track,
                 hackathonID,
                 role,
-                regNo,
+                registrationNo: regNo,
               });
             } else {
               Toaster.error('Please fill in all the fields');
