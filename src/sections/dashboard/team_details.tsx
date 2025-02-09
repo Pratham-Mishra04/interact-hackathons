@@ -21,6 +21,7 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
     githubCommitPercentageChange: 0,
     maxActivityCount: 0,
     minActivityCount: 0,
+    totalTeamsInTrack: 0,
     teamsLeftInTrack: 0,
     totalActivityCount: 0,
     totalFigmaHistories: 0,
@@ -40,6 +41,7 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
           githubCommitPercentageChange: data.githubCommitPercentageChange || 0,
           maxActivityCount: data.maxActivityCount || 0,
           minActivityCount: data.minActivityCount || 0,
+          totalTeamsInTrack: data.totalTeamsInTrack || 0,
           teamsLeftInTrack: data.teamsLeftInTrack || 0,
           totalActivityCount: data.totalActivityCount || 0,
           totalFigmaHistories: data.totalFigmaHistories || 0,
@@ -78,6 +80,10 @@ const TeamDetails = ({ team }: { team: HackathonTeam }) => {
           <div className="w-2/3 max-md:w-full flex flex-col gap-4">
             {!hackathon.isEnded && (
               <div className="w-full flex flex-col gap-4">
+                <div className="w-full flex gap-4">
+                  <SmallAnalyticsCard title="Total Teams in this Track" value={analyticsData.totalTeamsInTrack} />
+                  <SmallAnalyticsCard title="Teams Left in this Track" value={analyticsData.teamsLeftInTrack} />
+                </div>
                 <div className="w-full h-fit flex gap-4">
                   {hackathon.enableGithubIntegration ? (
                     <AnalyticsCard
@@ -198,5 +204,14 @@ export const AnalyticsCard = ({ title, value, change }: { title: string; value: 
         change > 0 ? 'increase' : 'decrease'
       } from last round`}</div>
     )}
+  </div>
+);
+
+export const SmallAnalyticsCard = ({ title, value }: { title: string; value: number }) => (
+  <div className="w-1/2 h-24 flex flex-col justify-between bg-white rounded-xl p-4">
+    <div className="w-full flex flex-col gap-1">
+      <div className="font-medium">{title}</div>
+      <div className="text-3xl font-semibold">{value}</div>
+    </div>
   </div>
 );
