@@ -36,7 +36,7 @@ const TeamProjectsTable = () => {
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState('');
   const [track, setTrack] = useState('');
-  const [eliminated, setEliminated] = useState('');
+  const [eliminated, setEliminated] = useState('not_eliminated');
   const [overallScore, setOverallScore] = useState(0);
   const [order, setOrder] = useState('latest');
   const [tracks, setTracks] = useState<HackathonTrack[]>([]);
@@ -296,7 +296,7 @@ export const EditTeam = ({ team, show, setShow, setTeams, tracks = [] }: TeamAct
 
   useEffect(() => {
     setTitle(team.title);
-    setTrack(team.track?.id || '')
+    setTrack(team.track?.id || '');
   }, [show]);
 
   return (
