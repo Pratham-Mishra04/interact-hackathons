@@ -39,7 +39,7 @@ const Index = () => {
     else getRounds();
   }, []);
 
-  const handleDownload = async (downloadType: 'team' | 'overall' | 'round' | 'prize', roundID?: string, roundIndex?: number) => {
+  const handleDownload = async (downloadType: 'team' | 'overall' | 'round' | 'prize' | 'logs', roundID?: string, roundIndex?: number) => {
     const toaster = Toaster.startLoad('Downloading CSV...');
     if (loading) return;
     setLoading(true);
@@ -70,11 +70,12 @@ const Index = () => {
           URL += '/prizes';
           filename += '_prizes';
           break;
+        case 'logs':
+          URL += '/logs';
+          filename += 'logs';
         default:
           isValid = false;
       }
-
-      if (!isValid) return;
 
       const response = await configuredAxios.get(URL, {
         responseType: 'blob',
@@ -144,63 +145,72 @@ const Index = () => {
                   }
                 />
               </div>
-              <div className="w-full flex flex-col gap-2">
-                <div className="text-xl font-bold max-md:text-center">Event Reports (in CSV)</div>
-                <div className="w-full flex gap-4 max-md:flex-col max-md:items-center relative">
-                  {loading && (
-                    <div className="w-full h-full bg-white flex-center absolute top-0 right-0 bg-opacity-50 rounded-lg">
-                      <Loader />
-                    </div>
-                  )}
-                  <Button
-                    onClick={() => handleDownload('team')}
-                    className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
-                    variant={'default'}
-                  >
-                    <div className="font-semibold">Team Details</div>
-                  </Button>
-                  {role == 'admin' && (
-                    <>
-                      <Button
-                        onClick={() => handleDownload('overall')}
-                        className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
-                        variant={'default'}
-                      >
-                        <div className="font-semibold">Overall Team Scores</div>
-                      </Button>
-                      {rounds && (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger className="w-1/2 max-md:w-11/12">
-                            <Button
-                              onClick={() => handleDownload('round')}
-                              className="w-full bg-blue-prime hover:bg-blue-prime/75 text-white"
-                              variant={'default'}
-                            >
-                              <div className="font-semibold">Round Wise Team Scores</div>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuLabel>Select Round</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            {rounds.map(round => (
-                              <DropdownMenuItem key={round.id} onClick={() => handleDownload('round', round.id, round.index)}>
-                                Round {round.index + 1}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
-                      <Button
-                        onClick={() => handleDownload('prize')}
-                        className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
-                        variant={'default'}
-                      >
-                        <div className="font-semibold">Prize Distribution</div>
-                      </Button>
-                    </>
-                  )}
+              {hackathon.coordinators?.includes(user.id) && (
+                <div className="w-full flex flex-col gap-2">
+                  <div className="text-xl font-bold max-md:text-center">Event Reports (in CSV)</div>
+                  <div className="w-full flex gap-4 max-md:flex-col max-md:items-center relative">
+                    {loading && (
+                      <div className="w-full h-full bg-white flex-center absolute top-0 right-0 bg-opacity-50 rounded-lg">
+                        <Loader />
+                      </div>
+                    )}
+                    <Button
+                      onClick={() => handleDownload('team')}
+                      className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
+                      variant={'default'}
+                    >
+                      <div className="font-semibold">Team Details</div>
+                    </Button>
+                    {role == 'admin' && (
+                      <>
+                        <Button
+                          onClick={() => handleDownload('overall')}
+                          className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
+                          variant={'default'}
+                        >
+                          <div className="font-semibold">Overall Team Scores</div>
+                        </Button>
+                        {rounds && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="w-1/2 max-md:w-11/12">
+                              <Button
+                                onClick={() => handleDownload('round')}
+                                className="w-full bg-blue-prime hover:bg-blue-prime/75 text-white"
+                                variant={'default'}
+                              >
+                                <div className="font-semibold">Round Wise Team Scores</div>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuLabel>Select Round</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              {rounds.map(round => (
+                                <DropdownMenuItem key={round.id} onClick={() => handleDownload('round', round.id, round.index)}>
+                                  Round {round.index + 1}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                        <Button
+                          onClick={() => handleDownload('prize')}
+                          className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
+                          variant={'default'}
+                        >
+                          <div className="font-semibold">Prize Distribution</div>
+                        </Button>
+                        <Button
+                          onClick={() => handleDownload('logs')}
+                          className="w-1/2 max-md:w-11/12 bg-blue-prime hover:bg-blue-prime/75 text-white"
+                          variant={'default'}
+                        >
+                          <div className="font-semibold">Logs</div>
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
