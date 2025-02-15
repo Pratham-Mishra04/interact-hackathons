@@ -136,7 +136,7 @@ const AnnouncementCard = ({ announcement, setAnnouncements, isAdmin = false }: P
             </div>
           </div>
         ) : (
-          <Editor content={announcement.content} editable={false} />
+          <Editor content={announcement.content} editable={false} truncate maxHeight={120} />
         )}
       </div>
     </Wrapper>
