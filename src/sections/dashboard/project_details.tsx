@@ -77,24 +77,7 @@ export const ProjectDetails = ({ project }: { project: Project | undefined }) =>
             </div>
             <div className="font-semibold text-lg">{project.tagline}</div>
             <Tags tags={project.tags} displayAll />
-            <Editor editable={false}  content={project.description} />
-            {/*<div className="whitespace-pre-line">*/}
-            {/*  {project.description.length > 200 ? (*/}
-            {/*    clickedOnReadMore ? (*/}
-            {/*      project.description*/}
-            {/*    ) : (*/}
-            {/*      <>*/}
-            {/*        {project.description.substring(0, 200)}*/}
-            {/*        <span onClick={() => setClickedOnReadMore(true)} className="text-xs italic opacity-60 cursor-pointer">*/}
-            {/*          {' '}*/}
-            {/*          Read More...*/}
-            {/*        </span>*/}
-            {/*      </>*/}
-            {/*    )*/}
-            {/*  ) : (*/}
-            {/*    renderContentWithLinks(project.description)*/}
-            {/*  )}*/}
-            {/*</div>*/}
+            <Editor editable={false}  content={project.description} truncate maxHeight={200} />
             <Links links={project.links} />
           </div>
         </div>

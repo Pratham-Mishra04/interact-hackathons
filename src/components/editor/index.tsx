@@ -1,6 +1,6 @@
 'use client';
 import { useEditor, EditorContent } from '@tiptap/react';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import Text from '@tiptap/extension-text';
 import Paragraph from '@tiptap/extension-paragraph';
 import Document from '@tiptap/extension-document';
@@ -47,25 +47,30 @@ import {
   TextSuperscript,
   TextUnderline,
 } from '@phosphor-icons/react';
+import { Ellipsis } from 'lucide-react';
 
 type EditorProps =
-    | {
+  | {
   editable: true;
   setContent: React.Dispatch<React.SetStateAction<string>>;
   content?: string;
   placeholder?: string;
   limit?: number | null;
   className?: string;
-  enableMentions?: boolean
+  enableMentions?: boolean;
+  truncate?: never;
+  maxHeight?: never;
 }
-    | {
+  | {
   editable: false;
   content: string;
   setContent?: never;
   placeholder?: never;
-  limit?: never;
+  limit?: number | null;
   className?: string;
-  enableMentions?: never
+  enableMentions?: never;
+  truncate?: boolean
+  maxHeight?: number;
 };
 
 const Editor = ({
@@ -75,7 +80,9 @@ const Editor = ({
                   limit = null,
                   placeholder,
                   className,
-                  enableMentions = true
+                  enableMentions = true,
+                  truncate = false,
+                  maxHeight = 80,
                 }: EditorProps) => {
 
   let extensions = [
@@ -153,6 +160,9 @@ const Editor = ({
 
   const [openLinkDialog, setOpenLinkDialog] = useState(false);
   const [URL, setURL] = useState<string>('');
+  const [expanded, setExpanded] = useState(!truncate);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const editorContainerRef = useRef<HTMLDivElement | null>(null);
 
   const onSubmitURL = () => {
     if (!editor) return;
@@ -185,6 +195,14 @@ const Editor = ({
 
     return () => document.removeEventListener('keydown', handleKeydown);
   }, [editor]);
+
+  useEffect(()=>{
+    if (!editorContainerRef.current) return;
+    const updateOverflow = () => setIsOverflowing(editorContainerRef.current!.scrollHeight >= maxHeight);
+    updateOverflow();
+    window.addEventListener('resize', updateOverflow);
+    return () => window.removeEventListener('resize', updateOverflow);
+  }, [editorContainerRef.current])
 
   if (!editor) {
     return null;
@@ -238,46 +256,69 @@ const Editor = ({
   ];
 
   const Separator = () => (
-      <div className="w-[1px] h-[18px] border-r-[1px] rounded-lg border-primary_black dark:border-gray-500" />
+    <div className="w-[1px] h-[18px] border-r-[1px] rounded-lg border-primary_black dark:border-gray-500" />
   );
 
   return (
-      <div className="flex flex-col justify-stretch">
-        {editor && editable && (
-            <BubbleMenu
-                className="w-fit h-fit flex-center gap-1 editor-bubble-menu bg-gray-200 dark:bg-neutral-800 rounded-sm shadow-md p-1"
-                editor={editor}
-                tippyOptions={{ duration: 200 }}
-            >
-              {bubbleMenuButtons.map((button, index) =>
-                  button.separator ? (
-                      <Separator key={`separator-${index}`} />
-                  ) : (
-                      <BubbleMenuIcon
-                          key={`button-${index}`}
-                          onClick={button.action}
-                          isActive={!!(button.activeCheck && editor.isActive(button.activeCheck))}
-                          icon={button.icon}
-                      />
-                  )
-              )}
-            </BubbleMenu>
-        )}
+    <div className="flex flex-col justify-stretch">
+      {editor && editable && (
+        <BubbleMenu
+          className="w-fit h-fit flex-center gap-1 editor-bubble-menu bg-gray-200 dark:bg-neutral-800 rounded-sm shadow-md p-1"
+          editor={editor}
+          tippyOptions={{ duration: 200 }}
+        >
+          {bubbleMenuButtons.map((button, index) =>
+            button.separator ? (
+              <Separator key={`separator-${index}`} />
+            ) : (
+              <BubbleMenuIcon
+                key={`button-${index}`}
+                onClick={button.action}
+                isActive={!!(button.activeCheck && editor.isActive(button.activeCheck))}
+                icon={button.icon}
+              />
+            )
+          )}
+        </BubbleMenu>
+      )}
+      <div
+        className='relative'
+        style={{
+          maxHeight: expanded ? "" : maxHeight,
+          overflow: expanded ? "visible" : "hidden",
+        }}
+        ref={editorContainerRef}
+      >
         <EditorContent editor={editor} />
         {editor && editable && limit && <CountWidget charCount={charCount} limit={limit} className="m-1 ml-2" />}
-        {editor && editable && (
-            <LinkDialog open={openLinkDialog} setOpen={setOpenLinkDialog} setURL={setURL} onSubmit={onSubmitURL} />
-        )}
+        {!expanded && isOverflowing && (<div
+          className='absolute bottom-0 w-full bg-gradient-to-t from-white to-transparent h-10'
+        ></div>)}
       </div>
+      {!expanded && isOverflowing && (
+        <div className='flex justify-start text-sm mb-2 items-start'>
+          <button
+            onClick={() => setExpanded(true)}
+            className='mt-2 bg-neutral-200 hover:bg-slate-200 px-1.5 rounded-xl'
+            title="Read More"
+          >
+            <Ellipsis className='size-5' />
+          </button>
+        </div>
+      )}
+      {editor && editable && (
+        <LinkDialog open={openLinkDialog} setOpen={setOpenLinkDialog} setURL={setURL} onSubmit={onSubmitURL} />
+      )}
+    </div>
   );
 };
 
 const BubbleMenuIcon = ({ icon, isActive, onClick }: { icon: ReactNode; isActive: boolean; onClick?: () => void }) => (
-    <button onClick={onClick} className={isActive ? 'is-active' : ''}>
-      {React.cloneElement(icon as React.ReactElement, {
-        weight: isActive ? 'bold' : 'regular',
-      })}
-    </button>
+  <button onClick={onClick} className={isActive ? 'is-active' : ''}>
+    {React.cloneElement(icon as React.ReactElement, {
+      weight: isActive ? 'bold' : 'regular',
+    })}
+  </button>
 );
 
 export default Editor;
